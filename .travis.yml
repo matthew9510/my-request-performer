@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - 10.16.0
+cache:
+  directories:
+    - $HOME/.npm
+branches:
+  only:
+    - master
+    - dev
+install:
+  - npm i -g npm@6.9.0
+  - npm ci
