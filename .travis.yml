@@ -18,7 +18,6 @@ branches:
     - develop
 install:
   - npm i -g npm@6.9.0
-  - npm install
   - npm ci
 script:
-  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  - npm run build
