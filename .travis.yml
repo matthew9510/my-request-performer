@@ -15,7 +15,7 @@ cache:
 branches:
   only:
     - master
-    - dev
+    - develop
 install:
   - npm i -g npm@6.9.0
   - npm install
