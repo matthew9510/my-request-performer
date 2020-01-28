@@ -25,13 +25,15 @@ import { MatGridListModule } from '@angular/material/grid-list';
 
 import { MatTabsModule} from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
+import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    RequestsComponent
+    RequestsComponent,
+    RequestDetailComponent
   ],
   imports: [
     BrowserModule,
