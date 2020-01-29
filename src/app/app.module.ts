@@ -26,6 +26,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTabsModule} from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
+import {MatIconModule} from '@angular/material/icon';
+
 
 
 
@@ -51,7 +53,8 @@ import { RequestDetailComponent } from './components/request-detail/request-deta
     MatGridListModule,
     MatToolbarModule,
     MatTabsModule,
-    MatListModule
+    MatListModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

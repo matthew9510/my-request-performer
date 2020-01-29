@@ -1,0 +1,15 @@
+.outline {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+mat-card {
+    margin: 30px;
+    display: flex;
+    justify-content: space-between;
+}
+
+mat-card-subtitle {
+    margin-bottom: 0px;
+}
