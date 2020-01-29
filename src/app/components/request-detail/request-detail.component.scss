@@ -13,3 +13,19 @@ mat-card {
 mat-card-subtitle {
     margin-bottom: 0px;
 }
+
+mat-card-content {
+    align-self: flex-end;
+}
+
+mat-card-actions {
+    padding: 0px;
+}
+
+.tip-amount {
+    font-weight: bold;
+}
+
+.song-name {
+    font-size: 1em;
+}
