@@ -12,8 +12,12 @@ export class RequestsService {
     private http: HttpClient
   ) { }
 
-  fetchRequests() {
-    return this.http.get<Requests[]>('../assets/requests/requests.json');
+  fetchPendingRequests() {
+    return this.http.get<Requests[]>('../assets/requests/pendingRequests.json');
+  }
+
+  fetchAcceptedRequests() {
+    return this.http.get<Requests[]>('../assets/requests/acceptedRequests.json')
   }
 
 }

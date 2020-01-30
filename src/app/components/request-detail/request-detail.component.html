@@ -1,17 +1,19 @@
-<mat-card matLine class="mat-elevation-z0 outline">
-    <mat-card-title-group>
-        <mat-card-title class="song-name">Song Name</mat-card-title>
-        <mat-card-subtitle class="artist-name">Artist Name</mat-card-subtitle>
-    </mat-card-title-group>
-    <mat-card-content>
-        <span class="tip-amount">$20.00</span>
-    </mat-card-content>
-    <mat-card-actions>
-        <button mat-icon-button class="request-detail-button">
-            <mat-icon color="primary">done</mat-icon>
-        </button>
-        <button mat-icon-button>
-            <mat-icon color="warn">clear</mat-icon>
-        </button>
-    </mat-card-actions>
-</mat-card>
+<div *ngFor="let request of requests">
+    <mat-card matLine class="mat-elevation-z0 outline">
+        <mat-card-title-group>
+            <mat-card-title class="song-name">{{ request.song.slice(0, 20) }}</mat-card-title>
+            <mat-card-subtitle class="artist-name">{{ request.artist.slice(0, 20) }}</mat-card-subtitle>
+        </mat-card-title-group>
+        <mat-card-content>
+            <span class="tip-amount">${{ request.amount }}</span>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-icon-button class="request-detail-button">
+                <mat-icon color="primary">done</mat-icon>
+            </button>
+            <button mat-icon-button>
+                <mat-icon color="warn">clear</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>
