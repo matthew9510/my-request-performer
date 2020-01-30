@@ -1,0 +1,19 @@
+<div class="title">
+  <span >
+    Venue
+  </span>
+</div>
+
+<div>
+  <form [formGroup]="venue" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Venue</mat-label>
+      <mat-select class="mat-select-content">
+        <mat-option *ngFor="let existingVenue of venues" [value]="existingVenue.name" >
+          <mat-icon *ngIf="existingVenue.icon">{{existingVenue.icon}}</mat-icon> {{existingVenue.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+

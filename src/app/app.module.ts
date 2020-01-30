@@ -35,9 +35,9 @@ import {
   MatDialogModule,
   MatDatepickerModule
 } from "@angular/material";
-
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
+import { AddVenueComponent } from './components/add-venue/add-venue.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +52,8 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     RequestsComponent,
     RequestDetailComponent,
     ConfirmDialogComponent,
-    BottomNavComponent
+    BottomNavComponent,
+    AddVenueComponent,
   ],
   entryComponents: [
     ConfirmDialogComponent
@@ -88,7 +89,12 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     TranslocoRootModule,
     ScrollingModule,
     MatDatepickerModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

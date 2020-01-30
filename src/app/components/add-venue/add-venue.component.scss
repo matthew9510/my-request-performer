@@ -1,0 +1,18 @@
+.title {
+  padding: 25px;
+}
+
+.title span {
+  font-weight: normal;
+  font-size: x-large;
+}
+
+form {
+  color: black;
+}
+
+::ng-deep .mat-select-content{
+  width:2000px;
+  background-color: white;
+  font-size: 10px;
+}
