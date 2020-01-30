@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RequestsService } from 'src/app/services/requests.service';
 
 @Component({
   selector: 'app-request-detail',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RequestDetailComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private requestsService: RequestsService
+  ) { }
 
   ngOnInit() {
+    this.onFetchRequests()
+  }
+
+  onFetchRequests() {
+    this.requestsService.fetchRequests().subscribe(res => console.log(res));
   }
 
 }
