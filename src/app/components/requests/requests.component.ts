@@ -10,6 +10,11 @@ import { Requests } from '../../interfaces/requests';
 export class RequestsComponent implements OnInit {
   pendingRequests: any;
   acceptedRequests: any;
+  nowPlayingRequest = {
+    song: 'Piano Man',
+    artist: 'Billy Joel',
+    amount: 1.00
+  }
 
   constructor(
     private requestsService: RequestsService

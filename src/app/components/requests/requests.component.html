@@ -7,18 +7,31 @@
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Accepted">
         <h3 class="request-subheader" mat-subheader>Now Playing</h3>
-        <app-request-detail></app-request-detail>
+
+        <app-request-detail 
+            [song]="nowPlayingRequest.song" 
+            [artist]="nowPlayingRequest.artist" 
+            [amount]="nowPlayingRequest.amount">
+        </app-request-detail>
 
         <h3 class="request-subheader" mat-subheader>Up Next</h3>
-            <mat-list>
-                <app-request-detail mat-list-item [requests]="acceptedRequests"></app-request-detail>
+            <mat-list *ngFor="let request of acceptedRequests">
+                <app-request-detail mat-list-item 
+                    [song]="request.song" 
+                    [artist]="request.artist" 
+                    [amount]="request.amount">
+                </app-request-detail>
             </mat-list>
     </mat-tab>
 
     <mat-tab label="Pending">
         <h3 class="request-subheader" mat-subheader>Pending Requests</h3>
-            <mat-list>
-                <app-request-detail mat-list-item [requests]="pendingRequests"></app-request-detail>
+            <mat-list *ngFor="let request of pendingRequests">
+                <app-request-detail mat-list-item
+                [song]="request.song" 
+                [artist]="request.artist" 
+                [amount]="request.amount">
+            </app-request-detail>
             </mat-list>
     </mat-tab>
 </mat-tab-group>
