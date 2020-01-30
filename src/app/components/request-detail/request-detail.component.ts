@@ -6,16 +6,13 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./request-detail.component.scss']
 })
 export class RequestDetailComponent implements OnInit {
-  @Input() requests: any;
+  @Input() artist: string;
+  @Input() song: string;
+  @Input() amount: number;
 
   constructor() { }
 
   ngOnInit() {
-    this.showRequest()
   }
 
-
-  showRequest() {
-    console.log(this.requests)
-  }
 }

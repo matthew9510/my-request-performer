@@ -29,3 +29,10 @@ mat-card-actions {
 .song-name {
     font-size: 1em;
 }
+
+.truncate {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
