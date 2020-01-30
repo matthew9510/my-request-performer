@@ -7,23 +7,19 @@
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Accepted">
         <h3 class="request-subheader" mat-subheader>Now Playing</h3>
-        <app-request-detail class="now-playing"></app-request-detail>
+        <app-request-detail></app-request-detail>
 
         <h3 class="request-subheader" mat-subheader>Up Next</h3>
             <mat-list>
-                <app-request-detail mat-list-item></app-request-detail>
-                <app-request-detail mat-list-item></app-request-detail>
-                <app-request-detail mat-list-item></app-request-detail>
-                <app-request-detail mat-list-item></app-request-detail>
-                <app-request-detail mat-list-item></app-request-detail>
+                <app-request-detail mat-list-item [requests]="acceptedRequests"></app-request-detail>
             </mat-list>
     </mat-tab>
 
     <mat-tab label="Pending">
-        <div class="request-content">
-        <h1>Some more tab content</h1>
-        <p>...</p>
-    </div>
+        <h3 class="request-subheader" mat-subheader>Pending Requests</h3>
+            <mat-list>
+                <app-request-detail mat-list-item [requests]="pendingRequests"></app-request-detail>
+            </mat-list>
     </mat-tab>
 </mat-tab-group>
 
