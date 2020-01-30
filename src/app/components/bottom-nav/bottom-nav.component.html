@@ -1,0 +1,16 @@
+<ng-container *transloco="let t">
+  <mat-toolbar color="primary" role="navigation" aria-label="Bottom">
+    <a routerLink="home" mat-icon-button disableRipple=true>
+      <mat-icon>home</mat-icon>
+      <span>{{t("home")}}</span>
+    </a>
+    <a routerLink="events" mat-icon-button disableRipple=true>
+      <mat-icon>search</mat-icon>
+      <span>{{t("search")}}</span>
+    </a>
+    <a routerLink="profile" mat-icon-button disableRipple=true>
+      <mat-icon>person</mat-icon>
+      <span>{{t("profile")}}</span>
+    </a>
+  </mat-toolbar>
+</ng-container>  
