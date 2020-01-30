@@ -1,0 +1,46 @@
+.wrapper {
+  margin: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 325px;
+  padding-bottom: 10px;
+}
+
+mat-card {
+  width: 100%;
+  height: 100%;
+}
+mat-icon {
+  margin-top: 5px;
+}
+.mat-card-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.date {
+  font-weight: bolder;
+}
+.title {
+  margin-bottom: 2px;
+  font-size: x-small;
+  font-weight: lighter;
+}
+.contentContainer {
+  display: flex;
+  margin-top: 5px;
+
+}
+
+mat-card-content {
+  margin-right: 35px;
+}
+
+.contentContainer mat-icon {
+  padding: 5px;
+  margin-left: 10px
+}
+
+

@@ -1,0 +1,14 @@
+<div class="wrapper">
+  <div class="icon">
+    <mat-icon>menu</mat-icon>
+  </div>
+
+  <div class="title">
+    <span>Manage Events</span>
+  </div>
+
+</div>
+
+<div *ngFor="let event of events" class="events">
+  <app-eventdetails class="event"></app-eventdetails>
+</div>
