@@ -20,4 +20,11 @@ export class RequestsService {
     return this.http.get<Requests[]>('../assets/requests/acceptedRequests.json')
   }
 
+  // not finished yet - waiting on backend set up
+  
+  // isolate the specific request by a route that filters by request ID, then patch with the updated status
+  patchRequestStatus(body, requestId) {
+    return this.http.patch("../assets/requests/pendingRequests.json", body)
+  }
+
 }

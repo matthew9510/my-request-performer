@@ -1,19 +1,23 @@
-<!-- <div *ngFor="let request of requests"> -->
-    <mat-card matLine class="mat-elevation-z0 outline">
-        <mat-card-title-group>
-            <mat-card-title class="song-name truncate">{{ song }}</mat-card-title>
-            <mat-card-subtitle class="artist-name truncate">{{ artist }}</mat-card-subtitle>
-        </mat-card-title-group>
-        <mat-card-content>
-            <span class="tip-amount">${{ amount }}</span>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-icon-button class="request-detail-button">
-                <mat-icon color="primary">done</mat-icon>
-            </button>
-            <button mat-icon-button>
-                <mat-icon color="warn">clear</mat-icon>
-            </button>
-        </mat-card-actions>
-    </mat-card>
-<!-- </div> -->
+<mat-card matLine class="mat-elevation-z0 outline">
+    <mat-card-title-group>
+        <mat-card-title class="song-name truncate">{{ song }}</mat-card-title>
+        <mat-card-subtitle class="artist-name truncate">{{ artist }}</mat-card-subtitle>
+    </mat-card-title-group>
+    <mat-card-content>
+        <span class="tip-amount">${{ amount }}</span>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-icon-button 
+            class="request-detail-button" 
+            *ngIf="status === 'pending'"
+            (click)="acceptRequest()">
+            <mat-icon color="primary">done</mat-icon>
+        </button>
+        <button mat-icon-button>
+            <mat-icon 
+                color="warn" 
+                class="request-detail-button"
+                (click)="rejectRequest()">clear</mat-icon>
+        </button>
+    </mat-card-actions>
+</mat-card>

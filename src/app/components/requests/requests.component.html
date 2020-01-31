@@ -5,7 +5,7 @@
         <h1>{{ t('title') }}</h1>
     </mat-toolbar-row>
 </mat-toolbar>
-
+<a (click)="onPatchRequestStatus()">Click</a>
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Accepted">
         <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
@@ -13,26 +13,32 @@
         <app-request-detail 
             [song]="nowPlayingRequest.song" 
             [artist]="nowPlayingRequest.artist" 
-            [amount]="nowPlayingRequest.amount">
+            [amount]="nowPlayingRequest.amount"
+            [status]="nowPlayingRequest.status">
         </app-request-detail>
 
         <h3 class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
             <mat-list *ngFor="let request of acceptedRequests">
-                <app-request-detail mat-list-item 
+                <app-request-detail mat-list-item
                     [song]="request.song" 
                     [artist]="request.artist" 
-                    [amount]="request.amount">
+                    [amount]="request.amount"
+                    [status]="request.status"
+                    (updatedStatus)="onChangeStatus($event)">
                 </app-request-detail>
             </mat-list>
     </mat-tab>
 
     <mat-tab label="Pending">
+        {{ updatedStatus }}
         <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
             <mat-list *ngFor="let request of pendingRequests">
                 <app-request-detail mat-list-item
                 [song]="request.song" 
                 [artist]="request.artist" 
-                [amount]="request.amount">
+                [amount]="request.amount"
+                [status]="request.status"
+                (updatedStatus)="onChangeStatus($event)">
             </app-request-detail>
             </mat-list>
     </mat-tab>
