@@ -1,12 +1,14 @@
+<ng-container *transloco="let t; read: 'requests'">
+
 <mat-toolbar>
     <mat-toolbar-row>
-        <h1>Requests</h1>
+        <h1>{{ t('title') }}</h1>
     </mat-toolbar-row>
 </mat-toolbar>
 
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Accepted">
-        <h3 class="request-subheader" mat-subheader>Now Playing</h3>
+        <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
 
         <app-request-detail 
             [song]="nowPlayingRequest.song" 
@@ -14,7 +16,7 @@
             [amount]="nowPlayingRequest.amount">
         </app-request-detail>
 
-        <h3 class="request-subheader" mat-subheader>Up Next</h3>
+        <h3 class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
             <mat-list *ngFor="let request of acceptedRequests">
                 <app-request-detail mat-list-item 
                     [song]="request.song" 
@@ -25,7 +27,7 @@
     </mat-tab>
 
     <mat-tab label="Pending">
-        <h3 class="request-subheader" mat-subheader>Pending Requests</h3>
+        <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
             <mat-list *ngFor="let request of pendingRequests">
                 <app-request-detail mat-list-item
                 [song]="request.song" 
@@ -39,7 +41,9 @@
 <div id="button-wrapper">
     <div id="fab-button">
         <button class="extended-fab-button" mat-fab color="primary">
-            <span>Play Next</span>
+            <span>{{ t('play next') }}</span>
         </button>
     </div>
 </div>
+
+</ng-container>
