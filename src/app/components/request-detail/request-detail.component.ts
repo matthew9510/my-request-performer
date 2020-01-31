@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-request-detail',
@@ -9,10 +9,25 @@ export class RequestDetailComponent implements OnInit {
   @Input() artist: string;
   @Input() song: string;
   @Input() amount: number;
+  @Input() status: string;
+  @Output() updatedStatus = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() {
   }
+
+  changeStatus(status) {
+    this.updatedStatus.emit(status);
+  }
+
+  rejectRequest() {
+    this.changeStatus('rejected');
+  }
+
+  acceptRequest() {
+    this.changeStatus('accepted');
+  }
+
 
 }
