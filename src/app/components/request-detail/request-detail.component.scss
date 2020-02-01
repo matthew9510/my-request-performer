@@ -5,34 +5,74 @@
 }
 
 mat-card {
-    margin: 30px;
+    // width: 100%;
     display: flex;
+    margin: 30px;
+    align-content: center;
+    align-items: center;
     justify-content: space-between;
+    margin: 10px;
+    flex-wrap: wrap;
+}
+
+#tip-and-buttons {
+    display: flex;
+    flex: 0 0 50%;
+    justify-content: flex-end;
+    align-items: center;
+
 }
 
 mat-card-subtitle {
     margin-bottom: 0px;
 }
 
-mat-card-content {
-    align-self: flex-end;
+mat-card-title-group {
+    width: 50px;
+    flex-grow: 1;
+    overflow: hidden;
+    margin-right: 5px;
+    text-overflow: ellipsis;
+    // white-space: nowrap;
+
+    // justify-self: center;
+    // flex-shrink: 1;
 }
 
-mat-card-actions {
-    padding: 0px;
+// #spacer {
+//     width: 50px;
+// }
+
+#amount-wrapper {
+    // width: 50px;
+    // align-self: center;
+}
+
+#buttons-wrapper {
+    // width: 50px;
+    // margin-left: auto;
+    // justify-self: flex-end;
+    // display: flex;
+    flex-wrap: wrap;
+    margin-left: 15px;
 }
 
 .tip-amount {
     font-weight: bold;
+    font-size: .8em;
 }
 
 .song-name {
-    font-size: 1em;
+    font-size: .9em;
+}
+
+.artist-name {
+    font-size: .7em;
 }
 
 .truncate {
-    width: 200px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    // max-width: 100%;
+    // white-space: nowrap;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
 }

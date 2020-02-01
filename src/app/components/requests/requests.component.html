@@ -5,7 +5,6 @@
         <h1>{{ t('title') }}</h1>
     </mat-toolbar-row>
 </mat-toolbar>
-<a (click)="onPatchRequestStatus()">Click</a>
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Accepted">
         <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
@@ -30,7 +29,6 @@
     </mat-tab>
 
     <mat-tab label="Pending">
-        {{ updatedStatus }}
         <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
             <mat-list *ngFor="let request of pendingRequests">
                 <app-request-detail mat-list-item
