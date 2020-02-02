@@ -1,13 +1,21 @@
 .wrapper {
   display:flex;
   flex-direction: column;
-  padding: 15%;
+  // padding-top: 5%;
+  // padding-left:15%;
+  // padding-right:15%;
+  // padding-bottom: 15%;
+
+  padding: 5% 15% 15% 15%;
+
+
 
 }
 
 .pageTitle {
   padding: 10%;
-  background-color: red;
+  background-color: rgb(11, 150, 150);
+  // background-image: url("https://depositphotos.com/130439582/stock-photo-texture-of-wood-background-closeup.html");
   display:flex;
   align-items: center;
 color:white;

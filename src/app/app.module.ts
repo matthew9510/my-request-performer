@@ -8,7 +8,8 @@ import { CreateEventComponent } from './create-event/create-event.component';
 import {
   MatFormFieldModule,
   MatInputModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatIconModule
  } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
@@ -19,6 +20,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
   declarations: [
     AppComponent,
     CreateEventComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -27,7 +29,8 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatFormFieldModule,
     MatInputModule,
     MatMomentDateModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatIconModule
   ],
   exports: [],
   providers: [],
