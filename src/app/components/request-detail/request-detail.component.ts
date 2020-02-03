@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 
 @Component({
   selector: 'app-request-detail',
@@ -11,8 +11,15 @@ export class RequestDetailComponent implements OnInit {
   @Input() amount: number;
   @Input() status: string;
   @Output() updatedStatus = new EventEmitter();
+  left = 0;
 
-  constructor() { }
+  @ViewChild('parentTag', {static: false})
+  parentTag: ElementRef; 
+
+  @ViewChild('target', {static: false})
+  target: ElementRef;
+
+  constructor(private renderer: Renderer2) { }
 
   ngOnInit() {
   }
@@ -27,6 +34,15 @@ export class RequestDetailComponent implements OnInit {
 
   acceptRequest() {
     this.changeStatus('accepted');
+  }
+
+  move(){
+    let left = this.target.nativeElement.scrollWidth - this.parentTag.nativeElement.clientWidth;
+    this.renderer.setStyle(this.target.nativeElement, 'margin-left', '-'+left+'px');
+  }
+
+  stop(){
+    this.renderer.setStyle(this.target.nativeElement, 'margin-left', '0px');
   }
 
 

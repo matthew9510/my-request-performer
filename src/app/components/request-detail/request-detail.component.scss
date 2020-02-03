@@ -5,7 +5,6 @@
 }
 
 mat-card {
-    // width: 100%;
     display: flex;
     margin: 30px;
     align-content: center;
@@ -20,41 +19,18 @@ mat-card {
     flex: 0 0 50%;
     justify-content: flex-end;
     align-items: center;
-
+    flex-wrap: wrap;
 }
 
 mat-card-subtitle {
     margin-bottom: 0px;
 }
 
-mat-card-title-group {
-    width: 50px;
-    flex-grow: 1;
-    overflow: hidden;
-    margin-right: 5px;
-    text-overflow: ellipsis;
-    // white-space: nowrap;
-
-    // justify-self: center;
-    // flex-shrink: 1;
-}
-
-// #spacer {
-//     width: 50px;
-// }
-
-#amount-wrapper {
-    // width: 50px;
-    // align-self: center;
-}
 
 #buttons-wrapper {
-    // width: 50px;
-    // margin-left: auto;
-    // justify-self: flex-end;
-    // display: flex;
     flex-wrap: wrap;
     margin-left: 15px;
+    flex-shrink: 1;
 }
 
 .tip-amount {
@@ -64,15 +40,25 @@ mat-card-title-group {
 
 .song-name {
     font-size: .9em;
+    white-space: pre;
+    transition: 3s;
 }
 
 .artist-name {
     font-size: .7em;
+    white-space: pre;
+    transition: 3s;
 }
 
-.truncate {
-    // max-width: 100%;
-    // white-space: nowrap;
-    // overflow: hidden;
-    // text-overflow: ellipsis;
+#request-info-wrapper { 
+    overflow: hidden;
+    overflow-x: scroll;
+    margin-right: 5px;
+    width: 5rem;
+    flex-grow: 1;
+    overflow: hidden;
+    margin-right: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
+
