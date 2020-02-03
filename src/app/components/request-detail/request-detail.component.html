@@ -1,9 +1,9 @@
 <mat-card matLine class="mat-elevation-z0 outline">
-    <mat-card-title-group>
-        <mat-card-title class="song-name truncate">{{ song }}</mat-card-title>
-        <mat-card-subtitle class="artist-name truncate">{{ artist }}</mat-card-subtitle>
-    </mat-card-title-group>
-    <div id="spacer"></div>
+    <div id="request-info-wrapper" #parentTag (mouseenter)="move()" (mouseleave)="stop()" (tap)="move()" (press)="stop()">
+        <mat-card-title #target class="song-name">{{ song }}</mat-card-title>
+        <mat-card-subtitle class="artist-name">{{ artist }}</mat-card-subtitle>
+    </div>
+    <!-- <div id="spacer"></div> -->
     <div id="tip-and-buttons">
         <div id="amount-wrapper">
             <span class="tip-amount">${{ amount }}</span>
