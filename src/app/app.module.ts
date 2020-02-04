@@ -11,6 +11,8 @@ import 'hammerjs';
 import { PayoutComponent } from './components/dashboard/payout/payout.component';
 import { HistoryComponent } from './components/dashboard/history/history.component';
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslocoRootModule } from './transloco-root.module';
 
 @NgModule({
   declarations: [
@@ -25,9 +27,14 @@ import { ProfileComponent } from './components/dashboard/profile/profile.compone
     AppRoutingModule,
     BrowserAnimationsModule,
     MatTabsModule,
-    MatCardModule
+    MatCardModule,
+    HttpClientModule,
+    TranslocoRootModule
   ],
-  providers: [],
+  providers: [
+    HttpClientModule,
+    TranslocoRootModule
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
