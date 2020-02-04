@@ -7,7 +7,7 @@
 
 <form class="createEventForm">
   <mat-form-field>
-    <label for="Event-Name">Event Title: </label>
+    <label for="Event-Name">Event Title:<mat-icon>event</mat-icon> </label>
     <input matInput>
   </mat-form-field>
 
@@ -18,23 +18,24 @@
     <mat-datepicker #myDatepicker></mat-datepicker>
   </mat-form-field>
 
+  <mat-form-field>
+    <label for="Enter Location"> Start Time and End Time: </label>
+    <input matInput>
+  </mat-form-field>
+
     <mat-form-field>
-      <label for="Genre">Genre: <mat-icon>add</mat-icon></label>
+      <label for="Genre">Genre: <mat-icon>queue_music</mat-icon></label>
+      <input matInput>
+    </mat-form-field>
+
+
+    <mat-form-field>
+      <label for="Enter Location">Enter Location: <mat-icon>edit_location</mat-icon></label>
       <input matInput>
     </mat-form-field>
 
     <mat-form-field>
-      <label for="Enter Location"> Enter Location: </label>
-      <input matInput>
-    </mat-form-field>
-
-    <mat-form-field>
-      <label for="Enter Location">Enter Location: </label>
-      <input matInput>
-    </mat-form-field>
-
-    <mat-form-field>
-      <label for="Description">Description: </label>
+      <label for="Description">Description: <mat-icon>description</mat-icon> </label>
       <input matInput>
     </mat-form-field>
   </form>
