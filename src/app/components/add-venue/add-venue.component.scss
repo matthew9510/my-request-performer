@@ -7,12 +7,17 @@
   font-size: x-large;
 }
 
-form {
-  color: black;
+
+mat-label {
+  color: white;
 }
 
-::ng-deep .mat-select-content{
-  width:2000px;
-  background-color: white;
-  font-size: 10px;
+.formCard {
+  margin: 0 5% 5% 5%
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }

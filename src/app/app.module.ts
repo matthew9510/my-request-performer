@@ -94,7 +94,8 @@ import { AddVenueComponent } from './components/add-venue/add-venue.component';
     MatIconModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

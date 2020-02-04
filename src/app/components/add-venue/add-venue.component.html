@@ -4,16 +4,63 @@
   </span>
 </div>
 
-<div>
-  <form [formGroup]="venue" (ngSubmit)="onSubmit()">
+<mat-card class="formCard">
+  <form class="form" [formGroup]="venue" (ngSubmit)="onSubmit()">
     <mat-form-field>
       <mat-label>Venue</mat-label>
-      <mat-select class="mat-select-content">
-        <mat-option *ngFor="let existingVenue of venues" [value]="existingVenue.name" >
+      <mat-select>
+        <mat-option *ngFor="let existingVenue of venues" [value]="venue.name" >
           <mat-icon *ngIf="existingVenue.icon">{{existingVenue.icon}}</mat-icon> {{existingVenue.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <br/>
+    <mat-label style="font-size: larger">Add new venue</mat-label>
+
+    <mat-form-field>
+      <input matInput placeholder="Venue name"/>
+    </mat-form-field>
+
+    <br/>
+    <mat-label style="font-size: larger">Venue Location</mat-label>
+
+    <mat-form-field>
+      <input matInput placeholder="Street Address"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="City"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>State</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let state of states" [value]="state.name">
+          {{state.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Zip Code"/>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Country</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let country of countries" [value]="country.name" >
+          {{country.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+    <mat-label>Website URL</mat-label>
+    <mat-form-field>
+      <input matInput placeholder="http://"/>
+    </mat-form-field>
+
   </form>
-</div>
+</mat-card>
 
