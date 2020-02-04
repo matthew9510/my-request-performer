@@ -32,8 +32,7 @@ import { TranslocoRootModule } from './transloco-root.module';
     TranslocoRootModule
   ],
   providers: [
-    HttpClientModule,
-    TranslocoRootModule
+
   ],
   bootstrap: [AppComponent]
 })
