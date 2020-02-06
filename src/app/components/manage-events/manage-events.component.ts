@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {EventService} from '../../services/event.service';
+import {Events} from '../../services/event.service';
+
 
 @Component({
   selector: 'app-manage-events',
@@ -6,53 +9,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./manage-events.component.scss']
 })
 export class ManageEventsComponent implements OnInit {
-  events: any[];
+  events: any;
 
-  constructor() {
-
-    this.events = [
-      {
-      title: 'Valentines Day Bash',
-      location: 'The Shout! House',
-      date: 'FEB 13'
-      },
-      {
-        title: 'Valentines Day Bash',
-        location: 'The Shout! House',
-        date: 'FEB 13'
-      },
-      {
-        title: 'Valentines Day Bash',
-        location: 'The Shout! House',
-        date: 'FEB 13'
-      },
-      {
-        title: 'Valentines Day Bash',
-        location: 'The Shout! House',
-        date: 'FEB 13'
-      },
-      {
-        title: 'Valentines Day Bash',
-        location: 'The Shout! House',
-        date: 'FEB 13'
-      },
-      {
-        title: 'Valentines Day Bash',
-        location: 'The Shout! House',
-        date: 'FEB 13'
-      },
-      {
-        title: 'Valentines Day Bash',
-        location: 'The Shout! House',
-        date: 'FEB 13'
-      }
-    ]
-
+  constructor(private eventService: EventService) {
   }
 
   ngOnInit() {
+    this.getEvents()
   }
 
-
+  getEvents() {
+    this.eventService.getEvents()
+      .subscribe((res: Events[]) => {
+      this.events = res;
+    });
+  }
 
 }

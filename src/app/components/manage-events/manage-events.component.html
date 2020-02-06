@@ -6,6 +6,11 @@
 
 </div>
 
-<div *ngFor="let event of events" class="events">
-  <app-eventdetails class="event"></app-eventdetails>
-</div>
+<mat-list *ngFor="let event of events" class="events">
+  <app-eventdetails class="event"
+                    [venue]="event.venue"
+                    [date]="event.date"
+                    [title]="event.title"
+                    [id]="event.id"
+  ></app-eventdetails>
+</mat-list>
