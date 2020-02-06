@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RequestsService } from 'src/app/services/requests.service';
 import { Requests } from '../../interfaces/requests';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-requests',
@@ -18,12 +20,26 @@ export class RequestsComponent implements OnInit {
   }
 
   constructor(
-    private requestsService: RequestsService
+    private requestsService: RequestsService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
     this.onFetchRequests()
   }
+
+    // move to requests component
+    changeStatus(status) {
+      this.updatedStatus = status;
+    }
+   // move to requests component
+    rejectRequest() {
+      this.changeStatus('rejected');
+    }
+    // move to requests component
+    acceptRequest() {
+      this.changeStatus('accepted');
+    }
 
   onFetchRequests() {
     this.requestsService.fetchPendingRequests()

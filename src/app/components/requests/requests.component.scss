@@ -8,7 +8,7 @@
     margin-right: 10px;
 }
 
-#button-wrapper {
+#fab-button-wrapper {
     display: flex;
     flex-direction: column;
 }
@@ -27,4 +27,23 @@
 
 mat-list {
     padding-top: 0px;
+}
+
+#buttons-wrapper {
+    flex-wrap: wrap;
+    margin-left: 15px;
+    flex-shrink: 1;
+}
+
+.request-button-icon{
+    margin: 0px;
+}
+
+@media screen and (max-width: 400px) {
+    mat-tab {
+        max-width: 20px;
+    }
+    mat-tab.tab-label {
+        font-size: 10px;
+    }
 }

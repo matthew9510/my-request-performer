@@ -1,26 +1,15 @@
 <mat-card matLine class="mat-elevation-z0 outline">
-    <div id="request-info-wrapper" #parentTag (mouseenter)="move()" (mouseleave)="stop()" (tap)="move()" (press)="stop()">
-        <mat-card-title #target class="song-name">{{ song }}</mat-card-title>
-        <mat-card-subtitle class="artist-name">{{ artist }}</mat-card-subtitle>
+    <div id="request-info-wrapper">
+        <span class="song-name mat-body-strong truncate">{{ song }}</span>
+        <p class="artist-name mat-body truncate">{{ artist }}</p>
     </div>
-    <!-- <div id="spacer"></div> -->
     <div id="tip-and-buttons">
         <div id="amount-wrapper">
             <span class="tip-amount">${{ amount }}</span>
         </div>
         <div id="buttons-wrapper">
-            <button mat-icon-button 
-                class="request-detail-button" 
-                *ngIf="status === 'pending'"
-                (click)="acceptRequest()">
-                <mat-icon color="primary">done</mat-icon>
-            </button>
-            <button mat-icon-button>
-                <mat-icon 
-                    color="warn" 
-                    class="request-detail-button"
-                    (click)="rejectRequest()">clear</mat-icon>
-            </button>
+            <ng-content select="[acceptButton]"></ng-content>
+            <ng-content select="[rejectButton]"></ng-content>
         </div>
     </div>
 </mat-card>
