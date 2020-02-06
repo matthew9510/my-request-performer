@@ -17,13 +17,15 @@
         </app-request-detail>
 
         <h3 class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
-            <mat-list *ngFor="let request of acceptedRequests">
-                <app-request-detail mat-list-item
-                    [song]="request.song" 
-                    [artist]="request.artist" 
-                    [amount]="request.amount"
-                    [status]="request.status"
-                    (updatedStatus)="onChangeStatus($event)">
+            <mat-list>
+                <app-request-detail
+                  *ngFor="let request of acceptedRequests"
+                  mat-list-item
+                  [song]="request.song" 
+                  [artist]="request.artist" 
+                  [amount]="request.amount"
+                  [status]="request.status"
+                  (updatedStatus)="onChangeStatus($event)">
 
                     <button rejectButton mat-icon-button
                         class="request-button" (click)="openDialog()">
