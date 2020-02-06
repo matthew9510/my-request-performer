@@ -10,15 +10,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 import { TranslocoRootModule } from './transloco-root.module';
-import { RequestDetailComponent } from './components/request-detail/request-detail.component';
-import { RequestsComponent } from './components/requests/requests.component'
-
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RequestsComponent,
-    RequestDetailComponent
+    RequestDetailComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
