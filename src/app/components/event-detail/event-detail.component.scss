@@ -9,6 +9,11 @@ mat-card {
     align-self: center;
     flex-grow: 1;
   }
+
+  button {
+    padding-left: 0;
+    margin-left: 0;
+  }
 }
 mat-icon {
   margin-top: 5px;
@@ -29,6 +34,8 @@ mat-icon {
 .date {
   font-weight: bold;
   color: white;
+  position: absolute;
+  transform: translate(18%, 120%);
 }
 
 .venue {
