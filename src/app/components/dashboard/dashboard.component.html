@@ -1,26 +1,16 @@
 <h1>
-    {{title}}
+    Dashboard
 </h1>
 
 <mat-tab-group mat-align-tabs="center">
-    <mat-tab label="Payout">Content 1</mat-tab>
-    <mat-tab label="History">Content 2</mat-tab>
-    <mat-tab label="Profile">
 
-        <h2>Personal Information</h2>
-        <div>
-            <input matInput placeholder="First Name">
-
-        </div>
-        <div>
-            <input matInput placeholder="Last Name">
-        </div>
-        <div>
-            <input matInput placeholder="Email">
-        </div>
-        <div>
-            <input matInput placeholder="Phone">
-        </div>
+    <mat-tab label="Payout">
+        <app-payout></app-payout>
     </mat-tab>
 
+    <mat-tab label="History">Content 2</mat-tab>
+
+    <mat-tab label="Profile">
+        <app-profile></app-profile>
+    </mat-tab>
 </mat-tab-group>

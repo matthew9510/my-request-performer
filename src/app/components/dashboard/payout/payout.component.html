@@ -1,1 +1,14 @@
-<p>payout works!</p>
+<div class="date">February 5th, 2020</div>
+<div class="total-earnings">
+    <h4>Total Earnings</h4>
+    <h2>$2,345.68</h2>
+</div>
+
+<button class="extended-fab-button" mat-raised-button color="primary">
+            <span>Payout</span>
+        </button>
+<div>----------------------------------------------------------------</div>
+<h3 class="payout-subheader" mat-subheader>Earnings Details</h3>
+<mat-list *ngFor="let request of acceptedRequests">
+    <app-payout-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"></app-payout-detail>
+</mat-list>

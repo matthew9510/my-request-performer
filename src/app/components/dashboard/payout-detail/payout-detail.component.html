@@ -1,0 +1,12 @@
+<mat-card matLine class="mat-elevation-z2 outline">
+    <div id="payout-detail-info-wrapper" #parentTag>
+        <mat-card-title #target class="song-name">{{ song }}</mat-card-title>
+        <mat-card-subtitle class="artist-name">{{ artist }}</mat-card-subtitle>
+    </div>
+    <!-- <div id="spacer"></div> -->
+    <div id="tip-and-buttons">
+        <div id="amount-wrapper">
+            <span class="tip-amount">${{ amount }}</span>
+        </div>
+    </div>
+</mat-card>
