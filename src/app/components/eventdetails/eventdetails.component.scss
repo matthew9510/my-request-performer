@@ -1,10 +1,7 @@
 .wrapper {
-  margin: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 48px;
-  width: 325px;
+  width: 100%;
+  margin-left: 2%;
 }
 
 mat-card {
@@ -19,6 +16,12 @@ mat-icon {
   justify-content: space-between;
 }
 
+.image {
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  width: 90px; height: 80px
+}
+
 .date {
   font-weight: bolder;
   color: white;
@@ -27,24 +30,20 @@ mat-icon {
   margin-bottom: 2px;
   font-size: x-small;
   font-weight: lighter;
+  text-align: left;
 }
 .title {
   font-size: small;
   font-weight: normal;
+  text-align: left;
+
 }
 .contentContainer {
   display: flex;
   margin-top: 5px;
-
-}
-
-mat-card-content {
-  margin-right: 35px;
 }
 
 .contentContainer mat-icon {
   padding: 5px;
   margin-left: 10px
 }
-
-
