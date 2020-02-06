@@ -19,9 +19,19 @@
   </mat-form-field>
 
   <mat-form-field>
-    <label for="Enter Location"> Start Time and End Time: </label>
+    <label for="Enter time"> Start Time and End Time: </label>
     <input matInput>
   </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Select Start Time</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let time of times" [value]="time.value">
+        {{time.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
 
     <mat-form-field>
       <label for="Genre">Genre: <mat-icon>queue_music</mat-icon></label>
@@ -40,4 +50,3 @@
     </mat-form-field>
   </form>
 </div>
-

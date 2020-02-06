@@ -9,7 +9,8 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatDatepickerModule,
-  MatIconModule
+  MatIconModule,
+  MatSelectModule
  } from '@angular/material';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { HttpClientModule } from '@angular/common/http';
@@ -32,6 +33,8 @@ import { TranslocoRootModule } from './transloco-root.module';
     MatIconModule,
     HttpClientModule,
     TranslocoRootModule,
+    MatSelectModule
+
   ],
   exports: [],
   providers: [],
