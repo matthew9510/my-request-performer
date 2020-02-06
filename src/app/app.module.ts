@@ -1,25 +1,49 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { EventdetailsComponent } from './components/eventdetails/eventdetails.component';
-import {MatCardModule} from '@angular/material/card';
-import {MatButtonModule, MatListModule, MatIconModule} from '@angular/material';
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
+import { RequestsComponent } from './components/requests/requests.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 import { TranslocoRootModule } from './transloco-root.module';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
+import {
+  MatToolbarModule,
+  MatIconModule,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatCardModule,
+  MatGridListModule,
+  MatTabsModule,
+  MatListModule,
+  MatDialogModule
+} from '@angular/material';
 
 @NgModule({
   declarations: [
     AppComponent,
     EventdetailsComponent,
     ManageEventsComponent,
+    RequestsComponent,
+    RequestDetailComponent,
+    ConfirmDialogComponent,
+    BottomNavComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
     BrowserAnimationsModule,
     MatCardModule,
     MatIconModule,
@@ -28,7 +52,24 @@ import { TranslocoRootModule } from './transloco-root.module';
     HttpClientModule,
     TranslocoRootModule,
     MatButtonModule,
-    MatListModule
+    MatListModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatCardModule,
+    MatGridListModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatListModule,
+    MatIconModule,
+    MatDialogModule,
+    HttpClientModule,
+    TranslocoRootModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,20 @@
+mat-toolbar {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  z-index: 100;
+
+  a {
+    display: flex;
+    flex-direction: column;
+    margin-top: -15px;
+    font-size: 16px;
+
+    span {
+      display: flex;
+      margin-top: -18px;
+    }
+  }
+
+}
