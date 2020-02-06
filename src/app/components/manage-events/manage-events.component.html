@@ -1,16 +1,18 @@
 <div class="wrapper">
-  <mat-icon class="icon">menu</mat-icon>
 
   <span class="title">Manage Events</span>
 
 
 </div>
 
-<mat-list *ngFor="let event of events" class="events">
-  <app-eventdetails class="event"
-                    [venue]="event.venue"
-                    [date]="event.date"
-                    [title]="event.title"
-                    [id]="event.id">
-  </app-eventdetails>
+<mat-list class="events">
+  <app-eventdetails
+    *ngFor="let event of events"
+    mat-list-item
+    class="event"
+    [venue]="event.venue"
+    [date]="event.date"
+    [title]="event.title"
+    [id]="event.id"
+  ></app-eventdetails>
 </mat-list>
