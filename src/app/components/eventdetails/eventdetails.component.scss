@@ -1,13 +1,8 @@
 .wrapper {
   height: 48px;
   width: 100%;
-  margin-left: 2%;
 }
 
-mat-card {
-  width: 100%;
-  height: 100%;
-}
 mat-icon {
   margin-top: 5px;
 }
@@ -30,16 +25,16 @@ mat-icon {
   margin-bottom: 2px;
   font-size: x-small;
   font-weight: lighter;
-  text-align: left;
+  justify-self: end;
 }
 .title {
   font-size: small;
   font-weight: normal;
-  text-align: left;
 
 }
 .contentContainer {
   display: flex;
+  width: 50%;
   margin-top: 5px;
 }
 
