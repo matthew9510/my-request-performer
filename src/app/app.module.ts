@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { EventdetailsComponent } from './components/eventdetails/eventdetails.component';
+import { EventdetailsComponent } from './components/event-detail/event-detail.component';
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 import { RequestsComponent } from './components/requests/requests.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

@@ -26,7 +26,6 @@ export class ManageEventsComponent implements OnInit {
 
       for (let i = 0; i < this.events.length; i++) {
         this.events[i].date = moment(this.events[i].date).format('MMM DD');
-        // this.events[i].date = this.events[i].date.slice(0, -2);
       }
     });
   }

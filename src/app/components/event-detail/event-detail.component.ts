@@ -2,8 +2,8 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 
 @Component({
   selector: 'app-eventdetails',
-  templateUrl: './eventdetails.component.html',
-  styleUrls: ['./eventdetails.component.scss']
+  templateUrl: './event-detail.component.html',
+  styleUrls: ['./event-detail.component.scss']
 })
 export class EventdetailsComponent implements OnInit {
   @Input() date: string;
