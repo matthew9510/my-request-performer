@@ -17,13 +17,13 @@
         </app-request-detail>
 
         <h3 class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
-            <mat-list *ngFor="let request of acceptedRequests">
+            <mat-list>
                 <app-request-detail mat-list-item
                     [song]="request.song" 
                     [artist]="request.artist" 
                     [amount]="request.amount"
                     [status]="request.status"
-                    (updatedStatus)="onChangeStatus($event)">
+                    *ngFor="let request of acceptedRequests">
 
                     <button rejectButton mat-icon-button
                         class="request-button" (click)="openDialog()">
@@ -37,13 +37,13 @@
 
     <mat-tab label="Pending">
         <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
-            <mat-list *ngFor="let request of pendingRequests">
+            <mat-list>
                 <app-request-detail mat-list-item
                     [song]="request.song" 
                     [artist]="request.artist" 
                     [amount]="request.amount"
                     [status]="request.status"
-                    (updatedStatus)="onChangeStatus($event)">
+                    *ngFor="let request of pendingRequests">
 
                     <!-- Had to remove the following line to test if it works:
                         *ngIf="status === 'pending'" -->

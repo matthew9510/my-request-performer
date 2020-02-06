@@ -19,6 +19,9 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     RequestDetailComponent,
     ConfirmDialogComponent
   ],
+  entryComponents: [
+    ConfirmDialogComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
