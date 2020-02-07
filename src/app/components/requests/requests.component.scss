@@ -38,12 +38,3 @@ mat-list {
 .request-button-icon{
     margin: 0px;
 }
-
-@media screen and (max-width: 400px) {
-    mat-tab {
-        max-width: 20px;
-    }
-    mat-tab.tab-label {
-        font-size: 10px;
-    }
-}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { RequestsService } from 'src/app/services/requests.service';
 import { Requests } from '../../interfaces/requests';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,14 +22,16 @@ export class RequestsComponent implements OnInit {
     artist: 'Billy Joel',
     amount: 1.00
   }
-  confirmDiaglogTitle: string = 'Reject Request';
+  confirmDiaglogTitle: string = 'Reject Request?';
   confirmDiaglogMessage: string = 'Are you sure you want to reject this request? This action cannot be undone.';
   confirmDialogAction: string = 'Reject';
+  
 
   constructor(
     private requestsService: RequestsService,
     public dialog: MatDialog
-  ) { }
+    ) { }
+
 
   ngOnInit() {
     this.onFetchRequests()

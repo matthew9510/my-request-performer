@@ -16,7 +16,7 @@ import {
   MatTabsModule, 
   MatListModule, 
   MatIconModule, 
-  MatDialogModule 
+  MatDialogModule,
 } from '@angular/material';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -53,7 +53,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatIconModule,
     MatDialogModule,
     HttpClientModule,
-    TranslocoRootModule
+    TranslocoRootModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

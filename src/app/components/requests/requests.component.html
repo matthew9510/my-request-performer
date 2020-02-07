@@ -5,38 +5,42 @@
         <h1>{{ t('title') }}</h1>
     </mat-toolbar-row>
 </mat-toolbar>
-<mat-tab-group mat-align-tabs="center">
+<!-- disablePagination will not work in current version of angular -->
+<mat-tab-group disablePagination="true" mat-align-tabs="center">
     <mat-tab class="tab-label" label="Accepted">
-        <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
+        <ng-template matTabContent>
+            <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
 
-        <app-request-detail 
-            [song]="nowPlayingRequest.song" 
-            [artist]="nowPlayingRequest.artist" 
-            [amount]="nowPlayingRequest.amount"
-            [status]="nowPlayingRequest.status">
-        </app-request-detail>
+            <app-request-detail 
+                [song]="nowPlayingRequest.song" 
+                [artist]="nowPlayingRequest.artist" 
+                [amount]="nowPlayingRequest.amount"
+                [status]="nowPlayingRequest.status">
+            </app-request-detail>
 
-        <h3 class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
-            <mat-list>
-                <app-request-detail mat-list-item
-                    [song]="request.song" 
-                    [artist]="request.artist" 
-                    [amount]="request.amount"
-                    [status]="request.status"
-                    *ngFor="let request of acceptedRequests">
+            <h3 class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
+                <mat-list>
+                    <app-request-detail mat-list-item
+                        [song]="request.song" 
+                        [artist]="request.artist" 
+                        [amount]="request.amount"
+                        [status]="request.status"
+                        *ngFor="let request of acceptedRequests">
 
-                    <button rejectButton mat-icon-button
-                        class="request-button" (click)="openDialog()">
-                        <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
-                    </button>
-                    <!-- (click)="rejectRequest()" -->
+                        <button rejectButton mat-icon-button
+                            class="request-button" (click)="openDialog()">
+                            <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
+                        </button>
+                        <!-- (click)="rejectRequest()" -->
 
-                </app-request-detail>
-            </mat-list>
+                    </app-request-detail>
+                </mat-list>
+        </ng-template>
     </mat-tab>
 
     <mat-tab label="Pending">
-        <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
+        <ng-template matTabContent>
+            <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
             <mat-list>
                 <app-request-detail mat-list-item
                     [song]="request.song" 
@@ -60,6 +64,7 @@
                     </button>
             </app-request-detail>
             </mat-list>
+        </ng-template>
     </mat-tab>
 </mat-tab-group>
 
