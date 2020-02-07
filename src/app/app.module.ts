@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { EventdetailsComponent } from './components/event-detail/event-detail.component';
+import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 import { RequestsComponent } from './components/requests/requests.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
@@ -29,6 +31,8 @@ import {
 @NgModule({
   declarations: [
     AppComponent,
+    EventdetailsComponent,
+    ManageEventsComponent,
     RequestsComponent,
     RequestDetailComponent,
     ConfirmDialogComponent,
@@ -41,6 +45,14 @@ import {
     ReactiveFormsModule,
     MatFormFieldModule,
     BrowserAnimationsModule,
+    MatCardModule,
+    MatIconModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    TranslocoRootModule,
+    MatButtonModule,
+    MatListModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
