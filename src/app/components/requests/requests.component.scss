@@ -1,7 +1,3 @@
-mat-divider {
-    margin-top: 20px
-}
-
 .extended-fab-button {
     width: unset;
     padding: 0 26px;
@@ -39,7 +35,7 @@ mat-list {
     flex-shrink: 1;
 }
 
-.request-button-icon {
+.request-button-icon{
     margin: 0px;
 }
 
@@ -50,27 +46,4 @@ mat-list {
     mat-tab.tab-label {
         font-size: 10px;
     }
-}
-
-.label-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-h4 {
-    margin: 10px 40px 10px 40px;
-}
-
-.header-items {
-    display: flex;
-    justify-content: space-between;
-}
-
-.total-earnings {
-    display: flex;
-    justify-content: center;
-}
-
-#money-color {
-    color: green;
 }

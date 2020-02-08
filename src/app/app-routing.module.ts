@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { RequestsComponent } from './components/requests/requests.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PayoutComponent } from './components/dashboard/payout/payout.component';
 import { HistoryComponent } from './components/dashboard/history/history.component';
@@ -11,6 +12,8 @@ const routes: Routes = [
   { path: 'payout', component: PayoutComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'profile', component: ProfileComponent },
+  { path: 'requests', component: RequestsComponent },
+
 ];
 
 @NgModule({
