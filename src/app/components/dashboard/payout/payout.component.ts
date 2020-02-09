@@ -11,7 +11,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 })
 export class PayoutComponent implements OnInit {
 
-  acceptedRequests: any;
+  public acceptedRequests = [];
 
 
   constructor(
@@ -21,20 +21,21 @@ export class PayoutComponent implements OnInit {
 
   ngOnInit() {
     this.onFetchRequests()
+    this.calculateTotalEarnings()
   }
 
   onFetchRequests() {
-    this.requestsService.fetchAcceptedRequests()
+    let data = this.requestsService.fetchAcceptedRequests()
     .subscribe((res: Requests[]) => this.acceptedRequests = res);
-    console.log(this.acceptedRequests)
+    console.log(data);
   }
 
   calculateTotalEarnings() {
     let tips = [];
-    this.acceptedRequests.forEach(function(request) {
-      tips.push(request.amount);
-    })
-    console.log(tips);
+    // this.acceptedRequests.forEach(function(request) {
+    //   tips.push(request.amount);
+    // });
+    console.log('hello world');
   }
 
 }

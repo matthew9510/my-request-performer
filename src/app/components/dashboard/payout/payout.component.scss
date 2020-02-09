@@ -57,18 +57,21 @@ mat-list {
     justify-content: space-between;
 }
 
-h4 {
+.labels {
     margin: 10px 40px 10px 40px;
 }
 
 .header-items {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .total-earnings {
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 #money-color {
