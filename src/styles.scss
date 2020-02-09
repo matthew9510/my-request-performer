@@ -22,7 +22,16 @@ $angular-v8-theme: mat-light-theme($angular-v8-primary, $angular-v8-accent, $ang
 
 /* You can add global styles to this file, and also import other style files */
 
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+*,
+*:before,
+*:after {
+    box-sizing: inherit
+}
+
+html {
+    box-sizing: border-box
+}
+
 html,
 body {
     height: 100%;

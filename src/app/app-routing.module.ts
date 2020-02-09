@@ -5,6 +5,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PayoutComponent } from './components/dashboard/payout/payout.component';
 import { HistoryComponent } from './components/dashboard/history/history.component';
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
+import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -13,8 +14,7 @@ const routes: Routes = [
   { path: 'history', component: HistoryComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'requests', component: RequestsComponent },
-
-];
+  { path: 'events', component: ManageEventsComponent },
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
