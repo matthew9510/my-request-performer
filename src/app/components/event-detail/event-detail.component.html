@@ -1,13 +1,13 @@
 <mat-card class="mat-card-container mat-elevation-z0" color="accent">
 
-  <img mat-card-image src="../assets/images/test-image.png" alt=""
+	<img mat-card-image src="../assets/images/test-image.png" alt=""
         class="image">
-        <span class="date">{{event?.date}}</span>
-  <mat-card-content class="info">
-    <span class="venue">{{event?.venue}}</span><br>
-    <span class="title">{{event?.title}}</span>
-  </mat-card-content>
-  <button mat-button color="primary" (click)="editEvent(event?.id)">
+	<span class="date">{{event?.date}}</span>
+	<mat-card-content class="info">
+		<span class="venue">{{event?.venue}}</span><br>
+		<span class="title">{{event?.title}}</span>
+	</mat-card-content>
+	<button mat-button color="primary" (click)="editEvent(event?.id)">
     <mat-icon>edit</mat-icon>
   </button>
 </mat-card>

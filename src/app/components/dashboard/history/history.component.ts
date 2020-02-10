@@ -18,8 +18,8 @@ export class HistoryComponent implements OnInit {
 
   getPastEvents() {
     this.eventService.getEvents()
-    .subscribe((res: Events[]) => {
-      this.events = res;
-    });
+      .subscribe((res: Events[]) => {
+        this.events = res;
+      });
   }
 }

@@ -24,10 +24,10 @@ export class PayoutComponent implements OnInit {
 
   onFetchRequests() {
     let data = this.requestsService.fetchAcceptedRequests()
-    .subscribe((requests: Requests[]) => {
-      this.acceptedRequests = requests;
-      this.calculateTotalEarnings(requests);
-    });
+      .subscribe((requests: Requests[]) => {
+        this.acceptedRequests = requests;
+        this.calculateTotalEarnings(requests);
+      });
   }
 
   calculateTotalEarnings(requests) {
