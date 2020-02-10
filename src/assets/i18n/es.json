@@ -6,7 +6,6 @@
     "pending requests": "Pending Requests",
     "play next": "Play Next"
   },
-  "home": "Home",
   "events": "Events",
-  "profile": "Profile"
+  "dashboard": "Dashboard"
 }

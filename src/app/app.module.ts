@@ -6,19 +6,6 @@ import { EventdetailsComponent } from './components/event-detail/event-detail.co
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 import { RequestsComponent } from './components/requests/requests.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-// import { MatTabsModule } from '@angular/material/tabs'; 
-// import { MatCardModule } from '@angular/material';
-// import { MatFormFieldModule } from '@angular/material/form-field';
-// import { MatInputModule } from '@angular/material/input';
-// import { MatSelectModule } from '@angular/material/select';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatCheckboxModule } from '@angular/material/checkbox';
-// import { MatChipsModule } from '@angular/material/chips';
-// import { MatGridListModule } from '@angular/material/grid-list';
-// import { MatListModule } from '@angular/material/list';
-// import { MatToolbarModule, MatIconModule, MatDialogModule } from '@angular/material';
-
 import 'hammerjs';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PayoutComponent } from './components/dashboard/payout/payout.component';
@@ -43,8 +30,10 @@ import {
   MatGridListModule,
   MatTabsModule,
   MatListModule,
-  MatDialogModule
+  MatDialogModule,
 } from '@angular/material';
+
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
@@ -88,6 +77,7 @@ import {
     MatDialogModule,
     HttpClientModule,
     TranslocoRootModule,
+    ScrollingModule,
   ],
   providers: [
     MatToolbarModule,

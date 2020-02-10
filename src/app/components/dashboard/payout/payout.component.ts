@@ -3,7 +3,6 @@ import { RequestsService } from 'src/app/services/requests.service';
 import { Requests } from 'src/app/interfaces/requests';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-
 @Component({
   selector: 'app-payout',
   templateUrl: './payout.component.html',
@@ -12,7 +11,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 export class PayoutComponent implements OnInit {
 
   public acceptedRequests = [];
-
+  earnings: number;
 
   constructor(
     private requestsService: RequestsService,
@@ -20,22 +19,19 @@ export class PayoutComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.onFetchRequests()
-    this.calculateTotalEarnings()
+    this.onFetchRequests();
   }
 
   onFetchRequests() {
     let data = this.requestsService.fetchAcceptedRequests()
-    .subscribe((res: Requests[]) => this.acceptedRequests = res);
-    console.log(data);
+    .subscribe((requests: Requests[]) => {
+      this.acceptedRequests = requests;
+      this.calculateTotalEarnings(requests);
+    });
   }
 
-  calculateTotalEarnings() {
-    let tips = [];
-    // this.acceptedRequests.forEach(function(request) {
-    //   tips.push(request.amount);
-    // });
-    console.log('hello world');
+  calculateTotalEarnings(requests) {
+    this.earnings = requests.reduce((total, request) => total += request.amount, 0)
   }
 
 }

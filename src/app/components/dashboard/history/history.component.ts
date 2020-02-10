@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {EventService} from 'src/app/services/event.service';
-import {Events} from 'src/app/services/event.service';
-import * as moment from 'moment';
+import { EventService } from 'src/app/services/event.service';
+import { Events } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-history',
@@ -21,10 +20,6 @@ export class HistoryComponent implements OnInit {
     this.eventService.getEvents()
     .subscribe((res: Events[]) => {
       this.events = res;
-
-      for (let i = 0; i < this.events.lenth; i++) {
-        this.events[i].date = moment(this.events[i].date).format('MMM DD');
-      }
     });
   }
 }
