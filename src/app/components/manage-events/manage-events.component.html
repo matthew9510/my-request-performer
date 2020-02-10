@@ -1,18 +1,10 @@
 <div class="wrapper">
 
-  <span class="title">Manage Events</span>
+    <span class="title">Manage Events</span>
 
 
 </div>
 
 <mat-list class="events">
-  <app-eventdetails
-    *ngFor="let event of events"
-    mat-list-item
-    class="event"
-    [venue]="event.venue"
-    [date]="event.date"
-    [title]="event.title"
-    [id]="event.id"
-  ></app-eventdetails>
+    <app-eventdetails *ngFor="let event of events" mat-list-item class="event" [venue]="event.venue" [date]="event.date" [title]="event.title" [id]="event.id"></app-eventdetails>
 </mat-list>

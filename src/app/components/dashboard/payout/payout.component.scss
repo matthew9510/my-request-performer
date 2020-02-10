@@ -77,3 +77,23 @@ mat-list {
 #money-color {
     color: green;
 }
+
+.sub-header-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.song-count {
+    align-self: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.performer-rating {
+    align-self: center;
+    justify-content: center;
+    flex-direction: column;
+}

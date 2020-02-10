@@ -1,1 +1,9 @@
-<p>history works!</p>
+<mat-toolbar>
+    <mat-toolbar-row>
+        <h1>Past Events</h1>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-list class="events">
+    <app-eventdetails *ngFor="let event of events" mat-list-item class="event" [venue]="event.venue" [date]="event.date" [title]="event.title" [id]="event.id"></app-eventdetails>
+</mat-list>

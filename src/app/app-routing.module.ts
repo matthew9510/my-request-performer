@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'requests', component: RequestsComponent },
   { path: 'events', component: ManageEventsComponent },
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
