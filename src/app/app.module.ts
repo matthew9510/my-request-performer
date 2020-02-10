@@ -6,6 +6,11 @@ import { EventdetailsComponent } from './components/event-detail/event-detail.co
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 import { RequestsComponent } from './components/requests/requests.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import 'hammerjs';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { PayoutComponent } from './components/dashboard/payout/payout.component';
+import { HistoryComponent } from './components/dashboard/history/history.component';
+import { ProfileComponent } from './components/dashboard/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
@@ -25,12 +30,18 @@ import {
   MatGridListModule,
   MatTabsModule,
   MatListModule,
-  MatDialogModule
+  MatDialogModule,
 } from '@angular/material';
+
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
     AppComponent,
+    DashboardComponent,
+    PayoutComponent,
+    HistoryComponent,
+    ProfileComponent,
     EventdetailsComponent,
     ManageEventsComponent,
     RequestsComponent,
@@ -43,8 +54,9 @@ import {
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     BrowserAnimationsModule,
+    MatTabsModule,
+    MatFormFieldModule,
     MatCardModule,
     MatIconModule,
     AppRoutingModule,
@@ -58,20 +70,20 @@ import {
     MatButtonModule,
     MatCheckboxModule,
     MatChipsModule,
-    MatCardModule,
     MatGridListModule,
-    MatToolbarModule,
-    MatTabsModule,
     MatListModule,
+    MatToolbarModule,
     MatIconModule,
     MatDialogModule,
     HttpClientModule,
     TranslocoRootModule,
+    ScrollingModule,
+  ],
+  providers: [
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
