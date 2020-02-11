@@ -1,68 +1,60 @@
-<div class="pageTitle">
-  <p style="padding: 15px;"> My Request Create An Event here!</p>
-</div>
+<form [formGroup]="eventForm" class="createEventForm">
+  <mat-form-field>
+    <mat-label>Event Title</mat-label>
+    <input matInput formControlName="title">
+  </mat-form-field>
 
-<div class="wrapper">
+  <mat-form-field>
+    <mat-label>Choose a Date</mat-label>
+    <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()">
+    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #myDatepicker></mat-datepicker>
+  </mat-form-field>
 
-  <form [formGroup]="eventForm" class="createEventForm">
-    <mat-form-field>
-      <mat-label for="Event-Name">Event Title:<mat-icon>event</mat-icon>
-      </mat-label>
-      <input matInput>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label for="EnterTime">Start Time</mat-label>
+    <input type="time" matInput formControlName="startTime">
+  </mat-form-field>
 
-    <mat-form-field>
-      <mat-label> Choose a Date: </mat-label>
-      <input matInput [matDatepicker]="myDatepicker">
-      <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-      <mat-datepicker #myDatepicker></mat-datepicker>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label for="EndTime">End Time</mat-label>
+    <input type="time" matInput formControlName="endTime">
+  </mat-form-field>
 
-    <mat-form-field>
-      <mat-label for="EnterTime"> Start Time </mat-label>
-      <input type="time" id="StartTime" name="appt" min="09:00" max="18:00" required matInput>
+  <mat-form-field>
+    <mat-label>Cover Fee</mat-label>
+    <input matInput type="number" class="example-right-align" formControlName="coverFee">
+    <span matPrefix>$&nbsp;</span>
+  </mat-form-field>
 
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label for="EndTime"> End Time </mat-label>
-      <input type="time" id="EndTime" name="appt" min="09:00" max="18:00" required matInput>
-    </mat-form-field>
-
-    <!-- <mat-form-field>
-      <mat-label>Select Start Time</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let time of times" [value]="time.value">
-          {{time.viewValue}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field> -->
-    <mat-form-field appearance="fill">
-      <mat-label>Amount</mat-label>
-      <input matInput type="number" class="example-right-align">
-      <span matPrefix>$&nbsp;</span>
-      <span matSuffix>.00</span>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label>Genre</mat-label>
+    <input matInput formControlName="genre">
+  </mat-form-field>
 
 
+  <mat-form-field>
+    <mat-label>Enter Location</mat-label>
+    <input matInput formControlName="venue">
+  </mat-form-field>
 
-    <mat-form-field>
-      <mat-label for="Genre">Genre: <mat-icon>queue_music</mat-icon>
-      </mat-label>
-      <input matInput>
-    </mat-form-field>
+  <mat-form-field>
+    <mat-label>Event Url</mat-label>
+    <input matInput formControlName="url">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field>
+
+  <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)" accept="image/png, image/jpeg" />
+  <button mat-flat-button color="primary" (click)="imageInput.click()">Upload Image</button>
 
 
-    <mat-form-field>
-      <mat-label for="Enter Location">Enter Location: <mat-icon>edit_location</mat-icon>
-      </mat-label>
-      <input matInput>
-    </mat-form-field>
+  <mat-card-actions align="end">
+    <button mat-flat-button color="accent" [disabled]="eventForm.invalid" type="submit" (submit)="createEvent()">Create
+      Event</button>
+  </mat-card-actions>
 
-    <mat-form-field>
-      <mat-label for="Description">Description: <mat-icon>description</mat-icon>
-      </mat-label>
-      <input matInput>
-    </mat-form-field>
-  </form>
-</div>
+</form>
