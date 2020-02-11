@@ -11,6 +11,7 @@ export class RequestDetailComponent implements OnInit {
   @Input() song: string;
   @Input() amount: number;
   @Input() status: string;
+  @Input() createdOn: string;
 
 
   constructor(private breakpointObserver: BreakpointObserver) { }

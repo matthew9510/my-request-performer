@@ -1,0 +1,12 @@
+<mat-toolbar>
+	<mat-toolbar-row>
+		<h1>Past Events</h1>
+	</mat-toolbar-row>
+</mat-toolbar>
+
+<cdk-virtual-scroll-viewport itemSize="80">
+	<mat-list class="events">
+		<app-eventdetails *cdkVirtualFor="let event of events" mat-list-item class="event" [eventData]="event">
+		</app-eventdetails>
+	</mat-list>
+</cdk-virtual-scroll-viewport>
