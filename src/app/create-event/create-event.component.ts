@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as moment from 'moment';
 
 export interface Time {
   value: string;
@@ -31,6 +32,7 @@ export class CreateEventComponent implements OnInit {
   // }
 
   ngOnInit() {
+    console.log(moment().format());
   }
 
   // createTimesWithOutReturn(){
