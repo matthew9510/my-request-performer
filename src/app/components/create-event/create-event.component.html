@@ -1,52 +1,67 @@
-
-<div class="pageTitle" >
+<div class="pageTitle">
   <p style="padding: 15px;"> My Request Create An Event here!</p>
 </div>
 
 <div class="wrapper">
 
-<form [formGroup]="eventForm" class="createEventForm">
-  <mat-form-field>
-    <label for="Event-Name">Event Title:<mat-icon>event</mat-icon> </label>
-    <input matInput>
-  </mat-form-field>
+  <form [formGroup]="eventForm" class="createEventForm">
+    <mat-form-field>
+      <mat-label for="Event-Name">Event Title:<mat-icon>event</mat-icon>
+      </mat-label>
+      <input matInput>
+    </mat-form-field>
 
-  <mat-form-field>
-    <label> Choose a Date: </label>
-    <input matInput [matDatepicker]="myDatepicker">
-    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-    <mat-datepicker #myDatepicker></mat-datepicker>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label> Choose a Date: </mat-label>
+      <input matInput [matDatepicker]="myDatepicker">
+      <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+      <mat-datepicker #myDatepicker></mat-datepicker>
+    </mat-form-field>
 
-  <mat-form-field>
-    <label for="EnterTime"> Start Time and End Time: </label>
-    <input type="time" id="enterTime1" name="appt" min ="09:00" max= "18:00" required matInput>
-    <input type="time" id="enterTime2" name="appt" min ="09:00" max= "18:00" required matInput>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label for="EnterTime"> Start Time </mat-label>
+      <input type="time" id="StartTime" name="appt" min="09:00" max="18:00" required matInput>
 
-  <mat-form-field>
-    <mat-label>Select Start Time</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let time of times" [value]="time.value">
-        {{time.viewValue}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label for="EndTime"> End Time </mat-label>
+      <input type="time" id="EndTime" name="appt" min="09:00" max="18:00" required matInput>
+    </mat-form-field>
+
+    <!-- <mat-form-field>
+      <mat-label>Select Start Time</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let time of times" [value]="time.value">
+          {{time.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+    <mat-form-field appearance="fill">
+      <mat-label>Amount</mat-label>
+      <input matInput type="number" class="example-right-align">
+      <span matPrefix>$&nbsp;</span>
+      <span matSuffix>.00</span>
+    </mat-form-field>
+
 
 
     <mat-form-field>
-      <label for="Genre">Genre: <mat-icon>queue_music</mat-icon></label>
+      <mat-label for="Genre">Genre: <mat-icon>queue_music</mat-icon>
+      </mat-label>
       <input matInput>
     </mat-form-field>
 
 
     <mat-form-field>
-      <label for="Enter Location">Enter Location: <mat-icon>edit_location</mat-icon></label>
+      <mat-label for="Enter Location">Enter Location: <mat-icon>edit_location</mat-icon>
+      </mat-label>
       <input matInput>
     </mat-form-field>
 
     <mat-form-field>
-      <label for="Description">Description: <mat-icon>description</mat-icon> </label>
+      <mat-label for="Description">Description: <mat-icon>description</mat-icon>
+      </mat-label>
       <input matInput>
     </mat-form-field>
   </form>
