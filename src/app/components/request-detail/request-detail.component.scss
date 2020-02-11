@@ -10,6 +10,11 @@ mat-card {
     padding: 16px;
 }
 
+.cardSmallScreen {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 #request-info-wrapper {
     overflow: hidden;
     margin-right: 5px;
@@ -20,12 +25,24 @@ mat-card {
     white-space: nowrap;
 }
 
+.requestInfoSmallScreen {
+    flex: 1 0 100%;
+    width: 100%;
+}
+
 #tip-and-buttons {
     display: flex;
-    flex: 0 0 40%;
+    flex: 0 0 50%;
     justify-content: flex-end;
     align-items: center;
     flex-wrap: wrap-reverse;
+}
+
+.actionsSmallScreen {
+    display: flex;
+    flex: 1 0 100% !important; 
+    justify-content: flex-end !important;
+    flex-direction: row;
 }
 
 #buttons-wrapper {
@@ -35,9 +52,7 @@ mat-card {
 }
 
 .tip-amount {
-    // font-weight: bold;
     font-size: .8em;
-    // flex: 1;
     opacity: 0.87;
 }
 

@@ -1,9 +1,9 @@
-<mat-card class="mat-elevation-z0 outline">
-    <div id="request-info-wrapper">
+<mat-card class="mat-elevation-z0 outline" [class.cardSmallScreen]="isSmallScreen">
+    <div id="request-info-wrapper" [class.requestInfoSmallScreen]="isSmallScreen">
         <span class="song-name mat-body-strong truncate">{{ song }}</span>
         <p class="artist-name mat-body truncate">{{ artist }}</p>
     </div>
-    <div id="tip-and-buttons">
+    <div id="tip-and-buttons" [class.actionsSmallScreen]="isSmallScreen">
         <div id="amount-wrapper">
             <span class="tip-amount">${{ amount }}</span>
         </div>

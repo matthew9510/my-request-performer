@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-request-detail',
@@ -12,9 +13,13 @@ export class RequestDetailComponent implements OnInit {
   @Input() status: string;
 
 
-  constructor() { }
+  constructor(private breakpointObserver: BreakpointObserver) { }
 
   ngOnInit() {
+  }
+
+  get isSmallScreen() {
+    return this.breakpointObserver.isMatched('(max-width: 350px)');
   }
 
 

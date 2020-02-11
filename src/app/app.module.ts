@@ -25,6 +25,7 @@ import { RequestsComponent } from './components/requests/requests.component';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 import { TranslocoRootModule } from './transloco-root.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import {LayoutModule} from '@angular/cdk/layout';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     MatListModule,
     MatIconModule,
     MatDialogModule,
+    LayoutModule,
     HttpClientModule,
     TranslocoRootModule,
   ],
