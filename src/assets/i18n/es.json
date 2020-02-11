@@ -1,1 +1,11 @@
-{}
+{
+  "requests": {
+    "title": "Requests",
+    "now playing": "Now Playing",
+    "up next": "Up Next",
+    "pending requests": "Pending Requests",
+    "play next": "Play Next"
+  },
+  "events": "Events",
+  "dashboard": "Dashboard"
+}

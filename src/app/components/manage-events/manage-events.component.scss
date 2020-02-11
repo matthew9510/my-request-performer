@@ -8,10 +8,14 @@
 .title {
   align-self: center;
 }
+
 .events {
   display: flex;
   flex-direction: column;
+  min-height: 100%;
+  padding: 0;
 }
-.mat-list-base {
-  height: 73px;
+
+cdk-virtual-scroll-viewport {
+  height: 100%;
 }

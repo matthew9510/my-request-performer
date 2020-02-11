@@ -1,0 +1,8 @@
+cdk-virtual-scroll-viewport {
+  height: 100%;
+
+  mat-list {
+    padding: 0;
+    min-height: 100%;
+  }
+}

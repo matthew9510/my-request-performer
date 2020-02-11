@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {EventService} from '../../services/event.service';
-import {Events} from '../../services/event.service';
-import * as moment from 'moment';
+import { EventService } from '../../services/event.service';
+import { Events } from '../../services/event.service';
 
 
 @Component({
@@ -16,19 +15,14 @@ export class ManageEventsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getEvents()
+    this.getEvents();
   }
 
   getEvents() {
     this.eventService.getEvents()
       .subscribe((res: Events[]) => {
-      this.events = res;
-
-      for (let i = 0; i < this.events.length; i++) {
-        this.events[i].date = moment(this.events[i].date).format('MMM DD');
-        // this.events[i].date = this.events[i].date.slice(0, -2);
-      }
-    });
+        this.events = res;
+      });
   }
 
 }
