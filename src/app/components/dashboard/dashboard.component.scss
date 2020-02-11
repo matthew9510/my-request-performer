@@ -1,0 +1,15 @@
+.date {
+    margin: 10px;
+}
+
+.extended-fab-button {
+    margin: 10px;
+}
+
+mat-tab-group {
+  height: 100%;
+}
+
+:host ::ng-deep .mat-tab-body-wrapper {
+  height: 100%;
+}

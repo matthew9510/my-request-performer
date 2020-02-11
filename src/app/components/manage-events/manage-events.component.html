@@ -1,0 +1,13 @@
+<div class="wrapper">
+
+	<span class="title">Manage Events</span>
+
+
+</div>
+
+<cdk-virtual-scroll-viewport itemSize="80">
+	<mat-list class="events">
+		<app-eventdetails *cdkVirtualFor="let event of events" mat-list-item class="event" [eventData]="event">
+		</app-eventdetails>
+	</mat-list>
+</cdk-virtual-scroll-viewport>

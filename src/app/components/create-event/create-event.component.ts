@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 
 export interface Time {
@@ -12,13 +13,14 @@ export interface Time {
   styleUrls: ['./create-event.component.scss']
 })
 export class CreateEventComponent implements OnInit {
+  eventForm;
   times: Time[] = [
-    {value: 'one-0', viewValue: 'zero'},
-    {value: 'two-1', viewValue: 'one'},
-    {value: 'three-2', viewValue: 'two'},
-    {value: 'four-3', viewValue: 'three'},
-    {value: 'five-4', viewValue: 'four'},
-    {value: 'seven-6', viewValue: 'five'}
+    { value: 'one-0', viewValue: 'zero' },
+    { value: 'two-1', viewValue: 'one' },
+    { value: 'three-2', viewValue: 'two' },
+    { value: 'four-3', viewValue: 'three' },
+    { value: 'five-4', viewValue: 'four' },
+    { value: 'seven-6', viewValue: 'five' }
   ];
 
   // times = [];
@@ -33,6 +35,7 @@ export class CreateEventComponent implements OnInit {
 
   ngOnInit() {
     console.log(moment().format());
+    this.eventForm = new FormGroup({});
   }
 
   // createTimesWithOutReturn(){
@@ -51,5 +54,3 @@ export class CreateEventComponent implements OnInit {
   //   // don't return
   //   return tempArray
 }
-
-

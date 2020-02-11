@@ -5,7 +5,7 @@
 
 <div class="wrapper">
 
-<form class="createEventForm">
+<form [formGroup]="eventForm" class="createEventForm">
   <mat-form-field>
     <label for="Event-Name">Event Title:<mat-icon>event</mat-icon> </label>
     <input matInput>
