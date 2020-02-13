@@ -15,7 +15,50 @@
   min-height: 100%;
   padding: 0;
 }
-
 cdk-virtual-scroll-viewport {
   height: 100%;
+
+  mat-list {
+    padding: 0;
+    min-height: 100%;
+  }
+}
+
+mat-tab-group {
+  height: 100%;
+}
+
+:host ::ng-deep .mat-tab-body-wrapper {
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#searchInput {
+  border: none;
+  padding: 5px;
+  width: 100%;
+  color: black;
+}
+
+#searchInput :focus {
+  border: deepskyblue solid 2px;
+}
+
+#rightToolbar {
+  width: 15%;
+  margin-left: 2.5%;
+}
+#leftToolbar {
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+}
+
+#leftToolbar h5 {
+  margin-right: 10%;
 }

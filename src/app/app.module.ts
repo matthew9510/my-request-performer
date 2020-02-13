@@ -13,7 +13,7 @@ import { PayoutComponent } from './components/dashboard/payout/payout.component'
 import { HistoryComponent } from './components/dashboard/history/history.component';
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 import { TranslocoRootModule } from './transloco-root.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
@@ -24,7 +24,6 @@ import {
   MatIconModule,
   MatButtonModule,
   MatFormFieldModule,
-  MatInputModule,
   MatSelectModule,
   MatCheckboxModule,
   MatChipsModule,
@@ -35,11 +34,13 @@ import {
   MatDialogModule,
   MatDatepickerModule,
   MatAutocompleteModule,
+  MatInputModule,
 } from '@angular/material';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { AddVenueComponent } from './components/add-venue/add-venue.component';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
     BrowserAnimationsModule,
     MatTabsModule,
     MatFormFieldModule,
@@ -98,10 +100,11 @@ import { AddVenueComponent } from './components/add-venue/add-venue.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
   ],
-  providers: [],
+  providers: [
+    FilterPipe,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

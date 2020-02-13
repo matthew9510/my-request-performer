@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { Events } from '../../services/event.service';
+import {FormControl} from '@angular/forms';
 
 
 @Component({
@@ -10,18 +11,31 @@ import { Events } from '../../services/event.service';
 })
 export class ManageEventsComponent implements OnInit {
   events: any;
+  pastEvents: any;
+  history: boolean;
+  scheduled: boolean;
+  searchText: string;
 
   constructor(private eventService: EventService) {
   }
 
   ngOnInit() {
-    this.getEvents();
   }
 
   getEvents() {
     this.eventService.getEvents()
       .subscribe((res: Events[]) => {
         this.events = res;
+        this.history = false;
+        this.scheduled = true;
+      });
+  }
+  getPastEvents() {
+    this.eventService.getEvents()
+      .subscribe((res: Events[]) => {
+        this.pastEvents = res;
+        this.history = true;
+        this.scheduled = false;
       });
   }
 
