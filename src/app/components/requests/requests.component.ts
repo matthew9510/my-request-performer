@@ -84,6 +84,11 @@ export class RequestsComponent implements OnInit {
     this.rejectRequest(index, 'acceptedRequests');
   }
 
+  acceptRequest(index) {
+    this.requestsService.acceptedRequests.push(this.requestsService.pendingRequests[index]);
+    this.rejectRequest(index, 'pendingRequests');
+  }
+
 
   // onFetchRequests() {
   //   this.requestsService.fetchPendingRequests()
