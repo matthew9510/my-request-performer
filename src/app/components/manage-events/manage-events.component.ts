@@ -15,11 +15,15 @@ export class ManageEventsComponent implements OnInit {
   history: boolean;
   scheduled: boolean;
   searchText: string;
+  selected: string = 'Scheduled';
 
   constructor(private eventService: EventService) {
   }
 
   ngOnInit() {
+    if (this.selected === 'Scheduled') {
+      this.getEvents();
+    }
   }
 
   getEvents() {
