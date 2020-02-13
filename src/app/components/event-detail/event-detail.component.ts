@@ -8,6 +8,7 @@ import * as moment from 'moment';
 })
 export class EventdetailsComponent implements OnInit {
   event: any;
+  clone: any;
 
   @Input()
   set eventData(eventData) {
@@ -17,13 +18,21 @@ export class EventdetailsComponent implements OnInit {
     }
   }
 
+  @Input()
+  set cloneEventDate(data) {
+    if (data) {
+      data.date = moment(data.date).format('MMM DD');
+      this.clone = data;
+    }
+  }
+
   constructor() { }
 
   ngOnInit() {
   }
 
-  editEvent(id) {
-    alert(`Redirecting to manage event for event with the ID of ${id} `)
+  cloneEvent(event) {
+    this.clone = event;
   }
 
 }
