@@ -33,10 +33,54 @@
   </mat-form-field>
 
 
-  <mat-form-field>
-    <mat-label>Enter Location</mat-label>
-    <input matInput formControlName="venue">
+  <mat-form-field *ngIf="!addingVenue">
+    <mat-label>Venue</mat-label>
+    <input matInput formControlName="venue" [matAutocomplete]="auto" autocomplete="alsdjflsadfkjfl" name="venuestuff">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let venue of venues">venue</mat-option>
+      <mat-option class="add-venue-option"><button class="venue-button" mat-raised-button (click)="displayAddVenue()">
+          <mat-icon>add</mat-icon>Add Venue
+        </button>
+      </mat-option>
+    </mat-autocomplete>
   </mat-form-field>
+
+  <div *ngIf="addingVenue" formGroupName=newVenue>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Address</mat-label>
+      <input matInput formControlName="streetAddress">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>City</mat-label>
+      <input matInput formControlName="city">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>State</mat-label>
+      <input matInput formControlName="state">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Postal</mat-label>
+      <input matInput formControlName="postalCode">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Country</mat-label>
+      <input matInput formControlName="country">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Website</mat-label>
+      <input matInput formControlName="url">
+    </mat-form-field>
+  </div>
 
   <mat-form-field>
     <mat-label>Event Url</mat-label>
