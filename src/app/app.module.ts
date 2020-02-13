@@ -42,6 +42,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
 import { FilterPipe } from './pipes/filter.pipe';
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -58,9 +60,10 @@ import { FilterPipe } from './pipes/filter.pipe';
     BottomNavComponent,
     HeaderComponent,
     AddVenueComponent,
+    FilterPipe,
   ],
   entryComponents: [
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,

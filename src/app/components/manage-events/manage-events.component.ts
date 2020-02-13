@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { Events } from '../../services/event.service';
-import {FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -15,15 +15,11 @@ export class ManageEventsComponent implements OnInit {
   history: boolean;
   scheduled: boolean;
   searchText: string;
-  selected: string = 'Scheduled';
 
   constructor(private eventService: EventService) {
   }
 
   ngOnInit() {
-    if (this.selected === 'Scheduled') {
-      this.getEvents();
-    }
   }
 
   getEvents() {

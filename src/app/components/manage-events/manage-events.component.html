@@ -1,31 +1,32 @@
 
 <div class="header">
 <mat-toolbar>
-  <mat-select id="leftToolbar" [(value)]="selected">
-    <mat-option value="Scheduled" (click)="getEvents()">
-      Scheduled
-    </mat-option>
-    <mat-option value="History" (click)="getPastEvents()">
-      History
-    </mat-option>
-    <mat-option (click)="createEvent()">
-      <mat-icon>add</mat-icon> New Event
-    </mat-option>
-  </mat-select>
+  <div id="leftToolbar">
+    <h5>
+      <span *ngIf="scheduled || (!history && !scheduled)">Scheduled</span> <span
+      *ngIf="!history && !scheduled"> | </span> <span *ngIf="history || (!history && !scheduled)">History</span>
+    </h5>
 
-
-  <div id="rightToolbar">
-    <mat-form-field *ngIf="scheduled || history" >
-
-      <mat-label>Search event...</mat-label>
-      <input matInput id="searchInput" [(ngModel)]="searchText" >
-    </mat-form-field>
   </div>
 
 
+  <mat-form-field>
+    <input matInput id="searchInput" [(ngModel)]="searchText" *ngIf="scheduled || history" placeholder="Search event...">
+  </mat-form-field>
+
+  <mat-select id="rightToolbar">
+    <mat-option (click)="getEvents()">
+      Scheduled
+    </mat-option>
+    <mat-option (click)="getPastEvents()">
+      History
+    </mat-option>
+    <mat-option (click)="createEvent()">
+     <mat-icon>add</mat-icon> New Event
+    </mat-option>
+  </mat-select>
 </mat-toolbar>
 </div>
-
 
 <cdk-virtual-scroll-viewport itemSize="80" *ngIf="!history">
   <mat-list class="events">

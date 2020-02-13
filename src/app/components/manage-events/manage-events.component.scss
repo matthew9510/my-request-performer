@@ -36,20 +36,31 @@ mat-tab-group {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  height: 10%;
-}
-.header mat-toolbar {
-  height: 100%;
 }
 
-#leftToolbar {
-  width: 30%;
+#searchInput {
+  border: none;
+  padding: 5px;
+  width: 100%;
+  color: black;
 }
+
+#searchInput :focus {
+  border: deepskyblue solid 2px;
+}
+
 #rightToolbar {
+  width: 15%;
+  margin-left: 2.5%;
+}
+#leftToolbar {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  justify-content: center;
+  width: 95%;
+}
+
+#leftToolbar h5 {
+  margin-right: 10%;
 }
 #rightToolbar mat-form-field {
   margin-top: 4%;
