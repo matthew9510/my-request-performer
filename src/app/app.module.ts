@@ -33,7 +33,8 @@ import {
   MatTabsModule,
   MatListModule,
   MatDialogModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatAutocompleteModule,
 } from "@angular/material";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
@@ -95,7 +96,8 @@ import { AddVenueComponent } from './components/add-venue/add-venue.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent]
