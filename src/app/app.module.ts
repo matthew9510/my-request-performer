@@ -37,6 +37,7 @@ import {
 
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     RequestsComponent,
     RequestDetailComponent,
     ConfirmDialogComponent,
-    BottomNavComponent
+    BottomNavComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
