@@ -1,0 +1,60 @@
+<form [formGroup]="eventForm" class="createEventForm">
+  <mat-form-field>
+    <mat-label>Event Title</mat-label>
+    <input matInput formControlName="title">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Choose a Date</mat-label>
+    <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()">
+    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+    <mat-datepicker #myDatepicker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label for="EnterTime">Start Time</mat-label>
+    <input type="time" matInput formControlName="startTime">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label for="EndTime">End Time</mat-label>
+    <input type="time" matInput formControlName="endTime">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Cover Fee</mat-label>
+    <input matInput type="number" class="example-right-align" formControlName="coverFee">
+    <span matPrefix>$&nbsp;</span>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Genre</mat-label>
+    <input matInput formControlName="genre">
+  </mat-form-field>
+
+
+  <mat-form-field>
+    <mat-label>Enter Location</mat-label>
+    <input matInput formControlName="venue">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Event Url</mat-label>
+    <input matInput formControlName="url">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field>
+
+  <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)" accept="image/png, image/jpeg" />
+  <button mat-flat-button color="primary" (click)="imageInput.click()">Upload Image</button>
+
+
+  <mat-card-actions align="end">
+    <button mat-flat-button color="accent" [disabled]="eventForm.invalid" type="submit" (submit)="createEvent()">Create
+      Event</button>
+  </mat-card-actions>
+
+</form>
