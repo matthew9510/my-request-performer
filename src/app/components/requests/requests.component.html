@@ -9,55 +9,66 @@
   <mat-tab-group disablePagination="true" mat-align-tabs="center">
     <mat-tab class="tab-label" label="Accepted">
       <ng-template matTabContent>
-        <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
+        <div [class.largeScreenDisplay]="isLargeScreen">
+          <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('now playing') }}
+          </h3>
 
-        <app-request-detail [song]="nowPlayingRequest.song" [artist]="nowPlayingRequest.artist"
-          [amount]="nowPlayingRequest.amount" [status]="nowPlayingRequest.status">
-        </app-request-detail>
-
-        <h3 class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
-        <mat-list>
-          <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
-            [status]="request.status" *ngFor="let request of acceptedRequests">
-
-            <button rejectButton mat-icon-button class="request-button" (click)="openDialog()">
-              <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
-            </button>
-            <!-- (click)="rejectRequest()" -->
-
+          <app-request-detail [class.largeScreenChild]="isLargeScreen" [song]="nowPlayingRequest.song"
+            [artist]="nowPlayingRequest.artist" [amount]="nowPlayingRequest.amount" [status]="nowPlayingRequest.status">
+            <button endSongButton mat-flat-button class="request-button" color="accent">End song</button>
           </app-request-detail>
-        </mat-list>
+
+          <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
+          <mat-list [class.largeScreenChild]="isLargeScreen">
+            <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
+              [status]="request.status" *ngFor="let request of acceptedRequests">
+
+              <!-- <button rejectButton mat-icon-button class="request-button" (click)="openDialog()">
+                <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
+              </button> -->
+              <!-- (click)="rejectRequest()" -->
+              <button rejectButton mat-button class="request-button" color="warn"
+                (click)="openDialog()">{{ t('Reject') }}</button>
+              <button playNextButton mat-flat-button class="request-button"
+                color="primary">{{ t('play next') }}</button>
+
+            </app-request-detail>
+          </mat-list>
+        </div>
       </ng-template>
     </mat-tab>
 
     <mat-tab label="Pending">
       <ng-template matTabContent>
-        <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
-        <mat-list>
-          <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
-            [status]="request.status" *ngFor="let request of pendingRequests">
+        <div [class.largeScreenDisplay]="isLargeScreen">
+          <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>
+            {{ t('pending requests') }}</h3>
+          <mat-list [class.largeScreenChild]="isLargeScreen">
+            <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
+              [status]="request.status" *ngFor="let request of pendingRequests">
 
-            <!-- Had to remove the following line to test if it works:
-                        *ngIf="status === 'pending'" -->
-            <button acceptButton mat-icon-button class="request-button" (click)="acceptRequest()">
-              <mat-icon color="primary" class="request-button-icon">done</mat-icon>
-            </button>
+              <!-- Had to remove the following line to test if it works:
+                          *ngIf="status === 'pending'" -->
+              <button acceptButton mat-icon-button class="request-button" (click)="acceptRequest()">
+                <mat-icon color="primary" class="request-button-icon">done</mat-icon>
+              </button>
 
-            <button rejectButton mat-icon-button class="request-button" (click)="openDialog()">
-              <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
-            </button>
-          </app-request-detail>
-        </mat-list>
+              <button rejectButton mat-icon-button class="request-button" (click)="openDialog()">
+                <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
+              </button>
+            </app-request-detail>
+          </mat-list>
+        </div>
       </ng-template>
     </mat-tab>
   </mat-tab-group>
 
-  <div id="fab-button-wrapper">
+  <!-- <div id="fab-button-wrapper">
     <div id="fab-button">
       <button class="extended-fab-button" mat-fab color="primary">
         <span>{{ t('play next') }}</span>
       </button>
     </div>
-  </div>
+  </div> -->
 
 </ng-container>

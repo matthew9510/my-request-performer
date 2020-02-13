@@ -3,6 +3,7 @@ import { RequestsService } from 'src/app/services/requests.service';
 import { Requests } from '../../interfaces/requests';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-requests',
@@ -25,23 +26,28 @@ export class RequestsComponent implements OnInit {
   confirmDiaglogTitle: string = 'Reject Request?';
   confirmDiaglogMessage: string = 'Are you sure you want to reject this request? This action cannot be undone.';
   confirmDialogAction: string = 'Reject';
-  
+
 
   constructor(
     private requestsService: RequestsService,
-    public dialog: MatDialog
-    ) { }
+    public dialog: MatDialog,
+    private breakpointObserver: BreakpointObserver
+  ) { }
 
 
   ngOnInit() {
     this.onFetchRequests()
   }
 
+  get isLargeScreen() {
+    return this.breakpointObserver.isMatched('(min-width: 700px)')
+  }
+
   // may need to pass in request_id as well to be able to change the status
   openDialog(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
-      data: {title: this.confirmDiaglogTitle, message: this.confirmDiaglogMessage, action: this.confirmDialogAction}
+      data: { title: this.confirmDiaglogTitle, message: this.confirmDiaglogMessage, action: this.confirmDialogAction }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -52,16 +58,16 @@ export class RequestsComponent implements OnInit {
     });
   }
 
-    // might not need all 3 of these methods. these methods originally existed on request-details.
-    changeStatus(status) {
-      this.updatedStatus = status;
-    }
-    rejectRequest() {
-      this.changeStatus('rejected');
-    }
-    acceptRequest() {
-      this.changeStatus('accepted');
-    }
+  // might not need all 3 of these methods. these methods originally existed on request-details.
+  changeStatus(status) {
+    this.updatedStatus = status;
+  }
+  rejectRequest() {
+    this.changeStatus('rejected');
+  }
+  acceptRequest() {
+    this.changeStatus('accepted');
+  }
 
   onFetchRequests() {
     this.requestsService.fetchPendingRequests()
@@ -80,10 +86,10 @@ export class RequestsComponent implements OnInit {
   // not finished yet - waiting on backend set up
   onPatchRequestStatus(newStatus, requestId) {
     this.requestsService.patchRequestStatus(newStatus, requestId)
-      .subscribe((res => 
-        { console.log(res); 
-          this.onFetchRequests();
-        }));
+      .subscribe((res => {
+        console.log(res);
+        this.onFetchRequests();
+      }));
   }
 
 }

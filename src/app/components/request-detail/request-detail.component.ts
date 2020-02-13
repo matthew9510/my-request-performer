@@ -20,7 +20,11 @@ export class RequestDetailComponent implements OnInit {
   }
 
   get isSmallScreen() {
-    return this.breakpointObserver.isMatched('(max-width: 350px)');
+    return this.breakpointObserver.isMatched('(max-width: 450px)');
+  }
+
+  get isLargeScreen() {
+    return this.breakpointObserver.isMatched('(min-width: 700px)')
   }
 
 

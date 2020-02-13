@@ -4,7 +4,8 @@
     "now playing": "Now Playing",
     "up next": "Up Next",
     "pending requests": "Pending Requests",
-    "play next": "Play Next"
+    "play next": "Play Next",
+    "Reject": "Reject"
   },
   "events": "Events",
   "dashboard": "Dashboard"
