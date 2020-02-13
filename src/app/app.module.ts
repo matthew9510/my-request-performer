@@ -12,7 +12,7 @@ import { PayoutComponent } from './components/dashboard/payout/payout.component'
 import { HistoryComponent } from './components/dashboard/history/history.component';
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 import { TranslocoRootModule } from './transloco-root.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
@@ -22,7 +22,6 @@ import {
   MatIconModule,
   MatButtonModule,
   MatFormFieldModule,
-  MatInputModule,
   MatSelectModule,
   MatCheckboxModule,
   MatChipsModule,
@@ -30,10 +29,11 @@ import {
   MatGridListModule,
   MatTabsModule,
   MatListModule,
-  MatDialogModule,
+  MatDialogModule, MatInputModule,
 } from '@angular/material';
 
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -48,6 +48,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     RequestDetailComponent,
     ConfirmDialogComponent,
     BottomNavComponent,
+    FilterPipe,
   ],
   imports: [
     BrowserModule,
@@ -78,11 +79,13 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     HttpClientModule,
     TranslocoRootModule,
     ScrollingModule,
+    FormsModule,
   ],
   providers: [
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+
   ],
   bootstrap: [AppComponent]
 })

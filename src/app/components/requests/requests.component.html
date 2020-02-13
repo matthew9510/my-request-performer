@@ -9,9 +9,9 @@
     <mat-tab class="tab-label" label="Accepted">
         <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
 
-        <app-request-detail 
-            [song]="nowPlayingRequest.song" 
-            [artist]="nowPlayingRequest.artist" 
+        <app-request-detail
+            [song]="nowPlayingRequest.song"
+            [artist]="nowPlayingRequest.artist"
             [amount]="nowPlayingRequest.amount"
             [status]="nowPlayingRequest.status">
         </app-request-detail>
@@ -21,8 +21,8 @@
                 <app-request-detail
                   *ngFor="let request of acceptedRequests"
                   mat-list-item
-                  [song]="request.song" 
-                  [artist]="request.artist" 
+                  [song]="request.song"
+                  [artist]="request.artist"
                   [amount]="request.amount"
                   [status]="request.status"
                   (updatedStatus)="onChangeStatus($event)">
@@ -41,16 +41,16 @@
         <h3 class="request-subheader" mat-subheader>{{ t('pending requests') }}</h3>
             <mat-list *ngFor="let request of pendingRequests">
                 <app-request-detail mat-list-item
-                    [song]="request.song" 
-                    [artist]="request.artist" 
+                    [song]="request.song"
+                    [artist]="request.artist"
                     [amount]="request.amount"
                     [status]="request.status"
                     (updatedStatus)="onChangeStatus($event)">
 
                     <!-- Had to remove the following line to test if it works:
                         *ngIf="status === 'pending'" -->
-                    <button acceptButton mat-icon-button 
-                        class="request-button"  
+                    <button acceptButton mat-icon-button
+                        class="request-button"
                         (click)="acceptRequest()">
                         <mat-icon color="primary" class="request-button-icon">done</mat-icon>
                     </button>
