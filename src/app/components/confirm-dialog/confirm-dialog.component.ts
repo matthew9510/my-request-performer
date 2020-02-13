@@ -10,6 +10,10 @@ export class ConfirmDialogComponent implements OnInit {
   title: string;
   message: string;
   action: string;
+  requestInfo = {
+    index: null,
+    requestType: '',
+  }
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
@@ -19,12 +23,14 @@ export class ConfirmDialogComponent implements OnInit {
     this.title = this.data.title;
     this.message = this.data.message;
     this.action = this.data.action;
+    this.requestInfo.index = this.data.index;
+    this.requestInfo.requestType = this.data.requestType;
   }
 
   confirmDialog() {
-    this.dialogRef.close(true)
+    this.dialogRef.close(this.requestInfo)
   }
-  
+
   closeDialog() {
     this.dialogRef.close(false);
   }

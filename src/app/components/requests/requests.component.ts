@@ -11,9 +11,6 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   styleUrls: ['./requests.component.scss']
 })
 export class RequestsComponent implements OnInit {
-  pendingRequests: any;
-  acceptedRequests: any;
-
   // not sure if this will be necessary once we are able to do patch requests
   updatedStatus: string = '';
 
@@ -21,7 +18,8 @@ export class RequestsComponent implements OnInit {
   nowPlayingRequest = {
     song: 'Piano Man',
     artist: 'Billy Joel',
-    amount: 1.00
+    amount: 1.00,
+    currentlyPlaying: true
   }
   confirmDiaglogTitle: string = 'Reject Request?';
   confirmDiaglogMessage: string = 'Are you sure you want to reject this request? This action cannot be undone.';
@@ -36,60 +34,77 @@ export class RequestsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.onFetchRequests()
+    this.requestsService.onFetchRequests();
   }
 
   get isLargeScreen() {
     return this.breakpointObserver.isMatched('(min-width: 700px)')
   }
 
+  endCurrentSong() {
+    this.nowPlayingRequest = {
+      song: null,
+      artist: null,
+      amount: null,
+      currentlyPlaying: false
+    }
+  };
+
+
   // may need to pass in request_id as well to be able to change the status
-  openDialog(): void {
+  openDialog(index, requestType): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
-      data: { title: this.confirmDiaglogTitle, message: this.confirmDiaglogMessage, action: this.confirmDialogAction }
+      data: { title: this.confirmDiaglogTitle, message: this.confirmDiaglogMessage, action: this.confirmDialogAction, index: index, requestType: requestType }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // not sure yet which method will go here
-        this.changeStatus('rejected');
+        this.rejectRequest(result.index, result.requestType);
       };
     });
   }
 
-  // might not need all 3 of these methods. these methods originally existed on request-details.
-  changeStatus(status) {
-    this.updatedStatus = status;
-  }
-  rejectRequest() {
-    this.changeStatus('rejected');
-  }
-  acceptRequest() {
-    this.changeStatus('accepted');
+  rejectRequest(index, requestType) {
+    if (requestType == 'acceptedRequests') {
+      this.requestsService.acceptedRequests.splice(index, 1);
+    }
+    if (requestType == 'pendingRequests') {
+      this.requestsService.pendingRequests.splice(index, 1);
+    }
   }
 
-  onFetchRequests() {
-    this.requestsService.fetchPendingRequests()
-      .subscribe((res: Requests[]) => this.pendingRequests = res);
-    this.requestsService.fetchAcceptedRequests()
-      .subscribe((res: Requests[]) => this.acceptedRequests = res);
+  playNext(index) {
+    this.nowPlayingRequest = {
+      song: this.requestsService.acceptedRequests[index].song,
+      artist: this.requestsService.acceptedRequests[index].artist,
+      amount: this.requestsService.acceptedRequests[index].amount,
+      currentlyPlaying: true
+    }
+    this.rejectRequest(index, 'acceptedRequests');
   }
 
-  onChangeStatus(status) {
-    console.log(status)
-    this.updatedStatus = status;
-    // not finished yet - waiting on backend set up
-    this.onPatchRequestStatus(this.updatedStatus, 'requestId')
-  }
+
+  // onFetchRequests() {
+  //   this.requestsService.fetchPendingRequests()
+  //     .subscribe((res: Requests[]) => this.pendingRequests = res);
+  //   this.requestsService.fetchAcceptedRequests()
+  //     .subscribe((res: Requests[]) => this.acceptedRequests = res);
+  // }
+
+  // onChangeStatus(status) {
+  //   console.log(status)
+  //   this.updatedStatus = status;
+  //   this.onPatchRequestStatus(this.updatedStatus, 'requestId')
+  // }
 
   // not finished yet - waiting on backend set up
-  onPatchRequestStatus(newStatus, requestId) {
-    this.requestsService.patchRequestStatus(newStatus, requestId)
-      .subscribe((res => {
-        console.log(res);
-        this.onFetchRequests();
-      }));
-  }
+  // onPatchRequestStatus(newStatus, requestId) {
+  //   this.requestsService.patchRequestStatus(newStatus, requestId)
+  //     .subscribe((res => {
+  //       console.log(res);
+  //       this.onFetchRequests();
+  //     }));
+  // }
 
 }
