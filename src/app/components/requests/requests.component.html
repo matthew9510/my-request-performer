@@ -5,7 +5,7 @@
       <h1>{{ t('title') }}</h1>
     </mat-toolbar-row>
   </mat-toolbar>
-  <!-- disablePagination will not work in current version of angular -->
+  <!-- disablePagination will not work in current version of angular material-->
   <mat-tab-group disablePagination="true" mat-align-tabs="center">
     <mat-tab class="tab-label" label="Accepted">
       <ng-template matTabContent>
@@ -20,7 +20,7 @@
             </app-request-detail>
           </div>
           <ng-template #selectNextSong>
-            <div>There is no song currently selected. Click the play next button on any request below to get started.
+            <div>{{ t('no current song playing message')}}
             </div>
           </ng-template>
 
@@ -29,10 +29,6 @@
             <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
               [status]="request.status" *ngFor="let request of requestsService.acceptedRequests; index as i">
 
-              <!-- <button rejectButton mat-icon-button class="request-button" (click)="openDialog()">
-                <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
-              </button> -->
-              <!-- (click)="rejectRequest()" -->
               <button rejectButton mat-button class="request-button" color="warn"
                 (click)="openDialog(i, 'acceptedRequests')">{{ t('Reject') }}</button>
               <button playNextButton mat-flat-button class="request-button" color="primary"

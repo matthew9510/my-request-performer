@@ -1,6 +1,5 @@
-import { Component, OnInit, Inject, Optional } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RequestsService } from 'src/app/services/requests.service';
-import { Requests } from '../../interfaces/requests';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -21,9 +20,6 @@ export class RequestsComponent implements OnInit {
     amount: 1.00,
     currentlyPlaying: true
   }
-  confirmDiaglogTitle: string = 'Reject Request?';
-  confirmDiaglogMessage: string = 'Are you sure you want to reject this request? This action cannot be undone.';
-  confirmDialogAction: string = 'Reject';
 
 
   constructor(
@@ -38,7 +34,7 @@ export class RequestsComponent implements OnInit {
   }
 
   get isLargeScreen() {
-    return this.breakpointObserver.isMatched('(min-width: 700px)')
+    return this.breakpointObserver.isMatched('(min-width: 700px)');
   }
 
   endCurrentSong() {
@@ -55,21 +51,25 @@ export class RequestsComponent implements OnInit {
   openDialog(index, requestType): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
-      data: { title: this.confirmDiaglogTitle, message: this.confirmDiaglogMessage, action: this.confirmDialogAction, index: index, requestType: requestType }
+      data: {
+        title: 'Reject Request?',
+        message: 'Are you sure you want to reject this request? This action cannot be undone.',
+        action: 'Reject'
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.rejectRequest(result.index, result.requestType);
+        this.rejectRequest(index, requestType);
       };
     });
   }
 
   rejectRequest(index, requestType) {
-    if (requestType == 'acceptedRequests') {
+    if (requestType === 'acceptedRequests') {
       this.requestsService.acceptedRequests.splice(index, 1);
     }
-    if (requestType == 'pendingRequests') {
+    if (requestType === 'pendingRequests') {
       this.requestsService.pendingRequests.splice(index, 1);
     }
   }
@@ -89,6 +89,7 @@ export class RequestsComponent implements OnInit {
     this.rejectRequest(index, 'pendingRequests');
   }
 
+  // these methods were used to grab the request data from the requests JSON files, may be reusable once backend is set up
 
   // onFetchRequests() {
   //   this.requestsService.fetchPendingRequests()

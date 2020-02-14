@@ -5,7 +5,8 @@
     "up next": "Up Next",
     "pending requests": "Pending Requests",
     "play next": "Play Next",
-    "Reject": "Reject"
+    "Reject": "Reject",
+    "no current song playing message": "There is no song currently selected. Click the play next button on any request below to get started."
   },
   "events": "Events",
   "dashboard": "Dashboard"
