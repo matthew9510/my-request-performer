@@ -1,0 +1,7 @@
+{
+    "tableName": "myrequestdynamoevent",
+    "partitionKeyName": "id",
+    "partitionKeyType": "S",
+    "sortKeyName": "url",
+    "sortKeyType": "S"
+}
