@@ -9,6 +9,7 @@
   "author": "SoftStack Factory",
   "license": "ISC",
   "dependencies": {
+    "@aws-amplify/cli": "^4.13.3",
     "serverless": "^1.63.0"
   }
 }
