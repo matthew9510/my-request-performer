@@ -1,7 +1,0 @@
-{
-    "tableName": "performer",
-    "partitionKeyName": "id",
-    "partitionKeyType": "S",
-    "sortKeyName": "email",
-    "sortKeyType": "S"
-}
