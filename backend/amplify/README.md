@@ -7,6 +7,7 @@ and it easily scales with your business from thousands of users to tens of milli
 are open source and offer a pluggable interface that enables you to customize and create your own plugins.
 
 ## Amplify Hosting
+
 - App Name: my-request
 - URL: https://develop.dwvm1je8bw8y9.amplifyapp.com
 - Branches: develop
@@ -16,4 +17,12 @@ are open source and offer a pluggable interface that enables you to customize an
 - App ARN: arn:aws:amplify:us-west-2:418615587574:apps/dwvm1je8bw8y9
 
 ## Cognito Authorization
+
+- Resource name: myrequest362310f3
+- AWS CloudFormation Stack Name: amplify-my-request-dev-133235-authmyrequest362310f3-1TQA2A5YTJKQR
+- AWS Lambdas:
+    - amplify-my-request-dev-13-UpdateRolesWithIDPFuncti-150M0V1TK1Q98
+    - amplify-my-request-dev-13-UpdateRolesWithIDPFuncti-150M0V1TK1Q98
+- AWS Cognito User Pool:
+    - myrequest362310f3_userpool_362310f3-dev
 
