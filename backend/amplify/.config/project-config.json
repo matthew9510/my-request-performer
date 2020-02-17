@@ -5,7 +5,7 @@
     "javascript": {
         "framework": "angular",
         "config": {
-            "SourceDir": "../../../src",
+            "SourceDir": "src",
             "DistributionDir": "dist/angular-v8",
             "BuildCommand": "npx ng build",
             "StartCommand": "ng serve"
