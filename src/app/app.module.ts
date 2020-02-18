@@ -85,7 +85,7 @@ import { FilterPipe } from './pipes/filter.pipe';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
-
+    FilterPipe
   ],
   bootstrap: [AppComponent]
 })

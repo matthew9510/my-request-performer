@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-eventdetails',
@@ -8,7 +9,6 @@ import * as moment from 'moment';
 })
 export class EventdetailsComponent implements OnInit {
   event: any;
-  clone: any;
 
   @Input()
   set eventData(eventData) {
@@ -18,21 +18,13 @@ export class EventdetailsComponent implements OnInit {
     }
   }
 
-  @Input()
-  set cloneEventDate(data) {
-    if (data) {
-      data.date = moment(data.date).format('MMM DD');
-      this.clone = data;
-    }
-  }
-
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
-  cloneEvent(event) {
-    this.clone = event;
+  cloneEvent() {
+    this.router.navigate([`/createEvent/${this.event.id}`], this.event);
   }
 
 }
