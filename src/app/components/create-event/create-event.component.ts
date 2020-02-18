@@ -27,8 +27,6 @@ export class CreateEventComponent implements OnInit {
       url: [null],
       image: [null],
     });
-
-
   }
 
   displayAddVenue() {
