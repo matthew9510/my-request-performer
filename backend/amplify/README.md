@@ -26,3 +26,11 @@ are open source and offer a pluggable interface that enables you to customize an
 - AWS Cognito User Pool:
     - myrequest362310f3_userpool_362310f3-dev
 
+## Amplify Setup ( Existing Project )
+
+Pull down Amplify Backend. Run the below command from the root directory of the project. Be sure to have the AWS-CLI configured or have your
+access key and secret ID available as you will need it to pull down the environment.
+
+Pulling down the backend will create the aws-exports.js file 
+
+    amplify pull --appId dwvm1je8bw8y9 --envName dev
