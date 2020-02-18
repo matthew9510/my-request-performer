@@ -1,0 +1,10 @@
+{
+  "name": "my-request-requester-api",
+  "version": "1.0.0",
+  "description": "Serverless CRUD service exposing a REST HTTP interface",
+  "author": "SoftStack Factory Labs",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^2.0.3"
+  }
+}
