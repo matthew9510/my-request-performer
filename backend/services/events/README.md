@@ -36,7 +36,7 @@ Sample CURL command:
 
     curl https://vph19w9jwe.execute-api.us-west-2.amazonaws.com/dev/src
     
-Sample Response:
+Sample Events Response:
 
     {
         "image_id":"0d97c217-f8be-41ad-9e3a-84af3e183326",

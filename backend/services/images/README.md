@@ -36,7 +36,7 @@ Sample CURL command:
 
     curl https://a3z82jmv72.execute-api.us-west-2.amazonaws.com/dev/src
     
-Sample Venues Response:
+Sample Images Response:
 
     {
         "path":"https://www.gaslamp.org/wp-content/uploads/2018/05/SH-logo.png",

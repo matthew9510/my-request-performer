@@ -36,7 +36,7 @@ Sample CURL command:
 
     curl https://qi8hh5l5za.execute-api.us-west-2.amazonaws.com/dev/src
     
-Sample Venues Response:
+Sample Requester Response:
 
     {
         "fingerprint_id":12,"street_address":"655 Fourth Ave",
