@@ -18,6 +18,7 @@ import { RequestDetailComponent } from "./components/request-detail/request-deta
 import { TranslocoRootModule } from "./transloco-root.module";
 import { ConfirmDialogComponent } from "./components/confirm-dialog/confirm-dialog.component";
 import { BottomNavComponent } from "./components/bottom-nav/bottom-nav.component";
+import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatToolbarModule,
   MatIconModule,
@@ -53,6 +54,9 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     ConfirmDialogComponent,
     BottomNavComponent
   ],
+  entryComponents: [
+    ConfirmDialogComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -79,6 +83,7 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     MatToolbarModule,
     MatIconModule,
     MatDialogModule,
+    LayoutModule,
     HttpClientModule,
     TranslocoRootModule,
     ScrollingModule,
@@ -88,4 +93,4 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
