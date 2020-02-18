@@ -1,12 +1,12 @@
 # Venues API
 
-Service: my-request-events-api
+Service: my-request-venues-api
 
 Stage: dev
 
 Region: us-west-2
 
-Stack: my-request-events-api
+Stack: my-request-venues-api
 
 Resources: 46
 
@@ -36,7 +36,7 @@ Sample CURL command:
 
     curl https://qrwq5aimw7.execute-api.us-west-2.amazonaws.com/dev/src
     
-Sample Response:
+Sample Venues Response:
 
     {
         "city":"San Diego",
@@ -49,6 +49,3 @@ Sample Response:
         "state":"CA",
         "postal_code":"92101"
     }
-
-
-
