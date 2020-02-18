@@ -38,7 +38,8 @@ app.use(function(req, res, next) {
 
 app.get('/images', function(req, res) {
   // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
+  const images = ['hello', 'world']
+  res.json({success: 'get call succeed!', images });
 });
 
 app.get('/images/*', function(req, res) {
