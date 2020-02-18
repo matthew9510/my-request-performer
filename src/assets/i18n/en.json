@@ -4,8 +4,29 @@
     "now playing": "Now Playing",
     "up next": "Up Next",
     "pending requests": "Pending Requests",
-    "play next": "Play Next"
+    "play next": "Play Next",
+    "Reject": "Reject",
+    "no current song playing message": "There is no song currently selected. Click the play next button on any request below to get started."
   },
   "events": "Events",
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "eventTitle": "Event Title",
+  "selectDate": "Choose a Date",
+  "startTime": "Start Time",
+  "endTime": "End Time",
+  "cover": "Cover Charge",
+  "currencySymbol": "$",
+  "genre": "Genre",
+  "venue": "Venue",
+  "addVenue": "Add Venue",
+  "name": "Name",
+  "address": "Address",
+  "city": "City",
+  "state": "State",
+  "postal": "Postal",
+  "country": "Country",
+  "website": " Website",
+  "description": "Description",
+  "uploadImage": "Upload Image",
+  "createEvent": "Create Event"
 }

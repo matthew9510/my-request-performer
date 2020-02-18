@@ -1,18 +1,18 @@
-<mat-card class="mat-elevation-z0 outline">
-    <div id="date-wrapper">
-        <span class="date-name mat-body-strong truncate">{{ createdOn }}</span>
+<mat-card class="mat-elevation-z0 outline" [class.cardSmallScreen]="isSmallScreen"
+  [class.cardLargeScreen]="isLargeScreen">
+  <div id="request-info-wrapper" [class.requestInfoSmallScreen]="isSmallScreen">
+    <span class="song-name mat-body-strong truncate">{{ song }}</span>
+    <p class="artist-name mat-body truncate">{{ artist }}</p>
+  </div>
+  <div id="tip-and-buttons" [class.actionsSmallScreen]="isSmallScreen">
+    <div id="amount-wrapper">
+      <span class="tip-amount">${{ amount }}</span>
     </div>
-    <div id="request-info-wrapper">
-        <span class="song-name mat-body-strong truncate">{{ song }}</span>
-        <p class="artist-name mat-body truncate">{{ artist }}</p>
+    <div id="buttons-wrapper">
+      <ng-content select="[rejectButton]"></ng-content>
+      <ng-content select="[acceptButton]"></ng-content>
+      <ng-content select="[playNextButton]"></ng-content>
+      <ng-content select="[endSongButton]"></ng-content>
     </div>
-    <div id="tip-and-buttons">
-        <div id="amount-wrapper">
-            <span class="tip-amount">${{ amount }}</span>
-        </div>
-        <div id="buttons-wrapper">
-            <ng-content select="[acceptButton]"></ng-content>
-            <ng-content select="[rejectButton]"></ng-content>
-        </div>
-    </div>
+  </div>
 </mat-card>

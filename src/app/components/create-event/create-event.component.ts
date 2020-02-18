@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import * as moment from 'moment';
 
 
@@ -10,6 +10,7 @@ import * as moment from 'moment';
 })
 export class CreateEventComponent implements OnInit {
   eventForm: FormGroup;
+  addingVenue = false;
 
   constructor() { }
 
@@ -28,8 +29,25 @@ export class CreateEventComponent implements OnInit {
     });
   }
 
+  displayAddVenue() {
+    this.addingVenue = true;
+    this.eventForm.addControl('newVenue', new FormBuilder().group({
+      name: [null, Validators.required],
+      streetAddress: [null, Validators.required],
+      city: [null, Validators.required],
+      state: [null, Validators.required],
+      postalCode: [null, Validators.required],
+      country: [null, Validators.required],
+      url: [null],
+    }));
+  }
+
   createEvent() {
     console.log(this.eventForm.value);
+    if (this.addingVenue) {
+      // do add venue stuff
+    }
+    // do create even stuff
   }
 
   imageUploaded(image) {
