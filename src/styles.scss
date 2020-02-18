@@ -26,14 +26,22 @@ $angular-v8-theme: mat-light-theme($angular-v8-primary, $angular-v8-accent, $ang
 @include angular-material-theme($angular-v8-theme);
 
 /* You can add global styles to this file, and also import other style files */
-html { box-sizing: border-box }
-
-*, *:before, *:after { box-sizing: inherit }
-
-html, body { height: 100%; }
-
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+html {
+  box-sizing: border-box
 }
 
+*,
+*:before,
+*:after {
+  box-sizing: inherit
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

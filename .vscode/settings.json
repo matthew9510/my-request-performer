@@ -1,7 +1,7 @@
 {
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
-
+  "html.format.enable": false,
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
