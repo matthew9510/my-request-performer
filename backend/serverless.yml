@@ -1,4 +1,4 @@
-service: my-request-events-api
+service: my-request-api-service
 app: my-request
 org: softstack
 
@@ -8,8 +8,8 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: my-request-events-api
-  apiName: my-request-events-api
+  stackName: my-request-api-service
+  apiName: my-request-api-service
   profile: softstack
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
@@ -26,7 +26,7 @@ provider:
 
 functions:
   create:
-    handler: src/create.create
+    handler: services/create.create
     events:
       - http:
           path: src
@@ -34,7 +34,7 @@ functions:
           cors: true
 
   list:
-    handler: src/list.list
+    handler: services/list.list
     events:
       - http:
           path: src
@@ -42,44 +42,41 @@ functions:
           cors: true
 
   get:
-    handler: src/get.get
+    handler: services/get.get
     events:
       - http:
-          path: src/{id}
+          path: services/{id}
           method: get
           cors: true
 
   update:
-    handler: src/update.update
+    handler: services/update.update
     events:
       - http:
-          path: src/{id}
+          path: services/{id}
           method: put
           cors: true
 
   delete:
-    handler: src/delete.delete
+    handler: services/delete.delete
     events:
       - http:
-          path: src/{id}
+          path: services/{id}
           method: delete
           cors: true
 
 resources:
   Resources:
-    EventsDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+    usersTable:
+      Type: AWS::DynamoDB::Table
       Properties:
+        TableName: usersTable
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}

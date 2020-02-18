@@ -1,0 +1,7 @@
+{
+    "tableName": "images",
+    "partitionKeyName": "id",
+    "partitionKeyType": "S",
+    "sortKeyName": "file_path",
+    "sortKeyType": "S"
+}
