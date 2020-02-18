@@ -1,8 +1,21 @@
-form {
+form{
   display: flex;
   flex-direction: column;
   width: 90%;
   max-width: 800px;
-  margin: 0 auto
+  margin: 0 auto;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+  }
 }
 
+.add-venue-option {
+  width: 100%;
+  padding: 0;
+}
+.venue-button {
+  width: 100%;
+}
