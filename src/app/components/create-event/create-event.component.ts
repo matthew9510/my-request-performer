@@ -46,6 +46,10 @@ export class CreateEventComponent implements OnInit {
 
   createEvent() {
     console.log(this.eventForm.value);
+    if (this.addingVenue) {
+      // do add venue stuff
+    }
+    // do create even stuff
   }
 
   imageUploaded(image) {
