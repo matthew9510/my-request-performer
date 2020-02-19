@@ -1,7 +1,9 @@
 main {
-  height: calc(100% - 56px);
+  height: calc(100% - 128px);
+  width: 100%;
   overflow-x: hidden;
-  overflow-y: scroll;
+  position: fixed;
+  top: 64px;
 }
 
 
