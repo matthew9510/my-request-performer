@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { Events } from '../../services/event.service';
-import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
 
@@ -45,7 +44,7 @@ export class ManageEventsComponent implements OnInit {
   }
 
   createEvent() {
-    this.router.navigate(['/create-event']);
+    this.router.navigate(['/create-event'])
   }
 
 }

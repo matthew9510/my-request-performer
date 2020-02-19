@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 })
 export class EventdetailsComponent implements OnInit {
   event: any;
-  clone: any;
 
   @Input()
   set eventData(eventData) {
@@ -19,21 +18,15 @@ export class EventdetailsComponent implements OnInit {
     }
   }
 
-  @Input()
-  set cloneEventDate(data) {
-    if (data) {
-      data.date = moment(data.date).format('MMM DD');
-      this.clone = data;
-    }
-  }
-
-  constructor() { }
+  constructor(
+    private router: Router,
+  ) { }
 
   ngOnInit() {
   }
 
-  cloneEvent(event) {
-    this.clone = event;
+  cloneEvent() {
+    this.router.navigate([`/event/${this.event.id}/clone`], { state: this.event });
   }
 
 }
