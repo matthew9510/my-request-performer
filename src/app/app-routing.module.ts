@@ -15,8 +15,9 @@ const routes: Routes = [
   { path: 'history', component: HistoryComponent, data: { title: 'Histoy' } },
   { path: 'profile', component: ProfileComponent, data: { title: 'Profile' } },
   { path: 'requests', component: RequestsComponent, data: { title: 'Requests' } },
-  { path: 'events', component: ManageEventsComponent, data: { title: 'ManageEvents' } },
-  { path: 'create-event', component: CreateEventComponent, data: { title: 'create-event' } },
+  { path: 'events', component: ManageEventsComponent, data: { title: 'Manage Events' } },
+  { path: 'create-event', component: CreateEventComponent, data: { title: 'Create Event' } },
+  { path: 'event/:id/clone', component: CreateEventComponent, data: { title: 'Clone Event' } },
 ];
 
 @NgModule({

@@ -15,7 +15,52 @@
   min-height: 100%;
   padding: 0;
 }
-
 cdk-virtual-scroll-viewport {
   height: 100%;
+
+  mat-list {
+    padding: 0;
+    min-height: 100%;
+  }
 }
+
+mat-tab-group {
+  height: 100%;
+}
+
+:host ::ng-deep .mat-tab-body-wrapper {
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 10%;
+}
+.header mat-toolbar {
+  height: 100%;
+}
+
+#leftToolbar {
+  width: 30%;
+}
+#rightToolbar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+#rightToolbar mat-form-field {
+  margin-top: 4%;
+  margin-left: 5%;
+  width: 100%;
+  height: 70%;
+}
+
+#searchInput {
+  border: none;
+  width: 100%;
+  height: 25%;
+}
+
