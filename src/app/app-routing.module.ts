@@ -1,4 +1,3 @@
-import { Requests } from './interfaces/requests';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { RequestsComponent } from './components/requests/requests.component';
@@ -8,7 +7,6 @@ import { HistoryComponent } from './components/dashboard/history/history.compone
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 import { CreateEventComponent } from './components/create-event/create-event.component';
-import { HeaderComponent } from './components/header/header.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -19,7 +17,6 @@ const routes: Routes = [
   { path: 'requests', component: RequestsComponent, data: { title: 'Requests' } },
   { path: 'events', component: ManageEventsComponent, data: { title: 'ManageEvents' } },
   { path: 'create-event', component: CreateEventComponent, data: { title: 'create-event' } },
-  // { path: 'header', component: HeaderComponent}
 ];
 
 @NgModule({
