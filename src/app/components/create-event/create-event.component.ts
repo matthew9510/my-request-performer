@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
-import { Router, Params } from '@angular/router';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -14,7 +14,7 @@ export class CreateEventComponent implements OnInit {
   addingVenue = false;
   eventToClone;
 
-  constructor(private router: Router, private params: Params) {
+  constructor(private router: Router) {
     this.eventToClone = this.router.getCurrentNavigation().extras.state;
 
   }
