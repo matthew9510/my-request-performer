@@ -14,4 +14,4 @@ Documentation:
 - [Requester API](services/requester/README.md)
 - [Venues API](services/venues/README.md)
 
-![Models](resources/images/models.png)
+![Models](images/models.png)
