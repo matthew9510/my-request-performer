@@ -12,6 +12,9 @@ You can access the following resource attributes as environment variables from y
 var environment = process.env.ENV
 var region = process.env.REGION
 var authMyrequest362310f3UserPoolId = process.env.AUTH_MYREQUEST362310F3_USERPOOLID
+var apiMyrequestapiApiName = process.env.API_MYREQUESTAPI_APINAME
+var storageMyrequestdynamodbName = process.env.STORAGE_MYREQUESTDYNAMODB_NAME
+var storageMyrequestdynamodbArn = process.env.STORAGE_MYREQUESTDYNAMODB_ARN
 
 Amplify Params - DO NOT EDIT */
 
