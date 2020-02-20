@@ -15,9 +15,19 @@ var authMyrequest362310f3UserPoolId = process.env.AUTH_MYREQUEST362310F3_USERPOO
 
 Amplify Params - DO NOT EDIT */
 
-var express = require('express')
-var bodyParser = require('body-parser')
+var uuid  = require ("uuid");
+var AWS =  require( "aws-sdk");
+var express = require('express');
+var bodyParser = require('body-parser');
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+var SERVICENAME = "/requests"
+var APPNAME = "my-request";
+
+
+
+
 
 // declare a new express app
 var app = express()
@@ -32,16 +42,17 @@ app.use(function(req, res, next) {
 });
 
 
+
 /**********************
  * Example get method *
  **********************/
 
-app.get('/events', function(req, res) {
+app.get(SERVICENAME, function(req, res) {
   // Add your code here
   res.json({success: 'get call succeed!', url: req.url});
 });
 
-app.get('/events/*', function(req, res) {
+app.get(`${SERVICENAME}/*`, function(req, res) {
   // Add your code here
   res.json({success: 'get call succeed!', url: req.url});
 });
@@ -50,12 +61,36 @@ app.get('/events/*', function(req, res) {
 * Example post method *
 ****************************/
 
-app.post('/events', function(req, res) {
+app.post(SERVICENAME, function(req, res) {
   // Add your code here
+  const params = {
+    TableName: `${APPNAME}-${SERVICENAME}`,
+    // 'Item' contains the attributes of the item to be created
+    // - 'userId': user identities are federated through the
+    //             Cognito Identity Pool, we will use the identity id
+    //             as the user id of the authenticated user
+    // - 'noteId': a unique uuid
+    // - 'content': parsed from request body
+    // - 'attachment': parsed from request body
+    // - 'createdAt': current Unix timestamp
+
+
+   // userId: req.apiGateway.event.requestContext.identity.cognitoIdentityId,
+
+    Item: {
+      noteId: uuid.v1(),
+      content: data.content,
+      attachment: data.attachment,
+      createdAt: Date.now()
+    }
+  };
+
+
+
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 
-app.post('/events/*', function(req, res) {
+app.post(`${SERVICENAME}/*`, function(req, res) {
   // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
@@ -64,12 +99,12 @@ app.post('/events/*', function(req, res) {
 * Example put method *
 ****************************/
 
-app.put('/events', function(req, res) {
+app.put(SERVICENAME, function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
 
-app.put('/events/*', function(req, res) {
+app.put(`${SERVICENAME}/*`, function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
@@ -78,12 +113,12 @@ app.put('/events/*', function(req, res) {
 * Example delete method *
 ****************************/
 
-app.delete('/events', function(req, res) {
+app.delete(SERVICENAME, function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });
 
-app.delete('/events/*', function(req, res) {
+app.delete(`${SERVICENAME}/*`, function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });

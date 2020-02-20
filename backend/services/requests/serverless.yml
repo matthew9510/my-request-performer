@@ -1,4 +1,4 @@
-service: my-request-events-api
+service: requests
 app: my-request
 org: softstack
 
@@ -8,11 +8,11 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: my-request-events-api
-  apiName: my-request-events-api
+  stackName: "my-request-${self:service}-api"
+  apiName: "my-request-${self:service}-api"
   profile: softstack
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    DYNAMODB_TABLE: "${self:app}-${self:service}-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -27,9 +27,10 @@ provider:
 functions:
   create:
     handler: src/index.handler
+    name: ${self:app}-${self:service}
     events:
       - http:
-          path: /events/{proxy+}
+          path: /{proxy+}
           method: ANY
 
 resources:
@@ -50,3 +51,25 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+#plugins:
+#  - serverless-bundle
+
+package:
+  individually: true
+
+#custom:
+#  bundle:
+#    sourcemaps: true          # Enable source maps
+#    caching: true             # Enable Webpack caching
+#    stats: false              # Don't print out any Webpack output
+#    linting: false             # Enable linting as a part of the build process                  # Only necessary if packages are included dynamically
+#    ignorePackages:           # Ignore building any of the following packages
+#      - hiredis                 # For ex, hiredis needs to be ignored if using redis
+#    copyFiles:                # Copy any additional files to the generated package
+#      - from: 'public/*'        # Where the files are currently
+#        to: './'                # Where in the package should they go
+#    packager: npm             # Specify a packager, 'npm' or 'yarn'. Defaults to 'npm'.
+#    packagerOptions:          # Run a custom script in the package process
+#      scripts:                  # https://github.com/serverless-heaven/serverless-webpack#custom-scripts
+#        - echo hello > test
