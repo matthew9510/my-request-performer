@@ -1,0 +1,12 @@
+{
+    "permissions": {
+        "auth": {
+            "myrequest362310f3": [
+                "create",
+                "read",
+                "update",
+                "delete"
+            ]
+        }
+    }
+}

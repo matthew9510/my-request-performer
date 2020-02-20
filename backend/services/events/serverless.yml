@@ -1,4 +1,4 @@
-service: my-request-api-service
+service: my-request-api
 app: my-request
 org: softstack
 
@@ -8,8 +8,8 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: my-request-api-service
-  apiName: my-request-api-service
+  stackName: my-request-api
+  apiName: my-request-api
   profile: softstack
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
@@ -26,7 +26,7 @@ provider:
 
 functions:
   create:
-    handler: services/create.create
+    handler: src/create.create
     events:
       - http:
           path: src
@@ -34,7 +34,7 @@ functions:
           cors: true
 
   list:
-    handler: services/list.list
+    handler: src/list.list
     events:
       - http:
           path: src
@@ -42,41 +42,44 @@ functions:
           cors: true
 
   get:
-    handler: services/get.get
+    handler: src/get.get
     events:
       - http:
-          path: services/{id}
+          path: src/{id}
           method: get
           cors: true
 
   update:
-    handler: services/update.update
+    handler: src/update.update
     events:
       - http:
-          path: services/{id}
+          path: src/{id}
           method: put
           cors: true
 
   delete:
-    handler: services/delete.delete
+    handler: src/delete.delete
     events:
       - http:
-          path: services/{id}
+          path: src/{id}
           method: delete
           cors: true
 
 resources:
   Resources:
-    usersTable:
-      Type: AWS::DynamoDB::Table
+    EventsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
       Properties:
-        TableName: usersTable
         AttributeDefinitions:
-          - AttributeName: id
+          -
+            AttributeName: id
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          -
+            AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

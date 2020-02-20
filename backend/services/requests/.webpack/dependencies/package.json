@@ -1,0 +1,12 @@
+{
+  "name": "requests",
+  "version": "1.0.0",
+  "description": "Packaged externals for requests",
+  "private": true,
+  "scripts": {
+    "script0": "echo hello > test"
+  },
+  "dependencies": {
+    "mysql": ""
+  }
+}
