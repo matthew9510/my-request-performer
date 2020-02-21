@@ -1,4 +1,4 @@
-service: my-request-api
+service: my-request-events-api
 app: my-request
 org: softstack
 
@@ -8,8 +8,8 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: my-request-api
-  apiName: my-request-api
+  stackName: my-request-events-api
+  apiName: my-request-events-api
   profile: softstack
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
@@ -26,44 +26,11 @@ provider:
 
 functions:
   create:
-    handler: src/create.create
+    handler: src/index.handler
     events:
       - http:
-          path: src
-          method: post
-          cors: true
-
-  list:
-    handler: src/list.list
-    events:
-      - http:
-          path: src
-          method: get
-          cors: true
-
-  get:
-    handler: src/get.get
-    events:
-      - http:
-          path: src/{id}
-          method: get
-          cors: true
-
-  update:
-    handler: src/update.update
-    events:
-      - http:
-          path: src/{id}
-          method: put
-          cors: true
-
-  delete:
-    handler: src/delete.delete
-    events:
-      - http:
-          path: src/{id}
-          method: delete
-          cors: true
+          path: /{proxy+}
+          method: ANY
 
 resources:
   Resources:
