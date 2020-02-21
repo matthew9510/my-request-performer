@@ -1,3 +1,6 @@
 export const environment = {
-  production: true
+  production: true,
+  eventUrl: 'aws.com',
+  requestUrl: '',
+  authUrl: ""
 };

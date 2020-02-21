@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import * as moment from 'moment';
+import { EventService } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-create-event',
@@ -13,7 +14,7 @@ export class CreateEventComponent implements OnInit {
   eventTimeAndDateForm: FormGroup;
   addingVenue = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private eventService: EventService) {}
 
   ngOnInit() {
     this.eventDetailForm = this.fb.group({
