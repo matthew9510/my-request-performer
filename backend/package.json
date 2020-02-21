@@ -1,15 +1,11 @@
 {
-  "name": "backend",
+  "name": "my-request-api",
   "version": "1.0.0",
-  "description": "Serverless API and Database tables",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "SoftStack Factory",
+  "description": "Serverless CRUD service exposing a REST HTTP interface",
+  "author": "SoftStack Factory Labs",
   "license": "ISC",
   "dependencies": {
-    "@aws-amplify/cli": "^4.13.3",
+    "uuid": "^2.0.3",
     "serverless": "^1.63.0"
   }
 }

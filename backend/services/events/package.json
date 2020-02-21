@@ -5,7 +5,8 @@
   "author": "SoftStack Factory Labs",
   "license": "ISC",
   "dependencies": {
-    "uuid": "^2.0.3",
-    "serverless": "^1.63.0"
+    "aws-serverless-express": "^3.3.6",
+    "express": "^4.17.1",
+    "uuid": "^2.0.3"
   }
 }
