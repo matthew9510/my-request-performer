@@ -34,6 +34,7 @@ import {
   MatDialogModule,
   MatDatepickerModule,
   MatAutocompleteModule,
+  MatStepperModule
 } from "@angular/material";
 
 import { ScrollingModule } from "@angular/cdk/scrolling";
@@ -85,7 +86,8 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     ScrollingModule,
     MatDatepickerModule,
     MatMomentDateModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatStepperModule
   ],
   providers: [],
   bootstrap: [AppComponent]
