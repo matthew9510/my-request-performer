@@ -7,5 +7,30 @@
     "play next": "Play Next"
   },
   "events": "Events",
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "createEvent": {
+    "eventDetails":"Event Details",
+    "eventTitle": "Event Title",
+    "coverFee":"Cover Fee",
+    "genre":"Genre",
+    "eventUrl":"Event Url",
+    "description":"Description",
+    "uploadImage":"Upload Image",
+    "dateAndTime":"Date and Time",
+    "chooseADate":"Choose A Date",
+    "startTime":"Start Time",
+    "endTime":"End Time",
+    "venue":"Venue",
+    "addVenue":"Add Venue",
+    "name":"Name",
+    "address":"Address",
+    "city":"City",
+    "state":"State",
+    "postal":"Postal Code",
+    "country":"Country",
+    "website":"Website",
+    "createEvent":"Create Event",
+    "next":"Next",
+    "back":"Back"
+  }
 }
