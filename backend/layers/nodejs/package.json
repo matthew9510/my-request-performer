@@ -1,14 +1,15 @@
 {
   "name": "layers",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Lambda dependencies for the My Request App",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "SoftStack Factory Labs",
   "license": "ISC",
   "dependencies": {
+    "aws-serverless-express": "^3.3.6",
+    "express": "^4.17.1",
     "uuid": "^2.0.3"
   }
 }
