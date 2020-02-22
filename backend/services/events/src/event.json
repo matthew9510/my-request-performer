@@ -1,5 +1,16 @@
 {
-    "key1": "value1",
-    "key2": "value2",
-    "key3": "value3"
+  "id": "705346f8-c9da-4dc4-b0b8-6898595dcaaf",
+  "title": "Sample Title",
+  "description": "Sample Description",
+  "event_date": "2020-04-20",
+  "event_start_time": "1620",
+  "event_end_time": "2330",
+  "cover_fee": "5",
+  "genre": "90's Gangsta Rap",
+  "status": "Lit",
+  "url": "softstackfactory.com",
+  "image_id": "0d97c217-f8be-41ad-9e3a-84af3e183326",
+  "performer_id": "08cdaf46-a954-4c39-8f84-88e3d6b02551",
+  "venue_id": "d7cfa70b-8684-43ac-b72e-7005dcf27202",
+  "date_created": "2020-02-21"
 }

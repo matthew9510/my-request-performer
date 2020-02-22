@@ -1,6 +1,13 @@
-service: my-request-events-api
+service: events
 app: my-request
 org: softstack
+
+package:
+  exclude:
+    - node_modules/**
+  include:
+    - src/**
+    - src/index.js
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,11 +15,11 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: my-request-events-api
-  apiName: my-request-events-api
-  profile: softstack
+  stackName: my-request-app
+  apiName: ${self:app}-${self:service}-api
+  profile: ${self:org}
   environment:
-    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    DYNAMODB_TABLE: ${self:app}-${self:service}-table
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -25,16 +32,19 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
-  create:
+  endpoints:
+    name: ${self:app}-${self:service}-lambda
     handler: src/index.handler
     events:
       - http:
           path: /{proxy+}
           method: ANY
+    layers:
+      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
 
 resources:
   Resources:
-    EventsDynamoDbTable:
+    myDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:

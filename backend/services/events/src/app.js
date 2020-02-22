@@ -1,3 +1,4 @@
+'use strict';
 /*
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
@@ -5,7 +6,7 @@ Licensed under the Apache License, Version 2.0 (the "License"). You may not use 
 or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 */
-
+const uuid = require('uuid');
 const express = require('express');
 const bodyParser = require('body-parser');
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
@@ -29,16 +30,14 @@ app.use(function(req, res, next) {
 
 const AWS = require("aws-sdk");
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const table = process.env.DYNAMODB_TABLE;
-const datestamp = new Date();
-const datestamp = Date.parse(datestamp);
 
 /**********************
  * GET method *
  **********************/
 
 app.get('/events', function(req, res) {
-  console.log("GET REQUEST...", req.body);
+  console.log("GET REQUEST...", req);
+  console.log("GET RESPONSE...", res);
 
   // create params
   const params = {
@@ -54,14 +53,22 @@ app.get('/events', function(req, res) {
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      // create a response
-      const response = {
-        statusCode: 200,
-        body: result.Item,
-      };
-      res.json({success: 'Successfully found item in the events table!', response: response.body})
+      if ("Item" in result && "id" in result.Item){
+        // create a response
+        const response = {
+          statusCode: 200,
+          body: result.Item,
+        };
+        res.json({success: 'Successfully found item in the events table!', response: response.body})
+      } else {
+        res.json({
+          message: 'Unable to find record, please check id was entered correctly... ',
+          invalid_id: params.Key.id
+        })
+      }
     }
   });
+
 });
 
 /****************************
@@ -69,14 +76,17 @@ app.get('/events', function(req, res) {
 ****************************/
 
 app.put('/events', function(req, res) {
-  console.log("PUT REQUEST...", req.body);
+  console.log("PUT REQUEST...", req);
 
+  // Collect Item from request
   const params = {
-    TableName: table,
-    Item: req.body
+    TableName: process.env.DYNAMODB_TABLE,
+    Item: req.body,
   };
 
-  params.Item.create_date = datestamp;
+  // Generate uuid & date record
+  params.Item.id = uuid.v1();
+  params.Item.date_created = new Date().toJSON().slice(0, 10);
 
   dynamoDb.put(params, function(err, result) {
     if (err) {
@@ -128,7 +138,7 @@ app.patch('/events', function(req, res) {
 
   // create params
   const params = {
-    TableName: table,
+    TableName: process.env.DYNAMODB_TABLE,
     Key: {
       id: req.query.id,
     },
