@@ -134,7 +134,7 @@ app.patch('/template', function(req, res) {
 
   // create params
   const params = {
-    TableName: table,
+    TableName: process.env.DYNAMODB_TABLE,
     Key: {
       id: req.query.id,
     },
