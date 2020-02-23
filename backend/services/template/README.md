@@ -1,42 +1,73 @@
-# Service Template API
+# Service TEMPLATE API
 
-Service: <_SERVICENAME_>
+[Serverless Dashboard](TEMPLATE)
 
-Stage: <_STAGE_>
+service: TEMPLATE
 
-Region: <_REGION_>
+stage: dev
 
-Stack: <_STACK_NAME_>
+region: us-west-2
 
-Resources: <_RESOURCES_>
-
-Layers: <_LAYERS_>
-
-Serverless: Successfully published your service to the [Serverless Dashboard](<_LINK_TO_SERVERLESS_DASHBOARD_>)
+stack: my-request-TEMPLATE-stack
 
 Endpoints:
 
-    PUT - <_URL_>
-    GET - <_URL_{id}>
-    PATCH - <_URL_{id}>
-    DELETE - <_URL_{id}>
-  
-Functions:
-
-    create: my-request-events-api-dev-create
- 
-Sample CURL command:
-
-    curl <_URL_>
+    ANY - https://TEMPLATE.execute-api.us-west-2.amazonaws.com/dev/TEMPLATE
     
-Sample Events Response:
+# Endpoint Test Using Postman
+
+We'll be using Postman to populate our new table with test data using a PUT request.
+
+##### Postman Configuration:
+- Endpoint: TEMPLATE
+- Authorization: no auth
+
+##### Populate with sample data
+- From the body tab select 'raw' of type JSON
+- Provide Payload
+
+        {
+            "key": "value",
+            "key": "value",
+            "key": "value",
+            "key": "value",
+            "key": "valuef",
+            "key": "value",
+            "key": "value",
+            "key": "value"
+        }
+
+Successful PUT Response:
 
     {
-        "KEY":"VALUE",
-        "KEY":"VALUE",
-        "KEY":"VALUE",
-        "KEY":"VALUE"
+        "key": "value",
+        "key": "value",
+        "key": "value",
+        "key": "value",
+        "key": "valuef",
+        "key": "value",
+        "key": "value",
+        "key": "value"
     }
+    
 
+##### Check record with GET Request:
+- From the body tab select 'none'
+- Currently ALL GET requests require a id
+- From the params tab provide the following key & value
+    - Key: id
+    - Value: TEMPLATE
 
+Successful GET Request
 
+    {
+        "key": "value",
+        "key": "value",
+        "key": "value",
+        "key": "value",
+        "key": "valuef",
+        "key": "value",
+        "key": "value",
+        "key": "value"
+    }
+    
