@@ -2,20 +2,13 @@ service: <ENDPOINT_NAME>
 app: my-request
 org: softstack
 
-package:
-  artifact: https://s3.amazonaws.com/my-request-lambda-dependencies/nodejs.zip
-  exclude:
-    - node_modules/**
-  include:
-    - src/**
-
 frameworkVersion: ">=1.1.0 <2.0.0"
 
 provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: my-request-app
+  stackName: ${self:app}-${self:service}-stack
   apiName: ${self:app}-${self:service}-api
   profile: ${self:org}
   environment:
@@ -32,7 +25,8 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
-  ${self:app}-${self:service}:
+  endpoints:
+    name: ${self:app}-${self:service}-lambda
     handler: src/index.handler
     events:
       - http:
@@ -43,7 +37,7 @@ functions:
 
 resources:
   Resources:
-    ${self:provider.environment.DYNAMODB_TABLE}:
+    myDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
