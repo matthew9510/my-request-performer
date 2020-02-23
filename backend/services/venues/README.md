@@ -38,5 +38,10 @@ Sample Events Response:
         "KEY":"VALUE"
     }
 
+# Steps to Create Endpoint
+* Copy template directory and paste in services directory, name after endpoint
+* Change service name in serverless.yml to endpoint name
+* In `src/app.js`, replace all the text `events` with the name of your endpoint
+* Run `sls deploy` from same directory as YAML file
 
 

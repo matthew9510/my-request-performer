@@ -1,3 +1,4 @@
+'use strict';
 /*
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
@@ -5,7 +6,7 @@ Licensed under the Apache License, Version 2.0 (the "License"). You may not use 
 or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 */
-
+const uuid = require('uuid');
 const express = require('express');
 const bodyParser = require('body-parser');
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
@@ -29,16 +30,13 @@ app.use(function(req, res, next) {
 
 const AWS = require("aws-sdk");
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const table = process.env.DYNAMODB_TABLE;
-const datestamp = new Date();
-const datestamp = Date.parse(datestamp);
 
 /**********************
  * GET method *
  **********************/
 
-app.get('/events', function(req, res) {
-  console.log("GET REQUEST...", req.body);
+app.get('/venues', function(req, res) {
+  console.log("GET REQUEST...", req);
 
   // create params
   const params = {
@@ -54,12 +52,19 @@ app.get('/events', function(req, res) {
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      // create a response
-      const response = {
-        statusCode: 200,
-        body: result.Item,
-      };
-      res.json({success: 'Successfully found item in the events table!', response: response.body})
+      if ("Item" in result && "id" in result.Item) {
+        // create a response
+        const response = {
+          statusCode: 200,
+          body: result.Item,
+        };
+        res.json({success: 'Successfully found item in the events table!', response: response.body})
+      } else {
+        res.json({
+          message: 'Unable to find record, please check id was entered correctly... ',
+          invalid_id: params.Key.id
+        })
+      }
     }
   });
 });
@@ -68,15 +73,20 @@ app.get('/events', function(req, res) {
 * PUT method *
 ****************************/
 
-app.put('/events', function(req, res) {
+app.put('/venues', function(req, res) {
   console.log("PUT REQUEST...", req.body);
+  console.log("PUT REQUEST TYPE...", typeof req.body);
 
-  const params = {
-    TableName: table,
+  let params = {
+    TableName: process.env.DYNAMODB_TABLE,
     Item: req.body
   };
 
-  params.Item.create_date = datestamp;
+  // Generate uuid & date record
+  params.Item.id = uuid.v1();
+  params.Item.date_created = new Date().toJSON().slice(0, 10);
+
+  console.log("PUT REQUEST...", params);
 
   dynamoDb.put(params, function(err, result) {
     if (err) {
@@ -84,9 +94,9 @@ app.put('/events', function(req, res) {
     } else {
       const response = {
         statusCode: 200,
-        body: req.body,
+        body: params.Item,
       };
-      res.json({success: 'Successfully added item to the events table!', record: response.body})
+      res.json({success: 'Successfully added item to the venues table!', record: response.body})
     }
   });
 });
@@ -95,7 +105,7 @@ app.put('/events', function(req, res) {
 * DELETE method *
 ****************************/
 
-app.delete('/events', function(req, res) {
+app.delete('/venues', function(req, res) {
   console.log("DELETE EVENT REQUEST...", req.body);
 
   // create params
@@ -114,7 +124,7 @@ app.delete('/events', function(req, res) {
         statusCode: 200,
         body: req.body,
       };
-      res.json({success: 'delete call for events table succeeded!', response: response});
+      res.json({success: 'delete call for venues table succeeded!', response: response});
     }
   });
 });
@@ -123,7 +133,7 @@ app.delete('/events', function(req, res) {
  * PATCH method *
  ****************************/
 
-app.patch('/events', function(req, res) {
+app.patch('/venues', function(req, res) {
   console.log("UPDATE EVENT REQUEST...", req);
 
   // create params
@@ -146,7 +156,7 @@ app.patch('/events', function(req, res) {
         statusCode: 200,
         body: result,
       };
-      res.json({success: 'UPDATE for record on events table succeeded!', response: response.body});
+      res.json({success: 'UPDATE for record on venues table succeeded!', response: response.body});
     }
   });
 });

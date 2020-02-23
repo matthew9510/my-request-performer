@@ -1,14 +1,6 @@
-service: images
+service: venues
 app: my-request
 org: softstack
-
-package:
-  artifact: https://s3.amazonaws.com/my-request-lambda-dependencies/nodejs.zip
-  exclude:
-    - node_modules/**
-    - src/**
-  include:
-    - src/index.js
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -16,7 +8,7 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: my-request-app
+  stackName: ${self:app}-${self:service}-stack
   apiName: ${self:app}-${self:service}-api
   profile: ${self:org}
   environment:
@@ -33,7 +25,7 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
-  endpoints:
+  create:
     name: ${self:app}-${self:service}-lambda
     handler: src/index.handler
     events:
