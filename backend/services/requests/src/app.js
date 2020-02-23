@@ -46,7 +46,7 @@ app.get('/requests', function(req, res) {
     },
   };
 
-  // fetch event from the database
+  // fetch request from the database
   dynamoDb.get(params, (error, result) => {
     // handle potential errors
     if (error) {
@@ -58,7 +58,7 @@ app.get('/requests', function(req, res) {
           statusCode: 200,
           body: result.Item,
         };
-        res.json({success: 'Successfully found item ' + params.Key.id + ' in the events table!', response: response.body})
+        res.json({success: 'Successfully found item ' + params.Key.id + ' in the requests table!', response: response.body})
       } else {
         res.json({
           message: 'Unable to find record ' + params.Key.id + ', please check id was entered correctly... ',
@@ -102,7 +102,7 @@ app.put('/requests', function(req, res) {
  ****************************/
 
 app.delete('/requests', function(req, res) {
-  console.log("DELETE EVENT REQUEST...", req.body);
+  console.log("DELETE REQUEST RECORD...", req.body);
 
   // create params
   const params = {
@@ -130,7 +130,7 @@ app.delete('/requests', function(req, res) {
  ****************************/
 
 app.patch('/requests', function(req, res) {
-  console.log("UPDATE EVENT REQUEST...", req);
+  console.log("UPDATE REQUEST RECORD...", req);
 
   // create params
   const params = {
