@@ -46,7 +46,7 @@ app.get('/template', function(req, res) {
     },
   };
 
-  // fetch event from the database
+  // fetch template from the database
   dynamoDb.get(params, (error, result) => {
     // handle potential errors
     if (error) {
@@ -58,7 +58,7 @@ app.get('/template', function(req, res) {
           statusCode: 200,
           body: result.Item,
         };
-        res.json({success: 'Successfully found item in the events table!', response: response.body})
+        res.json({success: 'Successfully found item in the template table!', response: response.body})
       } else {
         res.json({
           message: 'Unable to find record, please check id was entered correctly... ',
@@ -102,7 +102,7 @@ app.put('/template', function(req, res) {
  ****************************/
 
 app.delete('/template', function(req, res) {
-  console.log("DELETE EVENT REQUEST...", req.body);
+  console.log("DELETE template REQUEST...", req.body);
 
   // create params
   const params = {
@@ -130,7 +130,7 @@ app.delete('/template', function(req, res) {
  ****************************/
 
 app.patch('/template', function(req, res) {
-  console.log("UPDATE EVENT REQUEST...", req);
+  console.log("UPDATE template REQUEST...", req);
 
   // create params
   const params = {
