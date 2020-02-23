@@ -74,8 +74,6 @@ app.get('/venues', function(req, res) {
 ****************************/
 
 app.put('/venues', function(req, res) {
-  console.log("PUT REQUEST...", req.body);
-  console.log("PUT REQUEST TYPE...", typeof req.body);
 
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -85,8 +83,6 @@ app.put('/venues', function(req, res) {
   // Generate uuid & date record
   params.Item.id = uuid.v1();
   params.Item.date_created = new Date().toJSON().slice(0, 10);
-
-  console.log("PUT REQUEST...", params);
 
   dynamoDb.put(params, function(err, result) {
     if (err) {
