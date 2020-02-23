@@ -37,7 +37,6 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 app.get('/events', function(req, res) {
   console.log("GET REQUEST...", req);
-  console.log("GET RESPONSE...", res);
 
   // create params
   const params = {
@@ -53,7 +52,7 @@ app.get('/events', function(req, res) {
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      if ("Item" in result && "id" in result.Item){
+      if ("Item" in result && "id" in result.Item) {
         // create a response
         const response = {
           statusCode: 200,
@@ -68,20 +67,17 @@ app.get('/events', function(req, res) {
       }
     }
   });
-
 });
 
 /****************************
-* PUT method *
-****************************/
+ * PUT method *
+ ****************************/
 
 app.put('/events', function(req, res) {
-  console.log("PUT REQUEST...", req);
 
-  // Collect Item from request
-  const params = {
+  let params = {
     TableName: process.env.DYNAMODB_TABLE,
-    Item: req.body,
+    Item: req.body
   };
 
   // Generate uuid & date record
@@ -94,7 +90,7 @@ app.put('/events', function(req, res) {
     } else {
       const response = {
         statusCode: 200,
-        body: req.body,
+        body: params.Item,
       };
       res.json({success: 'Successfully added item to the events table!', record: response.body})
     }
@@ -102,8 +98,8 @@ app.put('/events', function(req, res) {
 });
 
 /****************************
-* DELETE method *
-****************************/
+ * DELETE method *
+ ****************************/
 
 app.delete('/events', function(req, res) {
   console.log("DELETE EVENT REQUEST...", req.body);
@@ -138,7 +134,7 @@ app.patch('/events', function(req, res) {
 
   // create params
   const params = {
-    TableName: process.env.DYNAMODB_TABLE,
+    TableName: table,
     Key: {
       id: req.query.id,
     },
@@ -162,7 +158,7 @@ app.patch('/events', function(req, res) {
 });
 
 app.listen(3000, function() {
-    console.log("My Request API...")
+  console.log("My Request API...")
 });
 
 // Export the app object. When executing the application local this does nothing. However,
