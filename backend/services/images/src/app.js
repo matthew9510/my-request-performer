@@ -58,7 +58,7 @@ app.get('/images', function(req, res) {
           statusCode: 200,
           body: result.Item,
         };
-        res.json({success: 'Successfully found item in the events table!', response: response.body})
+        res.json({success: 'Successfully found item in the images table!', response: response.body})
       } else {
         res.json({
           message: 'Unable to find record, please check id was entered correctly... ',
