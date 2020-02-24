@@ -3,6 +3,15 @@
 Endpoints are created using the [Serverless Framework](https://serverless.com/) YAML + CLI Development to deploy to AWS.
 The Serverless Framework uses a config file called `serverless.yml` which is used to deploy all your services to AWS.
 
+Current Endpoints:
+- Events:  https://qcvyxnimu4.execute-api.us-west-2.amazonaws.com/dev/events
+- Images:  https://90bx9hlja5.execute-api.us-west-2.amazonaws.com/dev/images
+- Queue:  https://90bx9hlja5.execute-api.us-west-2.amazonaws.com/dev/queue
+- Requests:   https://y05btwgzvf.execute-api.us-west-2.amazonaws.com/dev/requests
+- Requester:   https://npfjwp3yrd.execute-api.us-west-2.amazonaws.com/dev/requester
+- Transactions:   https://hndjafk1sl.execute-api.us-west-2.amazonaws.com/dev/transactions
+- Venues:   https://4gw3k61sti.execute-api.us-west-2.amazonaws.com/dev/venues
+
 # Endpoint Deployment Guide
 
 The following steps will guide you through creating a new endpoint with all the supporting AWS services.
