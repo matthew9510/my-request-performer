@@ -61,7 +61,7 @@ your selected name, in our example we will rename it to `requests`
 3. Open the `src/app.js` file and replace all words `template` with the name of your endpoint, in our example we'll
 be renaming everything to `requests`.
 
-4. From the terminal run:
+4. From the terminal navigate to the newly created directory and run:
 
         serverless deploy
         
