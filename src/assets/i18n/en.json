@@ -5,9 +5,14 @@
     "up next": "Up Next",
     "pending requests": "Pending Requests",
     "play next": "Play Next",
-    "Reject": "Reject",
+    "reject": "Reject",
     "no current song playing message": "There is no song currently selected. Click the play next button on any request below to get started."
   },
+  "confirm dialog cancel": "Cancel",
+  "confirm dialog title": "Reject Request?",
+  "confirm dialog message": "Are you sure you want to reject this request? This action cannot be undone.",
+  "confirm dialog action": "Reject",
   "events": "Events",
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "cancel": "Cancel"
 }

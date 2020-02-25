@@ -30,7 +30,7 @@
               [status]="request.status" *ngFor="let request of requestsService.acceptedRequests; index as i">
 
               <button rejectButton mat-button class="request-button" color="warn"
-                (click)="openDialog(i, 'acceptedRequests')">{{ t('Reject') }}</button>
+                (click)="openDialog(i, 'acceptedRequests')">{{ t('reject') }}</button>
               <button playNextButton mat-flat-button class="request-button" color="primary"
                 (click)="playNext(i)">{{ t('play next') }}</button>
 

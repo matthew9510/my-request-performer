@@ -3,6 +3,7 @@ import { RequestsService } from 'src/app/services/requests.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { translate } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-requests',
@@ -49,13 +50,19 @@ export class RequestsComponent implements OnInit {
 
   // may need to pass in request_id as well to be able to change the status
   openDialog(index, requestType): void {
+    const message = translate('confirm dialog message');
+    const title = translate('confirm dialog title');
+    const action = translate('confirm dialog action');
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: {
         // need to find out how to use transloco on these msg strings
-        title: 'Reject Request?',
-        message: 'Are you sure you want to reject this request? This action cannot be undone.',
-        action: 'Reject'
+        title,
+        message,
+        action
+        // title: 'Reject Request?',
+        // message: 'Are you sure you want to reject this request? This action cannot be undone.',
+        // action: 'Reject'
       }
     });
 
