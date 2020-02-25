@@ -1,12 +1,5 @@
 {
-	"auth": {
-		"myrequest362310f3": {
-			"service": "Cognito",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": [],
-			"customAuth": false
-		}
-	},
+	"auth": {},
 	"function": {},
 	"api": {},
 	"storage": {}
