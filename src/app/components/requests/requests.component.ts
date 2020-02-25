@@ -52,6 +52,7 @@ export class RequestsComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: {
+        // need to find out how to use transloco on these msg strings
         title: 'Reject Request?',
         message: 'Are you sure you want to reject this request? This action cannot be undone.',
         action: 'Reject'
