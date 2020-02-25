@@ -14,7 +14,7 @@ export class CreateEventComponent implements OnInit {
   eventDetailForm: FormGroup;
   venueForm: FormGroup;
   eventTimeAndDateForm: FormGroup;
-  addingVenue = false;
+  addingVenue = false;  
 
   constructor(private fb: FormBuilder, private eventService: EventService, private performerService: PerformerService){}
 
