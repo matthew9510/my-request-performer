@@ -1,1 +1,10 @@
 <amplify-authenticator [usernameAttributes]="usernameAttributes"></amplify-authenticator>
+
+<!--It appears that if a user creates an account, but then leaves before being confirmed. And then later tries to:
+  1. Sign up&#45;&#45;it says the account already exists
+  2. Sign in &#45;&#45;it says the user is not confirmed.
+ So we do indeed need a way to know if the user is registered but not confirmed. In that case, when they try to sign in, they could sign in but then have to verify before proceeding.
+ https://github.com/aws-amplify/amplify-js/issues/3679
+ -->
+
+

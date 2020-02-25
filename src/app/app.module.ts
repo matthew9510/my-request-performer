@@ -40,6 +40,7 @@ import {
 
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CreateEventComponent } from './components/create-event/create-event.component';
+import {  AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,7 @@ import { CreateEventComponent } from './components/create-event/create-event.com
         Auth
       });
     }
-  }],
+  }, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

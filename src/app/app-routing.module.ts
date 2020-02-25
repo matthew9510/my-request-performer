@@ -10,15 +10,15 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 import { LoginComponent } from './components/login/login.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'payout', component: PayoutComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'requests', component: RequestsComponent },
   { path: 'events', component: ManageEventsComponent },
-  { path: 'create-event', component: CreateEventComponent },
-  { path: 'login', component: LoginComponent }
+  { path: 'create-event', component: CreateEventComponent }
 ];
 
 @NgModule({
