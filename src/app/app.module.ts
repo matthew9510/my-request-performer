@@ -40,6 +40,9 @@ import {
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
 
+import { EventService } from './services/event.service';
+import { PerformerService } from './services/performer.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -89,7 +92,7 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     MatAutocompleteModule,
     MatStepperModule
   ],
-  providers: [],
+  providers: [EventService, PerformerService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

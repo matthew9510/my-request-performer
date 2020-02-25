@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '@ENV'
+import { Event } from "../interfaces/events"
 
+// alter this to match interface
 export interface Events {
   venue: string,
   date: string,
@@ -13,16 +15,25 @@ export interface Events {
   providedIn: 'root'
 })
 export class EventService {
-   
-  constructor(private http: HttpClient) {
-   }
+
+  constructor(private http: HttpClient) {}
 
   getEvents() {
-    return this.http.get<Events[]>('../assets/events.json');
+    // not sure if this will get all 
+    return this.http.get(environment.eventsUrl);
   }
 
-  createEvent(event) {
-    return this.http.post(environment.eventUrl, event);
+  createEvent(event: Event) {
+    return this.http.post(environment.eventsUrl, event);
+  }
+
+  getVenues(event_id){
+    return this.http.get(environment.venuesUrl, event_id)
+  }
+
+  addVenue(venue){
+    console.log(JSON.stringify(venue))
+    return this.http.put(environment.venuesUrl, JSON.stringify(venue))
   }
 
 }

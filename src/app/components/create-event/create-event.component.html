@@ -1,5 +1,5 @@
 <ng-container *transloco="let t; read: 'createEvent'">
-  <mat-vertical-stepper labelPosition="bottom" #stepper linear>
+  <mat-vertical-stepper  #stepper [linear]="true">
     <mat-step [stepControl]="eventDetailForm">
       <form [formGroup]="eventDetailForm" class="createEventForm">
         <ng-template matStepLabel>{{ t('eventDetails') }}</ng-template>
@@ -71,7 +71,7 @@
         
         <mat-form-field *ngIf="!addingVenue">
           <mat-label>{{ t('venue') }}</mat-label>
-          <input matInput formControlName="id" [matAutocomplete]="auto" autocomplete="zalsdjflsadfkjfl" name="venue">
+          <input matInput formControlName="id" [matAutocomplete]="auto" autocomplete="zalsdjflsadfkjfl">
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let venue of venues" [value]='value.id'>{{venue.name}}</mat-option>
             <mat-option class="add-venue-option">

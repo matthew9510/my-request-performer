@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
+
 import * as moment from 'moment';
 import { EventService } from 'src/app/services/event.service';
+import { PerformerService } from '@services/performer.service';
 
 @Component({
   selector: 'app-create-event',
@@ -14,14 +16,14 @@ export class CreateEventComponent implements OnInit {
   eventTimeAndDateForm: FormGroup;
   addingVenue = false;
 
-  constructor(private fb: FormBuilder, private eventService: EventService) {}
+  constructor(private fb: FormBuilder, private eventService: EventService, private performerService: PerformerService){}
 
   ngOnInit() {
     this.eventDetailForm = this.fb.group({
       title: [null, Validators.required],
+      description: [null, Validators.required],
       coverFee: [null],
       genre: [null, Validators.required],
-      description: [null, Validators.required],
       url: [null],
       image: [null],
     })
@@ -33,9 +35,20 @@ export class CreateEventComponent implements OnInit {
     })
 
     this.venueForm = this.fb.group({
-      id: [null, Validators.required],
+      id: [null, Validators.required, this.venueValidator],
     })
   }
+
+  venueValidator(control: AbstractControl): { [key:string]:boolean } | null {
+    if (control.touched ){
+      return {'venueError': true}
+    }
+
+    return null
+  }
+
+//  loadVenues(){
+//  }
 
   displayAddVenue() {
     this.addingVenue = true;
@@ -50,11 +63,68 @@ export class CreateEventComponent implements OnInit {
     });
   }
 
+  renameVenueFormProperties(){
+    // function to rename venue properties
+    if (this.addingVenue){
+      return {
+        name: this.venueForm.get('name').value,
+        street_address: this.venueForm.get('streetAddress').value,      
+        city: this.venueForm.get('city').value,
+        state: this.venueForm.get('state').value,
+        postal_code: this.venueForm.get('postalCode').value,
+        country: this.venueForm.get('country').value,
+        url:this.venueForm.get('url').value,
+        performer_id: '12345'
+      }
+    }
+    else {
+      return { venue_id: this.venueForm.get('id').value }
+    }
+  }
+
+  renameEventTimeAndDateFormProperties(){
+    // function to rename event time and date properties
+    return {
+      date: this.eventTimeAndDateForm.get('date').value,
+      event_start_time: this.eventTimeAndDateForm.get('startTime').value,
+      event_endd_time: this.eventTimeAndDateForm.get('endTime').value,
+    }
+  }
+
+  renameEventFormProperties() {
+    // function to rename event properties
+    return {
+      title: this.eventDetailForm.get('title').value,
+      description: this.eventDetailForm.get('description').value,
+      coverFee: this.eventDetailForm.get('coverFee').value,
+      genre: this.eventDetailForm.get('genre').value,
+      url: this.eventDetailForm.get('url').value,
+      image: this.eventDetailForm.get('description').value
+    }
+  }
+
+  prepareEvent() {
+    // return {
+    //   venue_id: 
+    // }
+  }
+
   createEvent() {
-    console.log(this.eventDetailForm);
-    console.log(this.eventTimeAndDateForm);
-    console.log(this.venueForm);
-    console.log("Form completed")
+    if(this.addingVenue){
+      // make a post to add venue
+      let venue = this.renameVenueFormProperties()
+      this.eventService.addVenue(venue).subscribe((res: any) => {
+        console.log(res)
+        let venue_id = res.id
+        let event = this.prepareEvent()
+
+      }, (err) => {
+
+      })
+    }
+    else{
+
+    }
   }
 
   imageUploaded(image) {
