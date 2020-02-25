@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { translate } from '@ngneat/transloco';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-requests',
@@ -26,7 +27,8 @@ export class RequestsComponent implements OnInit {
   constructor(
     private requestsService: RequestsService,
     public dialog: MatDialog,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private _snackBar: MatSnackBar
   ) { }
 
 
@@ -47,6 +49,11 @@ export class RequestsComponent implements OnInit {
     }
   };
 
+  openSnackBar(message) {
+    this._snackBar.open(message, 'Dismiss', {
+      duration: 1000,
+    });
+  };
 
   // may need to pass in request_id as well to be able to change the status
   openDialog(index, requestType): void {
@@ -56,13 +63,9 @@ export class RequestsComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: {
-        // need to find out how to use transloco on these msg strings
         title,
         message,
         action
-        // title: 'Reject Request?',
-        // message: 'Are you sure you want to reject this request? This action cannot be undone.',
-        // action: 'Reject'
       }
     });
 
