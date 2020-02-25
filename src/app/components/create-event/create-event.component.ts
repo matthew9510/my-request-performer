@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -10,8 +11,13 @@ import * as moment from 'moment';
 })
 export class CreateEventComponent implements OnInit {
   eventForm: FormGroup;
+  addingVenue = false;
+  eventToClone;
 
-  constructor() { }
+  constructor(private router: Router) {
+    this.eventToClone = this.router.getCurrentNavigation().extras.state;
+
+  }
 
   ngOnInit() {
     this.eventForm = new FormBuilder().group({
@@ -26,10 +32,33 @@ export class CreateEventComponent implements OnInit {
       url: [null],
       image: [null],
     });
+
+    if (this.eventToClone !== undefined) {
+      this.eventForm.patchValue(this.eventToClone);
+    }
+
+
+  }
+
+  displayAddVenue() {
+    this.addingVenue = true;
+    this.eventForm.addControl('newVenue', new FormBuilder().group({
+      name: [null, Validators.required],
+      streetAddress: [null, Validators.required],
+      city: [null, Validators.required],
+      state: [null, Validators.required],
+      postalCode: [null, Validators.required],
+      country: [null, Validators.required],
+      url: [null],
+    }));
   }
 
   createEvent() {
     console.log(this.eventForm.value);
+    if (this.addingVenue) {
+      // do add venue stuff
+    }
+    // do create even stuff
   }
 
   imageUploaded(image) {

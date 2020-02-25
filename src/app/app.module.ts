@@ -1,30 +1,29 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { EventdetailsComponent } from "./components/event-detail/event-detail.component";
-import { ManageEventsComponent } from "./components/manage-events/manage-events.component";
-import { RequestsComponent } from "./components/requests/requests.component";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatMomentDateModule } from "@angular/material-moment-adapter";
-import "hammerjs";
-import { DashboardComponent } from "./components/dashboard/dashboard.component";
-import { PayoutComponent } from "./components/dashboard/payout/payout.component";
-import { HistoryComponent } from "./components/dashboard/history/history.component";
-import { ProfileComponent } from "./components/dashboard/profile/profile.component";
-import { HttpClientModule } from "@angular/common/http";
-import { ReactiveFormsModule } from "@angular/forms";
-import { RequestDetailComponent } from "./components/request-detail/request-detail.component";
-import { TranslocoRootModule } from "./transloco-root.module";
-import { ConfirmDialogComponent } from "./components/confirm-dialog/confirm-dialog.component";
-import { BottomNavComponent } from "./components/bottom-nav/bottom-nav.component";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { EventdetailsComponent } from './components/event-detail/event-detail.component';
+import { ManageEventsComponent } from './components/manage-events/manage-events.component';
+import { RequestsComponent } from './components/requests/requests.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import 'hammerjs';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { PayoutComponent } from './components/dashboard/payout/payout.component';
+import { HistoryComponent } from './components/dashboard/history/history.component';
+import { ProfileComponent } from './components/dashboard/profile/profile.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RequestDetailComponent } from './components/request-detail/request-detail.component';
+import { TranslocoRootModule } from './transloco-root.module';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatToolbarModule,
   MatIconModule,
   MatButtonModule,
   MatFormFieldModule,
-  MatInputModule,
   MatSelectModule,
   MatCheckboxModule,
   MatChipsModule,
@@ -33,11 +32,17 @@ import {
   MatTabsModule,
   MatListModule,
   MatDialogModule,
-  MatDatepickerModule
-} from "@angular/material";
+  MatDatepickerModule,
+  MatAutocompleteModule,
+  MatInputModule,
+} from '@angular/material';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CreateEventComponent } from './components/create-event/create-event.component';
+import { HeaderComponent } from './components/header/header.component';
+import { AddVenueComponent } from './components/add-venue/add-venue.component';
+import { FilterPipe } from './pipes/filter.pipe';
 
-import { ScrollingModule } from "@angular/cdk/scrolling";
-import { CreateEventComponent } from "./components/create-event/create-event.component";
+
 
 @NgModule({
   declarations: [
@@ -52,16 +57,20 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     RequestsComponent,
     RequestDetailComponent,
     ConfirmDialogComponent,
-    BottomNavComponent
+    BottomNavComponent,
+    HeaderComponent,
+    AddVenueComponent,
+    FilterPipe,
   ],
   entryComponents: [
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
     BrowserAnimationsModule,
     MatTabsModule,
     MatFormFieldModule,
@@ -80,9 +89,17 @@ import { CreateEventComponent } from "./components/create-event/create-event.com
     LayoutModule,
     ScrollingModule,
     MatDatepickerModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatCardModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatAutocompleteModule,
   ],
-  providers: [],
+  providers: [
+    FilterPipe,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
