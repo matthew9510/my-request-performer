@@ -116,8 +116,11 @@ export class CreateEventComponent implements OnInit {
       this.eventService.addVenue(venue).subscribe((res: any) => {
         console.log(res)
         let venue_id = res.id
+        // upload image 
+          // in subscribe link image_cognito path
+          // create event 
+          // upload event 
         let event = this.prepareEvent()
-
       }, (err) => {
 
       })
