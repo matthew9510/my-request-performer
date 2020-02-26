@@ -20,7 +20,8 @@ export class RequestsComponent implements OnInit {
     song: 'Piano Man',
     artist: 'Billy Joel',
     amount: 1.00,
-    currentlyPlaying: true
+    currentlyPlaying: true,
+    memo: `Shout out for Matt's birthday!`
   }
 
 
@@ -45,18 +46,23 @@ export class RequestsComponent implements OnInit {
       song: null,
       artist: null,
       amount: null,
-      currentlyPlaying: false
+      currentlyPlaying: false,
+      memo: null,
     }
+    const message = translate('snackbar song ended')
+    this.openSnackBar(message);
   };
 
-  openSnackBar(message) {
+  openSnackBar(message: string) {
+    let durationSeconds = 2;
     this._snackBar.open(message, 'Dismiss', {
-      duration: 1000,
+      duration: durationSeconds * 1000,
+      verticalPosition: 'bottom'
     });
   };
 
   // may need to pass in request_id as well to be able to change the status
-  openDialog(index, requestType): void {
+  openDialog(index: number, requestType: string): void {
     const message = translate('confirm dialog message');
     const title = translate('confirm dialog title');
     const action = translate('confirm dialog action');
@@ -70,13 +76,15 @@ export class RequestsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      const message = translate('snackbar message rejected');
       if (result) {
         this.rejectRequest(index, requestType);
+        this.openSnackBar(message);
       };
     });
   }
 
-  rejectRequest(index, requestType) {
+  rejectRequest(index: number, requestType: string) {
     if (requestType === 'acceptedRequests') {
       this.requestsService.acceptedRequests.splice(index, 1);
     }
@@ -85,19 +93,24 @@ export class RequestsComponent implements OnInit {
     }
   }
 
-  playNext(index) {
+  playNext(index: number) {
     this.nowPlayingRequest = {
       song: this.requestsService.acceptedRequests[index].song,
       artist: this.requestsService.acceptedRequests[index].artist,
       amount: this.requestsService.acceptedRequests[index].amount,
+      memo: this.requestsService.acceptedRequests[index].memo,
       currentlyPlaying: true
     }
     this.rejectRequest(index, 'acceptedRequests');
+    const message = translate('snackbar now playing')
+    this.openSnackBar(`${this.nowPlayingRequest.song} ${message}`);
   }
 
-  acceptRequest(index) {
+  acceptRequest(index: number) {
     this.requestsService.acceptedRequests.push(this.requestsService.pendingRequests[index]);
     this.rejectRequest(index, 'pendingRequests');
+    const message = translate('snackbar message accepted');
+    this.openSnackBar(message);
   }
 
   // these methods were used to grab the request data from the requests JSON files, may be reusable once backend is set up

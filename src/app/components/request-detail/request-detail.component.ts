@@ -10,6 +10,7 @@ export class RequestDetailComponent implements OnInit {
   @Input() artist: string;
   @Input() song: string;
   @Input() amount: number;
+  @Input() memo: string;
   @Input() status: string;
   @Input() createdOn: string;
 

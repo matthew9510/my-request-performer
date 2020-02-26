@@ -8,8 +8,12 @@
           <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('now playing') }}
           </h3>
           <div *ngIf="nowPlayingRequest.currentlyPlaying; else selectNextSong" [class.largeScreenChild]="isLargeScreen">
-            <app-request-detail [song]="nowPlayingRequest.song" [artist]="nowPlayingRequest.artist"
-              [amount]="nowPlayingRequest.amount" [status]="nowPlayingRequest.status">
+            <app-request-detail 
+              [song]="nowPlayingRequest.song" 
+              [artist]="nowPlayingRequest.artist"
+              [amount]="nowPlayingRequest.amount" 
+              [status]="nowPlayingRequest.status"
+              [memo]="nowPlayingRequest.memo">
               <button endSongButton mat-flat-button class="request-button" color="accent" (click)="endCurrentSong()">End
                 song</button>
             </app-request-detail>
@@ -21,8 +25,12 @@
 
           <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
           <mat-list [class.largeScreenChild]="isLargeScreen">
-            <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
-              [status]="request.status" *ngFor="let request of requestsService.acceptedRequests; index as i">
+            <app-request-detail mat-list-item 
+              [song]="request.song" 
+              [artist]="request.artist" 
+              [amount]="request.amount"
+              [status]="request.status" 
+              *ngFor="let request of requestsService.acceptedRequests; index as i">
 
               <button rejectButton mat-button class="request-button" color="warn"
                 (click)="openDialog(i, 'acceptedRequests')">{{ t('reject') }}</button>

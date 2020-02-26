@@ -3,6 +3,9 @@
   <div id="request-info-wrapper" [class.requestInfoSmallScreen]="isSmallScreen">
     <span class="song-name mat-body-strong truncate">{{ song }}</span>
     <p class="artist-name mat-body truncate">{{ artist }}</p>
+    <div *ngIf="memo">
+      <p class="memo-text mat-body"><b>Message:</b> {{ memo }}</p>
+    </div>
   </div>
   <div id="tip-and-buttons" [class.actionsSmallScreen]="isSmallScreen">
     <div id="amount-wrapper">
