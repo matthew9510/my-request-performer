@@ -44,6 +44,7 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 // https://aws-amplify.github.io/docs/js/angular#option-2-configuring-the-amplify-provider-with-specified-amplify-js-modules
 import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
 import Auth from '@aws-amplify/auth';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import Auth from '@aws-amplify/auth';
     RequestsComponent,
     RequestDetailComponent,
     ConfirmDialogComponent,
-    BottomNavComponent
+    BottomNavComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
