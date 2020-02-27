@@ -10,16 +10,18 @@ mat-card {
     flex-grow: 1;
   }
 
-  button {
-    padding-left: 0;
-    margin-left: 0;
-  }
+  // button {
+  //   padding-left: 0;
+  //   margin-left: 0;
+  // }
 }
-mat-icon {
-  margin-top: 5px;
-}
+// mat-icon {
+//   margin-top: 5px;
+// }
+
 .mat-card-container {
   display: flex;
+  align-items: center;
 }
 
 .image {
@@ -36,6 +38,7 @@ mat-icon {
   color: white;
   position: absolute;
   transform: translate(18%, 120%);
+  align-self: start;
 }
 
 .venue {
