@@ -39,14 +39,14 @@
     },
     "Resources": {
     
-        "performerpoolGroup": {
+        "performerPoolGroupsGroup": {
           "Type" : "AWS::Cognito::UserPoolGroup",
           "Properties" : {
-              "GroupName" : "performerpool",
+              "GroupName" : "performerPoolGroups",
               "Precedence" : 1,
               "RoleArn" : {
                 "Fn::GetAtt": [
-                    "performerpoolGroupRole",
+                    "performerPoolGroupsGroupRole",
                     "Arn"
                 ]
               },
@@ -55,7 +55,7 @@
               } 
             }
         },
-        "performerpoolGroupRole": {
+        "performerPoolGroupsGroupRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "RoleName":{
@@ -65,7 +65,7 @@
                           {
                             "Ref": "authmyrequestb1e50365UserPoolId"
                           },
-                          "-performerpoolGroupRole"
+                          "-performerPoolGroupsGroupRole"
                         ]
                     ]
                 },
@@ -282,10 +282,10 @@
     },
     "Outputs": {
       
-        "performerpoolGroupRole": {
+        "performerPoolGroupsGroupRole": {
             "Value": {
                 "Fn::GetAtt": [
-                    "performerpoolGroupRole",
+                    "performerPoolGroupsGroupRole",
                     "Arn"
                 ]
             }

@@ -49,7 +49,7 @@
         "email, phone_number"
     ],
     "userPoolGroupList": [
-        "performerpool"
+        "performerPoolGroups"
     ],
     "dependsOn": []
 }

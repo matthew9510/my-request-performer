@@ -1,6 +1,6 @@
 [
     {
-        "groupName": "performerpool",
+        "groupName": "performerPoolGroups",
         "precedence": 1
     }
 ]
