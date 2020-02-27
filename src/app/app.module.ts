@@ -43,7 +43,10 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
 import { FilterPipe } from './pipes/filter.pipe';
-
+import { CurrencyPipe } from '@angular/common';
+import { RequestsService } from './services/requests.service';
+import { EventService } from './services/event.service';
+import { PayoutService } from './services/payout.service';
 
 
 @NgModule({
@@ -92,17 +95,16 @@ import { FilterPipe } from './pipes/filter.pipe';
     ScrollingModule,
     MatDatepickerModule,
     MatMomentDateModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
     MatAutocompleteModule,
     MatSnackBarModule,
     MatExpansionModule
   ],
   providers: [
     FilterPipe,
+    CurrencyPipe,
+    RequestsService,
+    EventService,
+    PayoutService
   ],
   bootstrap: [AppComponent]
 })
