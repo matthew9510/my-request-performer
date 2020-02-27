@@ -1,4 +1,4 @@
-<ng-container *transloco="let t">
+  <ng-container *transloco="let t">
   <form [formGroup]="eventForm" class="createEventForm">
     <mat-form-field>
       <mat-label>{{t("eventTitle")}}</mat-label>
@@ -94,7 +94,6 @@
 
 
     <mat-card-actions align="end">
-      <span>{{eventForm.get('venue').value}}</span>
       <button mat-flat-button color="accent" [disabled]="eventForm.invalid" type="submit" (submit)="createEvent()">
         {{t("createEvent")}}
       </button>

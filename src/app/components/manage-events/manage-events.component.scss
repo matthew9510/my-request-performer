@@ -26,12 +26,19 @@ mat-tab-group {
   height: 100%;
 }
 
+
 .header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   overflow: hidden;
   height: 10%;
+}
+@media screen and (min-width: 1280px) {
+  .header {
+    width: 50%;
+    margin: 0 auto;
+  }
 }
 .header mat-toolbar {
   height: 100%;
@@ -40,9 +47,32 @@ mat-tab-group {
 cdk-virtual-scroll-viewport {
   height: 90%;
 }
+@media screen and (min-width: 1280px) {
+  .cdk-virtual-scroll-viewport {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
 
 #leftToolbar {
-  width: 30%;
+  width: 40%;
+}
+@media screen and (min-width: 522px) {
+  #leftToolbar {
+    width: 30%;
+  }
+}
+@media screen and (max-width: 440px) {
+  #leftToolbar {
+    width: 50%;
+    font-size: 0.7em;
+  }
+}
+@media screen and (min-width: 1280px) {
+  #leftToolbar {
+    font-size: 0.8em;
+    font-weight: normal;
+  }
 }
 #rightToolbar {
   display: flex;
@@ -55,6 +85,23 @@ cdk-virtual-scroll-viewport {
   margin-left: 5%;
   width: 100%;
   height: 70%;
+}
+@media screen and (max-width: 440px) {
+  #rightToolbar mat-form-field {
+    font-size: 0.7em;
+  }
+}
+@media screen and (min-width: 441px) {
+  #rightToolbar mat-form-field {
+    margin-bottom: 2.5%;
+  }
+}
+@media screen and (min-width: 1280px) {
+  #rightToolbar mat-form-field {
+    font-size: 0.8em;
+    font-weight: lighter;
+    text-align: right;
+  }
 }
 
 #searchInput {

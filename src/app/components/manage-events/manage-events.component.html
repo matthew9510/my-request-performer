@@ -15,8 +15,7 @@
 
   <div id="rightToolbar">
     <mat-form-field *ngIf="scheduled || history" >
-
-      <mat-label *transloco="let t">{{t('searchEvent')}}</mat-label>
+      <mat-label>Search <mat-icon>search</mat-icon></mat-label>
       <input matInput id="searchInput" [(ngModel)]="searchText" >
     </mat-form-field>
   </div>
