@@ -48,6 +48,8 @@
     "usernameAttributes": [
         "email, phone_number"
     ],
-    "userPoolGroupList": [],
+    "userPoolGroupList": [
+        "performerpool"
+    ],
     "dependsOn": []
 }
