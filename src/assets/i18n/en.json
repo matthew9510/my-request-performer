@@ -28,5 +28,9 @@
   "website": " Website",
   "description": "Description",
   "uploadImage": "Upload Image",
-  "createEvent": "Create Event"
+  "createEvent": "Create Event",
+  "newEvent": "New Event",
+  "historicalEvents": "History",
+  "scheduledEvents": "Scheduled",
+  "searchEvent": "Search Events..."
 }
