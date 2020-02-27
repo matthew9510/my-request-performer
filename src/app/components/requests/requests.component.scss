@@ -21,8 +21,15 @@ mat-tab-group {
   align-self: center;
   justify-self: flex-end;
   position: fixed !important;
-  bottom: 4rem;
+  bottom: 4.5rem;
   z-index: 99;
+}
+
+.fab-button-text {
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  font-weight: 500;
 }
 
 .request-subheader {
@@ -55,4 +62,9 @@ mat-list {
 
 .request-button {
   margin: 5px;
+}
+
+.body-text {
+  margin: 50px;
+  text-align: center;
 }

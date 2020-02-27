@@ -6,7 +6,10 @@
     "pending requests": "Pending Requests",
     "play next": "Play",
     "reject": "Reject",
-    "no current song playing message": "There is no song currently selected. Click the play next button on any request below to get started."
+    "no current song playing message": "There is no song currently selected. Click the play next button on any request below to get started.",
+    "start event fab": "Start event",
+    "inactive event message": "You must start your event to allow requests. Start your event by clicking the button below.",
+    "end song button": "End song"
   },
   "confirm dialog cancel": "Cancel",
   "confirm dialog title": "Reject Request?",

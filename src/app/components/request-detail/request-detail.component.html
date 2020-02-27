@@ -9,7 +9,7 @@
   </div>
   <div id="tip-and-buttons" [class.actionsSmallScreen]="isSmallScreen">
     <div id="amount-wrapper">
-      <span class="tip-amount">${{ amount }}</span>
+      <span class="tip-amount" *ngIf="amount">${{ amount }}</span>
     </div>
     <div id="buttons-wrapper">
       <ng-content select="[rejectButton]"></ng-content>
