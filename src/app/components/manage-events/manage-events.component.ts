@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { Events } from '../../services/event.service';
-import {FormControl} from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,7 +17,7 @@ export class ManageEventsComponent implements OnInit {
   searchText: string;
   selected: string = 'Scheduled';
 
-  constructor(private eventService: EventService) {
+  constructor(private eventService: EventService, private router: Router) {
   }
 
   ngOnInit() {
@@ -41,6 +41,10 @@ export class ManageEventsComponent implements OnInit {
         this.history = true;
         this.scheduled = false;
       });
+  }
+
+  createEvent() {
+    this.router.navigate(['/create-event'])
   }
 
 }

@@ -1,23 +1,23 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { EventdetailsComponent } from "./components/event-detail/event-detail.component";
-import { ManageEventsComponent } from "./components/manage-events/manage-events.component";
-import { RequestsComponent } from "./components/requests/requests.component";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatMomentDateModule } from "@angular/material-moment-adapter";
-import "hammerjs";
-import { DashboardComponent } from "./components/dashboard/dashboard.component";
-import { PayoutComponent } from "./components/dashboard/payout/payout.component";
-import { HistoryComponent } from "./components/dashboard/history/history.component";
-import { ProfileComponent } from "./components/dashboard/profile/profile.component";
-import { HttpClientModule } from "@angular/common/http";
-import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { RequestDetailComponent } from "./components/request-detail/request-detail.component";
-import { TranslocoRootModule } from "./transloco-root.module";
-import { ConfirmDialogComponent } from "./components/confirm-dialog/confirm-dialog.component";
-import { BottomNavComponent } from "./components/bottom-nav/bottom-nav.component";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { EventdetailsComponent } from './components/event-detail/event-detail.component';
+import { ManageEventsComponent } from './components/manage-events/manage-events.component';
+import { RequestsComponent } from './components/requests/requests.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import 'hammerjs';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { PayoutComponent } from './components/dashboard/payout/payout.component';
+import { HistoryComponent } from './components/dashboard/history/history.component';
+import { ProfileComponent } from './components/dashboard/profile/profile.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RequestDetailComponent } from './components/request-detail/request-detail.component';
+import { TranslocoRootModule } from './transloco-root.module';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import {
   MatToolbarModule,
@@ -35,11 +35,12 @@ import {
   MatDatepickerModule,
   MatAutocompleteModule,
   MatInputModule,
-} from "@angular/material";
-import { ScrollingModule } from "@angular/cdk/scrolling";
-import { CreateEventComponent } from "./components/create-event/create-event.component";
-import { FilterPipe } from './pipes/filter.pipe';
+} from '@angular/material';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CreateEventComponent } from './components/create-event/create-event.component';
+import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
+import { FilterPipe } from './pipes/filter.pipe';
 
 
 
@@ -57,6 +58,7 @@ import { AddVenueComponent } from './components/add-venue/add-venue.component';
     RequestDetailComponent,
     ConfirmDialogComponent,
     BottomNavComponent,
+    HeaderComponent,
     AddVenueComponent,
     FilterPipe,
   ],
@@ -68,6 +70,7 @@ import { AddVenueComponent } from './components/add-venue/add-venue.component';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
     BrowserAnimationsModule,
     MatTabsModule,
     MatFormFieldModule,
@@ -100,9 +103,7 @@ import { AddVenueComponent } from './components/add-venue/add-venue.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule,
     MatAutocompleteModule,
-    FormsModule,
   ],
   providers: [
     FilterPipe,
