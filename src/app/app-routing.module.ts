@@ -10,13 +10,14 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'payout', component: PayoutComponent },
-  { path: 'history', component: HistoryComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'requests', component: RequestsComponent },
-  { path: 'events', component: ManageEventsComponent },
-  { path: 'create-event', component: CreateEventComponent }
+  { path: 'dashboard', component: DashboardComponent, data: { title: 'Dashboard' } },
+  { path: 'payout', component: PayoutComponent, data: { title: 'Payout' } },
+  { path: 'history', component: HistoryComponent, data: { title: 'Histoy' } },
+  { path: 'profile', component: ProfileComponent, data: { title: 'Profile' } },
+  { path: 'requests', component: RequestsComponent, data: { title: 'Requests' } },
+  { path: 'events', component: ManageEventsComponent, data: { title: 'Manage Events' } },
+  { path: 'create-event', component: CreateEventComponent, data: { title: 'Create Event' } },
+  { path: 'event/:id/clone', component: CreateEventComponent, data: { title: 'Clone Event' } },
 ];
 
 @NgModule({

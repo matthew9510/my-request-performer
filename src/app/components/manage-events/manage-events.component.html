@@ -1,13 +1,45 @@
-<div class="wrapper">
 
-	<span class="title">Manage Events</span>
+<div class="header">
+<mat-toolbar>
+  <mat-select id="leftToolbar" [(value)]="selected">
+    <mat-option value="Scheduled" (click)="getEvents()">
+      Scheduled
+    </mat-option>
+    <mat-option value="History" (click)="getPastEvents()">
+      History
+    </mat-option>
+    <mat-option (click)="createEvent()">
+      <mat-icon>add</mat-icon> New Event
+    </mat-option>
+  </mat-select>
 
 
+  <div id="rightToolbar">
+    <mat-form-field *ngIf="scheduled || history" >
+
+      <mat-label>Search event...</mat-label>
+      <input matInput id="searchInput" [(ngModel)]="searchText" >
+    </mat-form-field>
+  </div>
+
+
+</mat-toolbar>
 </div>
 
-<cdk-virtual-scroll-viewport itemSize="80">
-	<mat-list class="events">
-		<app-eventdetails *cdkVirtualFor="let event of events" mat-list-item class="event" [eventData]="event">
-		</app-eventdetails>
-	</mat-list>
+<cdk-virtual-scroll-viewport itemSize="80" *ngIf="!history">
+  <mat-list class="events">
+    <app-eventdetails  *cdkVirtualFor="let event of events | filter : searchText" mat-list-item class="event" [eventData]="event">
+    </app-eventdetails>
+  </mat-list>
 </cdk-virtual-scroll-viewport>
+
+<cdk-virtual-scroll-viewport itemSize="80" *ngIf="!scheduled">
+  <mat-list class="events" >
+    <app-eventdetails *cdkVirtualFor="let pastEvent of pastEvents | filter : searchText " mat-list-item class="event" [eventData]="pastEvent">
+    </app-eventdetails>
+  </mat-list>
+</cdk-virtual-scroll-viewport>
+
+
+
+

@@ -16,22 +16,23 @@ export interface Events {
 })
 export class EventService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getEvents() {
     // not sure if this will get all 
-    return this.http.get(environment.eventsUrl);
+    // return this.http.get(environment.eventsUrl);
+    return this.http.get('assets/events.json')
   }
 
   createEvent(event: Event) {
     return this.http.post(environment.eventsUrl, event);
   }
 
-  getVenues(event_id){
+  getVenues(event_id) {
     return this.http.get(environment.venuesUrl, event_id)
   }
 
-  addVenue(venue){
+  addVenue(venue) {
     console.log(JSON.stringify(venue))
     return this.http.put(environment.venuesUrl, JSON.stringify(venue))
   }

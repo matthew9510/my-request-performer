@@ -32,8 +32,10 @@
       
         <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)" accept="image/png, image/jpeg" />
         <button mat-flat-button color="primary" (click)="imageInput.click()">{{ t('uploadImage') }}</button>
+        <mat-card-actions align="end">
+          <button mat-button matStepperNext>{{ t('next') }}</button>
+        </mat-card-actions>
 
-        <button mat-button matStepperNext>{{ t('next') }}</button>
       </form>
     </mat-step>
 
@@ -59,8 +61,11 @@
           <input type="time" matInput formControlName="endTime">
         </mat-form-field>
       
-        <button mat-button matStepperPrevious>{{ t('back') }}</button>
-        <button mat-button matStepperNext>{{ t('next') }}</button>
+
+        <mat-card-actions align="end">
+          <button mat-button matStepperPrevious>{{ t('back') }}</button>
+          <button mat-button matStepperNext>{{ t('next') }}</button>
+        </mat-card-actions>
       </form>
     </mat-step>
 
@@ -118,9 +123,9 @@
             <input matInput formControlName="url">
           </mat-form-field>
         </div>
-
-        <button mat-button matStepperPrevious>{{ t('back') }}</button>
+        
         <mat-card-actions align="end">
+          <button mat-button matStepperPrevious>{{ t('back') }}</button>
           <button mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit" (click)="createEvent()">{{ t('createEvent') }}</button>
         </mat-card-actions>   
       </form>

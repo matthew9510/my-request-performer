@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import * as moment from 'moment';
 import { EventService } from 'src/app/services/event.service';
 import { PerformerService } from '@services/performer.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-event',
@@ -13,10 +13,18 @@ import { PerformerService } from '@services/performer.service';
 export class CreateEventComponent implements OnInit {
   eventDetailForm: FormGroup;
   venueForm: FormGroup;
+  eventForm: FormGroup;
   eventTimeAndDateForm: FormGroup;
-  addingVenue = false;  
+  addingVenue = false;
+  eventToClone;
 
-  constructor(private fb: FormBuilder, private eventService: EventService, private performerService: PerformerService){}
+  constructor(private fb: FormBuilder,
+    private eventService: EventService,
+    private performerService: PerformerService,
+    private router: Router
+  ) {
+    this.eventToClone = this.router.getCurrentNavigation().extras.state;
+  }
 
   ngOnInit() {
     this.eventDetailForm = this.fb.group({
@@ -39,16 +47,13 @@ export class CreateEventComponent implements OnInit {
     })
   }
 
-  venueValidator(control: AbstractControl): { [key:string]:boolean } | null {
-    if (control.touched ){
-      return {'venueError': true}
+  venueValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    if (control.touched) {
+      return { 'venueError': true }
     }
 
     return null
   }
-
-//  loadVenues(){
-//  }
 
   displayAddVenue() {
     this.addingVenue = true;
@@ -61,19 +66,23 @@ export class CreateEventComponent implements OnInit {
       country: [null, Validators.required],
       url: [null],
     });
+
+    if (this.eventToClone !== undefined) {
+      this.eventForm.patchValue(this.eventToClone);
+    }
   }
 
-  renameVenueFormProperties(){
+  renameVenueFormProperties() {
     // function to rename venue properties
-    if (this.addingVenue){
+    if (this.addingVenue) {
       return {
         name: this.venueForm.get('name').value,
-        street_address: this.venueForm.get('streetAddress').value,      
+        street_address: this.venueForm.get('streetAddress').value,
         city: this.venueForm.get('city').value,
         state: this.venueForm.get('state').value,
         postal_code: this.venueForm.get('postalCode').value,
         country: this.venueForm.get('country').value,
-        url:this.venueForm.get('url').value,
+        url: this.venueForm.get('url').value,
         performer_id: '12345'
       }
     }
@@ -82,7 +91,7 @@ export class CreateEventComponent implements OnInit {
     }
   }
 
-  renameEventTimeAndDateFormProperties(){
+  renameEventTimeAndDateFormProperties() {
     // function to rename event time and date properties
     return {
       date: this.eventTimeAndDateForm.get('date').value,
@@ -110,22 +119,22 @@ export class CreateEventComponent implements OnInit {
   }
 
   createEvent() {
-    if(this.addingVenue){
+    if (this.addingVenue) {
       // make a post to add venue
       let venue = this.renameVenueFormProperties()
       this.eventService.addVenue(venue).subscribe((res: any) => {
         console.log(res)
         let venue_id = res.id
         // upload image 
-          // in subscribe link image_cognito path
-          // create event 
-          // upload event 
+        // in subscribe link image_cognito path
+        // create event 
+        // upload event 
         let event = this.prepareEvent()
       }, (err) => {
 
       })
     }
-    else{
+    else {
 
     }
   }
