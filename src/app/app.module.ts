@@ -34,6 +34,7 @@ import {
   MatDialogModule,
   MatDatepickerModule,
   MatAutocompleteModule,
+  MatStepperModule,
   MatInputModule,
 } from '@angular/material';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -41,8 +42,6 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
 import { FilterPipe } from './pipes/filter.pipe';
-
-
 
 @NgModule({
   declarations: [
@@ -98,6 +97,8 @@ import { FilterPipe } from './pipes/filter.pipe';
     ScrollingModule,
     MatDatepickerModule,
     MatMomentDateModule,
+    MatAutocompleteModule,
+    MatStepperModule,
     MatCardModule,
     MatIconModule,
     ReactiveFormsModule,
