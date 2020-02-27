@@ -36,7 +36,8 @@ import {
   MatAutocompleteModule,
   MatInputModule,
   MatSnackBarModule,
-  MatExpansionModule
+  MatExpansionModule,
+  MatMenuModule
 } from '@angular/material';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CreateEventComponent } from './components/create-event/create-event.component';
@@ -97,7 +98,8 @@ import { PayoutService } from './services/payout.service';
     MatMomentDateModule,
     MatAutocompleteModule,
     MatSnackBarModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatMenuModule,
   ],
   providers: [
     FilterPipe,

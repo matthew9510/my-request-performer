@@ -15,8 +15,14 @@
       <mat-tab class="tab-label" label="Accepted">
         <ng-template matTabContent>
           <div [class.largeScreenDisplay]="isLargeScreen">
-            <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('now playing') }}
-            </h3>
+            <div [class.largeScreenChild]="isLargeScreen" class="subheader-wrapper">
+              <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
+              <mat-menu #eventMenu="matMenu" xPosition="before">
+                <button mat-menu-item>End Event</button>
+              </mat-menu>
+              <button mat-icon-button [matMenuTriggerFor]="eventMenu"><mat-icon>more_vert</mat-icon></button>
+            </div>
+
             <div *ngIf="nowPlayingRequest.currentlyPlaying; else selectNextSong" [class.largeScreenChild]="isLargeScreen">
               <app-request-detail 
                 [song]="nowPlayingRequest.song" 

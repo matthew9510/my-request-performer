@@ -2,6 +2,19 @@ mat-tab-group {
   height: 100%;
 }
 
+.subheader-wrapper {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    margin: auto 0;
+
+    mat-icon {
+      margin: 0;
+    }
+  }
+}
+
 .extended-fab-button {
   width: unset;
   padding: 0 26px;
