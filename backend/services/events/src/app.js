@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT");
@@ -36,36 +36,79 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * GET method *
  **********************/
 
-app.get('/events', function(req, res) {
-  console.log("GET REQUEST...", req);
+app.get('/events', function (req, res) {
+  console.log("GET HELLLO REQUEST...", req);
+  res.json({
+    msg: "hello"
+  })
 
-  // create params
-  const params = {
+  // // create params
+  // const params = {
+  //   TableName: process.env.DYNAMODB_TABLE,
+  //   Key: {
+  //     id: req.query.id,
+  //   },
+  // };
+
+  // // fetch event from the database
+  // dynamoDb.get(params, (error, result) => {
+  //   // handle potential errors
+  //   if (error) {
+  //     console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+  //   } else {
+  //     if ("Item" in result && "id" in result.Item) {
+  //       // create a response
+  //       const response = {
+  //         statusCode: 200,
+  //         body: result.Item,
+  //       };
+  //       res.json({
+  //         success: 'Successfully found item in the events table!',
+  //         response: response.body
+  //       })
+  //     } else {
+  //       res.json({
+  //         message: 'Unable to find record, please check id was entered correctly... ',
+  //         invalid_id: params.Key.id
+  //       })
+  //     }
+  //   }
+  // });
+});
+
+/**********************
+ * GET by performer_id method *
+ **********************/
+
+app.get('/events/performer_id', function (req, res) {
+  console.log("testing")
+  console.log("GET REQUEST...", req.query);
+
+  var params = {
     TableName: process.env.DYNAMODB_TABLE,
-    Key: {
-      id: req.query.id,
-    },
-  };
+    IndexName: "performer_id-id-index", //batch get item / query 
 
-  // fetch event from the database
-  dynamoDb.get(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+    KeyConditionExpression: "performer_id = :a",
+    ExpressionAttributeValues: {
+      ":a": req.query.performer_id,
+
+    }
+  }
+
+  dynamoDb.query(params, function (err, data) {
+    if (err) {
+      console.log("Error", err);
     } else {
-      if ("Item" in result && "id" in result.Item) {
-        // create a response
-        const response = {
-          statusCode: 200,
-          body: result.Item,
-        };
-        res.json({success: 'Successfully found item in the events table!', response: response.body})
-      } else {
-        res.json({
-          message: 'Unable to find record, please check id was entered correctly... ',
-          invalid_id: params.Key.id
-        })
-      }
+      console.log("Success", data.Items);
+      // create a response
+      const response = {
+        statusCode: 200,
+        body: data.Items,
+      };
+      res.json({
+        success: 'Successfully found item in the events table!',
+        response: response.body
+      })
     }
   });
 });
@@ -74,7 +117,7 @@ app.get('/events', function(req, res) {
  * PUT method *
  ****************************/
 
-app.put('/events', function(req, res) {
+app.put('/events', function (req, res) {
 
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -85,15 +128,20 @@ app.put('/events', function(req, res) {
   params.Item.id = uuid.v1();
   params.Item.date_created = new Date().toJSON().slice(0, 10);
 
-  dynamoDb.put(params, function(err, result) {
+  dynamoDb.put(params, function (err, result) {
     if (err) {
       console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
+      // append the event_id to a performer 
+
       const response = {
         statusCode: 200,
         body: params.Item,
       };
-      res.json({success: 'Successfully added item to the events table!', record: response.body})
+      res.json({
+        success: 'Successfully added item to the events table!',
+        record: response.body
+      })
     }
   });
 });
@@ -102,7 +150,7 @@ app.put('/events', function(req, res) {
  * DELETE method *
  ****************************/
 
-app.delete('/events', function(req, res) {
+app.delete('/events', function (req, res) {
   console.log("DELETE EVENT REQUEST...", req.body);
 
   // create params
@@ -113,7 +161,7 @@ app.delete('/events', function(req, res) {
     },
   };
 
-  dynamoDb.delete(params, function(err, result) {
+  dynamoDb.delete(params, function (err, result) {
     if (err) {
       console.error("Unable to DELETE item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
@@ -121,7 +169,10 @@ app.delete('/events', function(req, res) {
         statusCode: 200,
         body: req.body,
       };
-      res.json({success: 'delete call for events table succeeded!', response: response});
+      res.json({
+        success: 'delete call for events table succeeded!',
+        response: response
+      });
     }
   });
 });
@@ -130,22 +181,26 @@ app.delete('/events', function(req, res) {
  * PATCH method *
  ****************************/
 
-app.patch('/events', function(req, res) {
+app.patch('/events', function (req, res) {
   console.log("UPDATE EVENT REQUEST...", req);
 
   // create params
   const params = {
-    TableName: table,
+    TableName: process.env.DYNAMODB_TABLE,
     Key: {
       id: req.query.id,
     },
     UpdateExpression: "set #n = :val1",
-    ExpressionAttributeValues:{":val1":req.query.name},
-    ExpressionAttributeNames:{"#n": "name"},
-    ReturnValues:"UPDATED_NEW"
+    ExpressionAttributeValues: {
+      ":val1": req.query.name
+    },
+    ExpressionAttributeNames: {
+      "#n": "name"
+    },
+    ReturnValues: "UPDATED_NEW"
   };
 
-  dynamoDb.update(params, function(err, result) {
+  dynamoDb.update(params, function (err, result) {
     if (err) {
       console.error("Unable to Update item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
@@ -153,12 +208,15 @@ app.patch('/events', function(req, res) {
         statusCode: 200,
         body: result,
       };
-      res.json({success: 'UPDATE for record on events table succeeded!', response: response.body});
+      res.json({
+        success: 'UPDATE for record on events table succeeded!',
+        response: response.body
+      });
     }
   });
 });
 
-app.listen(3000, function() {
+app.listen(3000, function () {
   console.log("My Request API...")
 });
 

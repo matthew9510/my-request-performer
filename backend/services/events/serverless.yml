@@ -1,6 +1,6 @@
 service: events
 app: my-request
-org: softstack
+
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -10,7 +10,8 @@ provider:
   region: us-west-2
   stackName: ${self:app}-${self:service}-stack
   apiName: ${self:app}-${self:service}-api
-  profile: ${self:org}
+  profile: default
+  stage: dev
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-table
   iamRoleStatements:
@@ -22,6 +23,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+        # - lambda:InvokeFunction # added
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
