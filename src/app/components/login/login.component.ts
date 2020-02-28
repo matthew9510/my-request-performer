@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AmplifyService } from 'aws-amplify-angular';
 import { Router } from '@angular/router';
-import {consoleTestResultsHandler} from 'tslint/lib/test';
+import { consoleTestResultsHandler } from 'tslint/lib/test';
 import { AuthService } from '../../services/auth.service';
+import { Auth } from 'aws-amplify';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   signedIn: boolean;
   user: any;
   greeting: string;
-  constructor( private amplifyService: AmplifyService, private router: Router, private authService: AuthService) {
+  constructor(private amplifyService: AmplifyService, private router: Router, private authService: AuthService) {
     this.amplifyService.authStateChange$
       .subscribe(authState => {
         this.signedIn = authState.state === 'signedIn';
@@ -35,6 +36,11 @@ export class LoginComponent implements OnInit {
       });
   }
 
- ngOnInit() {}
+  ngOnInit() {
+
+    Auth.currentSession()
+      .then(data => console.log(data))
+      .catch(err => console.log(err));
+  }
 
 }

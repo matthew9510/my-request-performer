@@ -1,5 +1,3 @@
-import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
-import Auth from '@aws-amplify/auth';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -54,6 +52,11 @@ import { RequestsService } from './services/requests.service';
 import { EventService } from './services/event.service';
 import { PayoutService } from './services/payout.service';
 
+// Configuring the Amplify provider with specified Amplify JS modules
+// https://aws-amplify.github.io/docs/js/angular#option-2-configuring-the-amplify-provider-with-specified-amplify-js-modules
+import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
+import Auth from '@aws-amplify/auth';
+
 
 @NgModule({
   declarations: [
@@ -103,7 +106,8 @@ import { PayoutService } from './services/payout.service';
     MatDatepickerModule,
     MatMomentDateModule,
     MatAutocompleteModule,
-    AmplifyAngularModule, MatStepperModule,
+    AmplifyAngularModule,
+    MatStepperModule,
     MatSnackBarModule,
     MatExpansionModule,
     MatMenuModule,
@@ -122,7 +126,7 @@ import { PayoutService } from './services/payout.service';
     RequestsService,
     EventService,
     PayoutService,
-    //AuthService
+    //AuthService,
   ],
   bootstrap: [AppComponent]
 })

@@ -50,6 +50,9 @@
  *
  *  (window as any).__Zone_enable_cross_context_check = true;
  *
+ * Currently, the newest versions of Angular (6+) do not include shims for ‘global’ or ‘process’ which were provided in previous versions.
+ * Add the following to your polyfills.ts file to recreate them
+ * https://aws-amplify.github.io/docs/js/angular#angular-6-8-support
  */
 
 // Angular 6+ Support

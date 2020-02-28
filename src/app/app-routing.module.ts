@@ -9,6 +9,7 @@ import { ManageEventsComponent } from './components/manage-events/manage-events.
 import { CreateEventComponent } from './components/create-event/create-event.component';
 import { LoginComponent } from './components/login/login.component';
 
+
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent, data: { title: 'Dashboard' } },
