@@ -37,7 +37,11 @@ import {
   MatDialogModule,
   MatDatepickerModule,
   MatAutocompleteModule,
+  MatStepperModule,
   MatInputModule,
+  MatSnackBarModule,
+  MatExpansionModule,
+  MatMenuModule
 } from '@angular/material';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CreateEventComponent } from './components/create-event/create-event.component';
@@ -45,6 +49,11 @@ import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
 import { FilterPipe } from './pipes/filter.pipe';
 // import { AuthService } from './services/auth.service';
+import { CurrencyPipe } from '@angular/common';
+import { RequestsService } from './services/requests.service';
+import { EventService } from './services/event.service';
+import { PayoutService } from './services/payout.service';
+
 
 @NgModule({
   declarations: [
@@ -79,35 +88,25 @@ import { FilterPipe } from './pipes/filter.pipe';
     MatFormFieldModule,
     MatCardModule,
     MatIconModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
     TranslocoRootModule,
     MatButtonModule,
     MatListModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule,
     MatCheckboxModule,
     MatChipsModule,
     MatGridListModule,
-    MatListModule,
     MatToolbarModule,
-    MatIconModule,
     MatDialogModule,
     LayoutModule,
-    HttpClientModule,
-    TranslocoRootModule,
     ScrollingModule,
     MatDatepickerModule,
     MatMomentDateModule,
-    MatCardModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
     MatAutocompleteModule,
-    AmplifyAngularModule
+    AmplifyAngularModule, MatStepperModule,
+    MatSnackBarModule,
+    MatExpansionModule,
+    MatMenuModule,
   ],
   providers: [
     FilterPipe,
@@ -119,6 +118,10 @@ import { FilterPipe } from './pipes/filter.pipe';
         });
       }
     },
+    CurrencyPipe,
+    RequestsService,
+    EventService,
+    PayoutService,
     //AuthService
   ],
   bootstrap: [AppComponent]

@@ -1,104 +1,134 @@
-<ng-container *transloco="let t">
-  <form [formGroup]="eventForm" class="createEventForm">
-    <mat-form-field>
-      <mat-label>{{t("eventTitle")}}</mat-label>
-      <input matInput formControlName="title">
-    </mat-form-field>
+<ng-container *transloco="let t; read: 'createEvent'">
+  <mat-horizontal-stepper  #stepper labelPosition="bottom">
+    <mat-step [stepControl]="eventDetailForm">
+      <form [formGroup]="eventDetailForm" class="createEventForm">
+        <ng-template matStepLabel>{{ t('eventDetails') }}</ng-template>
+        
+        <mat-form-field>
+          <mat-label>{{ t('eventTitle') }}</mat-label>
+          <input matInput formControlName="title">
+        </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>{{t("selectDate")}}</mat-label>
-      <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()">
-      <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-      <mat-datepicker #myDatepicker></mat-datepicker>
-    </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t('coverFee') }}</mat-label>
+          <input matInput type="number" class="example-right-align" formControlName="coverFee" >
+          <span matPrefix>$&nbsp;</span>
+        </mat-form-field>
 
-    <mat-form-field>
-      <mat-label for="EnterTime">{{t("startTime")}}</mat-label>
-      <input type="time" matInput formControlName="startTime">
-    </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t('genre') }}</mat-label>
+          <input matInput formControlName="genre">
+        </mat-form-field>
 
-    <mat-form-field>
-      <mat-label for="EndTime">{{t("endTime")}}</mat-label>
-      <input type="time" matInput formControlName="endTime">
-    </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t('eventUrl') }}</mat-label>
+          <input matInput formControlName="url">
+        </mat-form-field>
+      
+        <mat-form-field>
+          <mat-label>{{ t('description') }}</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+      
+        <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)" accept="image/png, image/jpeg" />
+        <button mat-flat-button color="primary" (click)="imageInput.click()">{{ t('uploadImage') }}</button>
+        <mat-card-actions align="end">
+          <button mat-button matStepperNext>{{ t('next') }}</button>
+        </mat-card-actions>
 
-    <mat-form-field>
-      <mat-label>{{t("cover")}}</mat-label>
-      <input matInput type="number" class="example-right-align" formControlName="coverFee">
-      <span matPrefix>{{t("currencySymbol")}}&nbsp;</span>
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>{{t("genre")}}</mat-label>
-      <input matInput formControlName="genre">
-    </mat-form-field>
-
-
-    <mat-form-field *ngIf="!addingVenue">
-      <mat-label>{{t("venue")}}</mat-label>
-      <input matInput formControlName="venue" [matAutocomplete]="auto" autocomplete="alsdjflsadfkjfl" name="venuestuff">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let venue of venues">{{venue}}</mat-option>
-        <mat-option class="add-venue-option">
-          <button class="venue-button" mat-raised-button (click)="displayAddVenue()">
-            <mat-icon>add</mat-icon>{{t("addVenue")}}
-          </button>
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <div *ngIf="addingVenue" formGroupName=newVenue>
-      <mat-form-field>
-        <mat-label>{{t("name")}}</mat-label>
-        <input matInput formControlName="name">
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>{{t("address")}}</mat-label>
-        <input matInput formControlName="streetAddress">
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>{{t("city")}}</mat-label>
-        <input matInput formControlName="city">
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>{{t("state")}}</mat-label>
-        <input matInput formControlName="state">
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>{{t("postal")}}</mat-label>
-        <input matInput formControlName="postalCode">
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>{{t("country")}}</mat-label>
-        <input matInput formControlName="country">
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>{{t("website")}}</mat-label>
-        <input matInput formControlName="url">
-      </mat-form-field>
-    </div>
-
-    <mat-form-field>
-      <mat-label>{{t("description")}}</mat-label>
-      <textarea matInput formControlName="description"></textarea>
-    </mat-form-field>
-
-    <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)" accept="image/png, image/jpeg" />
-    <button mat-flat-button color="primary" (click)="imageInput.click()">{{t("uploadImage")}}</button>
+      </form>
+    </mat-step>
 
 
-    <mat-card-actions align="end">
-      <span>{{eventForm.get('venue').value}}</span>
-      <button mat-flat-button color="accent" [disabled]="eventForm.invalid" type="submit" (submit)="createEvent()">
-        {{t("createEvent")}}
-      </button>
-    </mat-card-actions>
+    <mat-step [stepControl]="eventTimeAndDateForm">
+      <form [formGroup]="eventTimeAndDateForm" class="createEventForm">
+        <ng-template matStepLabel>{{ t('dateAndTime') }}</ng-template>
+        
+        <mat-form-field>
+          <mat-label>{{ t('chooseADate') }}</mat-label>
+          <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()">
+          <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker></mat-datepicker>
+        </mat-form-field>
+      
+        <mat-form-field>
+          <mat-label for="EnterTime">{{ t('startTime') }}</mat-label>
+          <input type="time" matInput formControlName="startTime">
+        </mat-form-field>
+      
+        <mat-form-field>
+          <mat-label for="EndTime">{{ t('endTime') }}</mat-label>
+          <input type="time" matInput formControlName="endTime">
+        </mat-form-field>
+      
 
-  </form>
+        <mat-card-actions align="end">
+          <button mat-button matStepperPrevious>{{ t('back') }}</button>
+          <button mat-button matStepperNext>{{ t('next') }}</button>
+        </mat-card-actions>
+      </form>
+    </mat-step>
+
+
+    <mat-step [stepControl]="venueForm">
+      <form [formGroup]="venueForm" class="createEventForm">
+        <ng-template matStepLabel>{{ t('venue') }}</ng-template>
+        
+        <mat-form-field *ngIf="!addingVenue">
+          <mat-label>{{ t('venue') }}</mat-label>
+          <input matInput formControlName="id" [matAutocomplete]="auto" autocomplete="zalsdjflsadfkjfl">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let venue of venues" [value]='value.id'>{{venue.name}}</mat-option>
+            <mat-option class="add-venue-option">
+              <button class="venue-button" mat-raised-button (click)="displayAddVenue()">
+                <mat-icon>add</mat-icon>{{ t('addVenue') }}
+              </button>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <div *ngIf="addingVenue">
+          <mat-form-field>
+            <mat-label>{{ t('name') }}</mat-label>
+            <input matInput formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ t('address') }}</mat-label>
+            <input matInput formControlName="streetAddress">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ t('city') }}</mat-label>
+            <input matInput formControlName="city">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ t('state') }}</mat-label>
+            <input matInput formControlName="state">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ t('postal') }}</mat-label>
+            <input matInput formControlName="postalCode">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ t('country') }}</mat-label>
+            <input matInput formControlName="country">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ t('website') }}</mat-label>
+            <input matInput formControlName="url">
+          </mat-form-field>
+        </div>
+        
+        <mat-card-actions align="end">
+          <button mat-button matStepperPrevious>{{ t('back') }}</button>
+          <button mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit" (click)="createEvent()">{{ t('createEvent') }}</button>
+        </mat-card-actions>   
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
 </ng-container>

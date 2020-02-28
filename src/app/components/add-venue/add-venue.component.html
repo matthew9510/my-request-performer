@@ -7,7 +7,7 @@
 <mat-card class="formCard">
   <form class="form" [formGroup]="venue" (ngSubmit)="onSubmit()">
     <mat-form-field>
-      <mat-label>Venue</mat-label>
+      <mat-label >Venue</mat-label>
       <mat-select>
         <mat-option *ngFor="let existingVenue of venues" [value]="venue.name" >
           <mat-icon *ngIf="existingVenue.icon">{{existingVenue.icon}}</mat-icon> {{existingVenue.name}}

@@ -1,23 +1,21 @@
-
 <div class="header">
 <mat-toolbar>
   <mat-select id="leftToolbar" [(value)]="selected">
-    <mat-option value="Scheduled" (click)="getEvents()">
-      Scheduled
+    <mat-option value="Scheduled" (click)="getEvents()" *transloco="let t">
+      {{ t('scheduledEvents') }}
     </mat-option>
-    <mat-option value="History" (click)="getPastEvents()">
-      History
+    <mat-option value="History" (click)="getPastEvents()" *transloco="let t">
+      {{t('historicalEvents') }}
     </mat-option>
-    <mat-option (click)="createEvent()">
-      <mat-icon>add</mat-icon> New Event
+    <mat-option (click)="createEvent()" *transloco="let t">
+      <mat-icon>add</mat-icon> {{ t('newEvent') }}
     </mat-option>
   </mat-select>
 
 
   <div id="rightToolbar">
     <mat-form-field *ngIf="scheduled || history" >
-
-      <mat-label>Search event...</mat-label>
+      <mat-label>Search <mat-icon>search</mat-icon></mat-label>
       <input matInput id="searchInput" [(ngModel)]="searchText" >
     </mat-form-field>
   </div>
