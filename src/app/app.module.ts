@@ -1,3 +1,5 @@
+import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
+import Auth from '@aws-amplify/auth';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -14,6 +16,7 @@ import { HistoryComponent } from './components/dashboard/history/history.compone
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './components/login/login.component';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 import { TranslocoRootModule } from './transloco-root.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
@@ -41,8 +44,7 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
 import { FilterPipe } from './pipes/filter.pipe';
-
-
+// import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,7 @@ import { FilterPipe } from './pipes/filter.pipe';
     HeaderComponent,
     AddVenueComponent,
     FilterPipe,
+    LoginComponent
   ],
   entryComponents: [
     ConfirmDialogComponent,
@@ -104,9 +107,19 @@ import { FilterPipe } from './pipes/filter.pipe';
     MatFormFieldModule,
     MatSelectModule,
     MatAutocompleteModule,
+    AmplifyAngularModule
   ],
   providers: [
     FilterPipe,
+    {
+      provide: AmplifyService,
+      useFactory: () => {
+        return AmplifyModules({
+          Auth
+        });
+      }
+    },
+    //AuthService
   ],
   bootstrap: [AppComponent]
 })
