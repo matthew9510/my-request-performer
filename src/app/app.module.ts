@@ -46,7 +46,7 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
 import { FilterPipe } from './pipes/filter.pipe';
-// import { AuthService } from './services/auth.service';
+import { AuthService } from './services/auth.service';
 import { CurrencyPipe } from '@angular/common';
 import { RequestsService } from './services/requests.service';
 import { EventService } from './services/event.service';
@@ -56,6 +56,9 @@ import { PayoutService } from './services/payout.service';
 // https://aws-amplify.github.io/docs/js/angular#option-2-configuring-the-amplify-provider-with-specified-amplify-js-modules
 import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
 import Auth from '@aws-amplify/auth';
+import { AuthGuard } from './guards/auth.guard'
+import { NotAuthGuard } from './guards/not-auth.guard'
+
 
 
 @NgModule({
@@ -126,7 +129,9 @@ import Auth from '@aws-amplify/auth';
     RequestsService,
     EventService,
     PayoutService,
-    //AuthService,
+    AuthService,
+    AuthGuard,
+    NotAuthGuard
   ],
   bootstrap: [AppComponent]
 })
