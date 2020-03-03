@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Auth } from 'aws-amplify';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { environment } from '@ENV'
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +12,7 @@ export class AuthService {
   performerSub: string;
   signedIn: boolean = false;
 
-  constructor() {
-
-  }
+  constructor(private http: HttpClient) { }
 
   logout() {
     localStorage.clear()
@@ -39,6 +39,9 @@ export class AuthService {
     this.performerSub = this.performerAuthState.attributes.sub;
     localStorage.setItem('performerSub', this.performerSub)
 
+    //this.performerJwt = this.performerAuthState.signInUserSession.idToken.jwtToken
+    localStorage.setItem('performerJwt', this.performerAuthState.signInUserSession.idToken.jwtToken)
+
     // store performer credentials 
     Auth.currentCredentials()
       .then((data) => {
@@ -53,7 +56,31 @@ export class AuthService {
     return Auth.currentAuthenticatedUser({
       bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     })
-
-
   }
+
+  testEvent() {
+    return this.http.get(environment.eventsUrl,
+      {
+        headers: new HttpHeaders({
+          'Authorization': localStorage.getItem('performerJwt'),
+          // 'Content-Type':  'application/json',
+        })
+      });
+  }
+
+  testRequestsEvent() {
+    return this.http.get(`${environment.requestsUrl}?id=0e92fd10-5830-11ea-a2c3-cd4ac5ac6751`, {
+      headers: new HttpHeaders({
+        'Authorization': localStorage.getItem('performerJwt'),
+      })
+    });
+    //  new HttpParams().set('id', "0e92fd10-5830-11ea-a2c3-cd4ac5ac6751"),
+  }
+
+  createHeader() {
+    let headers = new HttpHeaders().set('Authorization', localStorage.getItem('performerJwt'))
+    console.log(headers)
+    return headers
+  }
+
 }
