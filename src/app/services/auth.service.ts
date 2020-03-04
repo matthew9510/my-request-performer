@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Auth } from 'aws-amplify';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { environment } from '@ENV'
+import { environment } from '@ENV';
+import { AmplifyService } from 'aws-amplify-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,26 @@ export class AuthService {
   performerCurrentCredentials: any;
   performerAuthState: any;
   performerSub: string;
-  signedIn: boolean = false;
+  signedIn = false;
+  user: any;
+  greeting: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private amplifyService: AmplifyService) {
+    this.amplifyService.authStateChange$
+      .subscribe(authState => {
+        this.signedIn = authState.state === 'signedIn';
+        if (!authState.user) {
+          this.user = null;
+        } else {
+          console.log(authState.user);
+          this.user = authState.user;
+          this.greeting = 'Hello ' + this.user.username;
+        }
+      });
+  }
 
   logout() {
-    localStorage.clear()
+    localStorage.clear();
     Auth.signOut()
       .then(data => console.log(data))
       .catch(err => console.log(err));
@@ -33,55 +48,57 @@ export class AuthService {
 
     // store performer logged in authState
     this.performerAuthState = authState.user;
-    localStorage.setItem('performerAuthState', JSON.stringify(this.performerAuthState))
+    localStorage.setItem('performerAuthState', JSON.stringify(this.performerAuthState));
 
     // store performer sub
     this.performerSub = this.performerAuthState.attributes.sub;
-    localStorage.setItem('performerSub', this.performerSub)
+    localStorage.setItem('performerSub', this.performerSub);
 
-    //this.performerJwt = this.performerAuthState.signInUserSession.idToken.jwtToken
-    localStorage.setItem('performerJwt', this.performerAuthState.signInUserSession.idToken.jwtToken)
+    // this.performerJwt = this.performerAuthState.signInUserSession.idToken.jwtToken
+    localStorage.setItem('performerJwt', this.performerAuthState.signInUserSession.idToken.jwtToken);
 
-    // store performer credentials 
+    // store performer credentials
     Auth.currentCredentials()
       .then((data) => {
         this.performerCurrentCredentials = data;
-        localStorage.setItem('performerCurrentCredentials', JSON.stringify(this.performerCurrentCredentials))
+        localStorage.setItem('performerCurrentCredentials', JSON.stringify(this.performerCurrentCredentials));
       })
       .catch(err => console.log(err));
   }
 
   isAuthenticated() {
-    // This method can be used to check if a user is logged in when the page is loaded. It will throw an error if there is no user logged in. 
+    // tslint:disable-next-line:max-line-length
+    // This method can be used to check if a user is logged in when the page is loaded. It will throw an error if there is no user logged in.
     return Auth.currentAuthenticatedUser({
+      // tslint:disable-next-line:max-line-length
       bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-    })
+    });
   }
 
   testEvent() {
     const headers = {
       headers: new HttpHeaders({
-        'Authorization': localStorage.getItem('performerJwt'),
+        Authorization: localStorage.getItem('performerJwt'),
         // 'Content-Type':  'application/json',
       })
-    }
-    return this.http.get(environment.eventsUrl, headers);
+    };
+    return this.http.get(`${environment.eventsUrl}?id=2f46a4e0-59ab-11ea-84d5-c37805402610`, headers);
   }
 
   testRequestsEvent() {
     const headers = {
       headers: new HttpHeaders({
-        'Authorization': localStorage.getItem('performerJwt'),
+        Authorization: localStorage.getItem('performerJwt'),
       })
-    }
-    return this.http.get(`${environment.requestsUrl}?id=0e92fd10-5830-11ea-a2c3-cd4ac5ac6751`, headers);
+    };
+    return this.http.get(`${environment.requestsUrl}?event_id=705346f8-c9da-4dc4-b0b8-6898595dcaaf`, headers);
     //  new HttpParams().set('id', "0e92fd10-5830-11ea-a2c3-cd4ac5ac6751"),
   }
 
   createHeader() {
-    let headers = new HttpHeaders().set('Authorization', localStorage.getItem('performerJwt'))
-    console.log(headers)
-    return headers
+    const headers = new HttpHeaders().set('Authorization', localStorage.getItem('performerJwt'));
+    console.log(headers);
+    return headers;
   }
 
 }
