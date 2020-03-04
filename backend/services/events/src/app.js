@@ -41,7 +41,7 @@ app.options('*', cors()); // include before other routes
  **********************/
 
 app.get('/events', function(req, res) {
-  console.log("GET REQUEST...", req);
+  console.log("GET EVENTS...", req);
 
   // create params
   const params = {
@@ -67,7 +67,7 @@ app.get('/events', function(req, res) {
           statusCode: 200,
           body: result.Item,
         };
-        res.json({success: 'Successfully found record with id: ' + params.Key.event_id + ' in the events table!', response: result.Item})
+        res.json({success: 'Successfully found record with id: ' + params.Key.id + ' in the events table!', response: result.Item})
       } else {
         res.json({
           message: 'Unable to find record, please check id ' + params.Key.id + ' was entered correctly... ',
