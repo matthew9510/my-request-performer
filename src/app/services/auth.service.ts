@@ -84,6 +84,24 @@ export class AuthService {
     return this.http.get(`${environment.eventsUrl}?id=61c0c930-55d9-11ea-bc57-094861885104`, headers);
   }
 
+  testImage() {
+    const headers = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('performerJwt'),
+      })
+    };
+    return this.http.get(`${environment.imagesUrl}?id=358268d0-55d7-11ea-b8a6-15542f360657`, headers);
+  }
+
+  testQueue() {
+    const headers = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('performerJwt'),
+      })
+    };
+    return this.http.get(`${environment.queueUrl}?id=218b60c0-573f-11ea-bda3-3be958a46eea`, headers);
+  }
+
   testRequestsEvent() {
     const headers = {
       headers: new HttpHeaders({
