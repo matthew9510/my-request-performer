@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  authUrl: "",
+  authUrl: '',
   eventsUrl: 'https://qcvyxnimu4.execute-api.us-west-2.amazonaws.com/dev/events',
   imagesUrl: 'https://90bx9hlja5.execute-api.us-west-2.amazonaws.com/dev/images',
   queueUrl: 'https://u8pn7ho2md.execute-api.us-west-2.amazonaws.com/dev/queue',
