@@ -11,10 +11,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
 
+/**********************
+ *  Load AWS SDK for JavaScript
+ *  to interact with AWS DynamoDB*
+ **********************/
+
+const AWS = require("aws-sdk");
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const cors = require('cors');
+
 // declare a new express app
 const app = express();
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
+
 
 // Enable CORS for all methods
 app.use(function(req, res, next) {
@@ -24,20 +34,14 @@ app.use(function(req, res, next) {
   next()
 });
 
-/**********************
- *  Load AWS SDK for JavaScript
- *  to interact with AWS DynamoDB*
- **********************/
-
-const AWS = require("aws-sdk");
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+app.options('*', cors()); // include before other routes
 
 /**********************
  * GET method *
  **********************/
 
 app.get('/images', function(req, res) {
-  console.log("GET REQUEST...", req);
+  console.log("GET IMAGES...", req);
 
   // create params
   const params = {
@@ -46,6 +50,8 @@ app.get('/images', function(req, res) {
       id: req.query.id,
     },
   };
+
+  console.log(params);
 
   // fetch event from the database
   dynamoDb.get(params, (error, result) => {
@@ -59,7 +65,7 @@ app.get('/images', function(req, res) {
           statusCode: 200,
           body: result.Item,
         };
-        res.json({success: 'Successfully found item in the images table!', response: response.body})
+        res.json({success: 'Successfully found item in the images table!', response: result.Item})
       } else {
         res.json({
           message: 'Unable to find record, please check id was entered correctly... ',
