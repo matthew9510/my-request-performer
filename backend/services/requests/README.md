@@ -99,3 +99,19 @@ Successful GET Request
         }
     }
 
+
+    
+aws dynamodb get-item \
+    --table-name my-request-requests-table \
+    --key-condition-expression "id = :id" \
+    --expression-attribute-values  '{":id":{"S":"8707cb60-560d-11ea-b23e-b109773942df"}}'
+
+
+aws dynamodb get-item \
+    --table-name my-request-requests-table \
+    --key file://key.json
+    
+aws dynamodb scan \
+     --table-name my-request-requests-table \
+     --filter-expression "event_id = :id" \
+     --expression-attribute-values '{":id":{"S":"705346f8-c9da-4dc4-b0b8-6898595dcaaf"}}'

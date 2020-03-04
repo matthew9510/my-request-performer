@@ -1,6 +1,6 @@
 service: events
 app: my-request
-
+org: softstack
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -10,8 +10,7 @@ provider:
   region: us-west-2
   stackName: ${self:app}-${self:service}-stack
   apiName: ${self:app}-${self:service}-api
-  profile: default
-  stage: dev
+  profile: ${self:org}
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-table
   iamRoleStatements:
@@ -23,7 +22,6 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-        # - lambda:InvokeFunction # added
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
@@ -34,11 +32,8 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
-          authorizer:
-            name: cognito-auth
-            arn: arn:aws:cognito-idp:us-west-2:418615587574:userpool/us-west-2_cyimjlwtU
     layers:
-      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
+      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
 
 resources:
   Resources:
