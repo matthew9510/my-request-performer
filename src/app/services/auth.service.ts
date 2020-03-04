@@ -82,7 +82,7 @@ export class AuthService {
         // 'Content-Type':  'application/json',
       })
     };
-    return this.http.get(`${environment.eventsUrl}?id=2f46a4e0-59ab-11ea-84d5-c37805402610`, headers);
+    return this.http.get(environment.eventsUrl, headers);
   }
 
   testRequestsEvent() {
@@ -91,7 +91,7 @@ export class AuthService {
         Authorization: localStorage.getItem('performerJwt'),
       })
     };
-    return this.http.get(`${environment.requestsUrl}?event_id=705346f8-c9da-4dc4-b0b8-6898595dcaaf`, headers);
+    return this.http.get(environment.requestsUrl, headers);
     //  new HttpParams().set('id', "0e92fd10-5830-11ea-a2c3-cd4ac5ac6751"),
   }
 
