@@ -59,21 +59,22 @@ export class AuthService {
   }
 
   testEvent() {
-    return this.http.get(environment.eventsUrl,
-      {
-        headers: new HttpHeaders({
-          'Authorization': localStorage.getItem('performerJwt'),
-          // 'Content-Type':  'application/json',
-        })
-      });
+    const headers = {
+      headers: new HttpHeaders({
+        'Authorization': localStorage.getItem('performerJwt'),
+        // 'Content-Type':  'application/json',
+      })
+    }
+    return this.http.get(environment.eventsUrl, headers);
   }
 
   testRequestsEvent() {
-    return this.http.get(`${environment.requestsUrl}?id=0e92fd10-5830-11ea-a2c3-cd4ac5ac6751`, {
+    const headers = {
       headers: new HttpHeaders({
         'Authorization': localStorage.getItem('performerJwt'),
       })
-    });
+    }
+    return this.http.get(`${environment.requestsUrl}?id=0e92fd10-5830-11ea-a2c3-cd4ac5ac6751`, headers);
     //  new HttpParams().set('id', "0e92fd10-5830-11ea-a2c3-cd4ac5ac6751"),
   }
 

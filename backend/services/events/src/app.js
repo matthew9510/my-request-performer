@@ -20,7 +20,7 @@ app.use(awsServerlessExpressMiddleware.eventContext());
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT");
+  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT"); //,PATCH
   next()
 });
 
@@ -32,10 +32,12 @@ app.use(function (req, res, next) {
 const AWS = require("aws-sdk");
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
+var cors = require('cors')
+app.options('*', cors()) // include before other routes
+
 /**********************
  * GET method *
  **********************/
-
 app.get('/events', function (req, res) {
   console.log("GET HELLLO REQUEST...", req);
   res.json({

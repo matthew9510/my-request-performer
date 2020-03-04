@@ -34,6 +34,9 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
+          authorizer:
+            name: cognito-auth
+            arn: arn:aws:cognito-idp:us-west-2:418615587574:userpool/us-west-2_cyimjlwtU
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
 
