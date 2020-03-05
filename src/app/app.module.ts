@@ -14,6 +14,7 @@ import { HistoryComponent } from './components/dashboard/history/history.compone
 import { ProfileComponent } from './components/dashboard/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './components/login/login.component';
 import { RequestDetailComponent } from './components/request-detail/request-detail.component';
 import { TranslocoRootModule } from './transloco-root.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
@@ -45,10 +46,19 @@ import { CreateEventComponent } from './components/create-event/create-event.com
 import { HeaderComponent } from './components/header/header.component';
 import { AddVenueComponent } from './components/add-venue/add-venue.component';
 import { FilterPipe } from './pipes/filter.pipe';
+import { AuthService } from './services/auth.service';
 import { CurrencyPipe } from '@angular/common';
 import { RequestsService } from './services/requests.service';
 import { EventService } from './services/event.service';
 import { PayoutService } from './services/payout.service';
+
+// Configuring the Amplify provider with specified Amplify JS modules
+// https://aws-amplify.github.io/docs/js/angular#option-2-configuring-the-amplify-provider-with-specified-amplify-js-modules
+import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
+import Auth from '@aws-amplify/auth';
+import { AuthGuard } from './guards/auth.guard'
+import { NotAuthGuard } from './guards/not-auth.guard'
+
 
 
 @NgModule({
@@ -68,6 +78,7 @@ import { PayoutService } from './services/payout.service';
     HeaderComponent,
     AddVenueComponent,
     FilterPipe,
+    LoginComponent
   ],
   entryComponents: [
     ConfirmDialogComponent,
@@ -98,6 +109,7 @@ import { PayoutService } from './services/payout.service';
     MatDatepickerModule,
     MatMomentDateModule,
     MatAutocompleteModule,
+    AmplifyAngularModule,
     MatStepperModule,
     MatSnackBarModule,
     MatExpansionModule,
@@ -105,10 +117,21 @@ import { PayoutService } from './services/payout.service';
   ],
   providers: [
     FilterPipe,
+    {
+      provide: AmplifyService,
+      useFactory: () => {
+        return AmplifyModules({
+          Auth
+        });
+      }
+    },
     CurrencyPipe,
     RequestsService,
     EventService,
-    PayoutService
+    PayoutService,
+    AuthService,
+    AuthGuard,
+    NotAuthGuard
   ],
   bootstrap: [AppComponent]
 })

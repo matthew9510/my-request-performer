@@ -1,0 +1,55 @@
+{
+    "identityPoolName": "myrequestb1e50365_identitypool_b1e50365",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "myrequb1e50365",
+    "userPoolName": "myrequestb1e50365_userpool_b1e50365",
+    "autoVerifiedAttributes": [
+        "email"
+    ],
+    "mfaConfiguration": "OFF",
+    "mfaTypes": [
+        "SMS Text Message"
+    ],
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your verification code",
+    "emailVerificationMessage": "Your verification code is {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+        "email"
+    ],
+    "userpoolClientGenerateSecret": true,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+        "email"
+    ],
+    "userpoolClientReadAttributes": [
+        "email"
+    ],
+    "userpoolClientLambdaRole": "myrequb1e50365_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": false,
+    "resourceName": "myrequestb1e50365",
+    "authSelections": "identityPoolAndUserPool",
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
+    "useDefault": "default",
+    "usernameAttributes": [
+        "email, phone_number"
+    ],
+    "userPoolGroupList": [
+        "performerPoolGroups"
+    ],
+    "dependsOn": []
+}

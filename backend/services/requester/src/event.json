@@ -1,0 +1,14 @@
+{
+  "first_name": "Michael",
+  "last_name": "Martin",
+  "street_address": "701 J St",
+  "city": "San Diego",
+  "state": "CA",
+  "postal_code": "92101",
+  "country": "United States",
+  "email": "michael.gene.martin@gmail.com",
+  "password": "abcd1234",
+  "fingerprint_id": 19,
+  "event_id": "705346f8-c9da-4dc4-b0b8-6898595dcaaf",
+  "stripe_customer_id": null
+}
