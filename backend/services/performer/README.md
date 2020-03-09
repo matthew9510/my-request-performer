@@ -28,19 +28,9 @@ Successfully published your service to the [Serverless Dashboard](https://dashbo
 
 Endpoints:
 
-    Get all -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/event
-    Get by id -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/event/:id
-    get all requests for an event - https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id/requests
-    Get all pending requests for a event -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id/requests/pending
-    Get all rejected requests for a event -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id/requests/rejected
-    Get all accepted requests for a event -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id/requests/accepted
-    Get all now playing requests for a event -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id/requests/now-playing
-    Get all competed requests for a event -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id/requests/complete
-    POST an event -  https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events
-    PUT (patch) an event - https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id
-    Delete an event - https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id
+    ANY - https://qcvyxnimu4.execute-api.us-west-2.amazonaws.com/dev/events
 
-Get /events 
+    
 Sample Events Response:
 
     {

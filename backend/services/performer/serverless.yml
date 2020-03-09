@@ -1,4 +1,4 @@
-service: events
+service: performers
 app: my-request
 # org: softstack
 
@@ -15,7 +15,8 @@ provider:
   stage: dev
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-table
-    DYNAMODB_REQUESTS_TABLE : my-request-requests-table
+    DYNAMODB_EVENTS_TABLE: ${self:app}-events-table
+    DYNAMODB_VENUES_TABLE: ${self:app}-venues-table
   iamRoleStatements:
     - Effect: Allow
       Action:
