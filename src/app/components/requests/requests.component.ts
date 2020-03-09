@@ -27,12 +27,13 @@ export class RequestsComponent implements OnInit {
     artist: 'Enigma',
     amount: 4.20,
     currentlyPlaying: true,
-    memo: `Shout out for Matt's birthday!`
+    memo: `Shout out for Matt's birthday!`,
+    status: 'now playing'
   }
 
 
   constructor(
-    private requestsService: RequestsService,
+    public requestsService: RequestsService,
     public dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
     private _snackBar: MatSnackBar,
@@ -81,6 +82,7 @@ export class RequestsComponent implements OnInit {
       amount: null,
       currentlyPlaying: false,
       memo: null,
+      status: null
     }
     const message = translate('snackbar song ended');
     this.openSnackBar(message);
@@ -132,6 +134,7 @@ export class RequestsComponent implements OnInit {
       artist: this.requestsService.acceptedRequests[index].artist,
       amount: this.requestsService.acceptedRequests[index].amount,
       memo: this.requestsService.acceptedRequests[index].memo,
+      status: this.requestsService.acceptedRequests[index].status,
       currentlyPlaying: true
     }
     this.rejectRequest(index, 'acceptedRequests');

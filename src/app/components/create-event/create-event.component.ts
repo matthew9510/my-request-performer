@@ -17,6 +17,7 @@ export class CreateEventComponent implements OnInit {
   eventTimeAndDateForm: FormGroup;
   addingVenue = false;
   eventToClone;
+  venues: any[] = []
 
   constructor(private fb: FormBuilder,
     private eventService: EventService,

@@ -34,4 +34,7 @@ export class PayoutComponent implements OnInit {
     this.earnings = requests.reduce((total, request) => total += request.amount, 0)
   }
 
+  onChangeStatus(event) {
+
+  }
 }
