@@ -27,6 +27,14 @@ export class CreateEventComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.eventDetailForm = this.fb.group({
+    //   title: [null, Validators.required],
+    //   description: [null, Validators.required],
+    //   coverFee: [null],
+    //   genre: [null, Validators.required],
+    //   url: [null],
+    //   image: [null],
+    // })
     this.eventDetailForm = this.fb.group({
       title: [null, Validators.required],
       description: [null, Validators.required],
@@ -34,8 +42,10 @@ export class CreateEventComponent implements OnInit {
       genre: [null, Validators.required],
       url: [null],
       image: [null],
+      status: ["Lit"],
+      performer_id: ["08cdaf46-a954-4c39-8f84-88e3d6b02551"],
+      venue_id: ["d7cfa70b-8684-43ac-b72e-7005dcf27202"],
     })
-
     this.eventTimeAndDateForm = this.fb.group({
       date: [null, Validators.required],
       startTime: [null, Validators.required],

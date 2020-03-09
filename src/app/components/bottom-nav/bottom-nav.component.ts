@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./bottom-nav.component.scss']
 })
 export class BottomNavComponent implements OnInit {
-
   constructor(
   ) { }
 

@@ -5,6 +5,8 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { translate } from '@ngneat/transloco';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { Requests } from '../../interfaces/requests';
 
 @Component({
   selector: 'app-requests',
@@ -12,9 +14,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./requests.component.scss']
 })
 export class RequestsComponent implements OnInit {
+  event_id: string = '705346f8-c9da-4dc4-b0b8-6898595dcaaf';
   // not sure if this will be necessary once we are able to do patch requests
   updatedStatus: string = '';
   eventStatus: string = "active";
+  acceptedRequests: Requests[];
+  pendingRequests: Requests[];
 
   // now playing request is hard coded for now. there will be only one request with the status 'now-playing' at any given time
   nowPlayingRequest = {
@@ -30,13 +35,36 @@ export class RequestsComponent implements OnInit {
     private requestsService: RequestsService,
     public dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
-    private _snackBar: MatSnackBar
-  ) { }
+    private _snackBar: MatSnackBar,
+    private actRoute: ActivatedRoute
+  ) {
+    // this.event_id = this.actRoute.snapshot.params.id;
+  }
 
 
   ngOnInit() {
     this.requestsService.onFetchRequests();
+    this.onGetRequestsByEventId();
   }
+
+  onGetRequestsByEventId() {
+    this.requestsService.getRequestsByEventId(this.event_id).subscribe(
+      (res) => {
+        // console.log(res);
+        this.pendingRequests = res['response']
+          .filter((el: { status: string; }) => el.status === 'pending')
+        console.log(this.pendingRequests)
+      }, (err) => {
+        console.log(err);
+      })
+  }
+
+  // onFetchRequests() {
+  //   this.requestsService.fetchPendingRequests()
+  //     .subscribe((res: Requests[]) => this.pendingRequests = res);
+  //   this.requestsService.fetchAcceptedRequests()
+  //     .subscribe((res: Requests[]) => this.acceptedRequests = res);
+  // }
 
   get isLargeScreen() {
     return this.breakpointObserver.isMatched('(min-width: 700px)');
@@ -54,7 +82,7 @@ export class RequestsComponent implements OnInit {
       currentlyPlaying: false,
       memo: null,
     }
-    const message = translate('snackbar song ended')
+    const message = translate('snackbar song ended');
     this.openSnackBar(message);
   };
 

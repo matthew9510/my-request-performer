@@ -17,10 +17,10 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.authService.testQueue().subscribe((data) => { console.log(data); });
-    this.authService.testImage().subscribe((data) => { console.log(data); });
-    this.authService.testEvent().subscribe((data) => { console.log(data); });
-    this.authService.testRequestsEvent().subscribe((data) => { console.log(data); });
+    // this.authService.testQueue().subscribe((data) => { console.log(data); });
+    // this.authService.testImage().subscribe((data) => { console.log(data); });
+    // this.authService.testEvent().subscribe((data) => { console.log(data); });
+    // this.authService.testRequestsEvent().subscribe((data) => { console.log(data); });
   }
 
 }

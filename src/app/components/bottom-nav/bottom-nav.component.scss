@@ -13,6 +13,7 @@ mat-toolbar {
     font-size: 12px;
     align-items: center;
     text-transform: uppercase;
+    color: rgba(255, 255, 255, .5);
 
     span {
       display: flex;
@@ -20,4 +21,19 @@ mat-toolbar {
     }
   }
 
+  a.active-link {
+    color: #fff;
+    font-size: 13px;
+    animation: scale ease-in-out 200ms alternate;
+  }
+}
+
+@keyframes scale {
+	0% {
+		transform: none;
+	}
+
+	100% {
+		transform: scale(1.02,1.02)
+	}
 }
