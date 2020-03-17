@@ -116,74 +116,46 @@ app.get('/events/:id', function (req, res) {
 });
 
 
+
 /**********************
- * GET requests by event id method 
+ * GET requests by event id possibly with a specific pending status
  **********************/
-app.get('/events/:id/requests', function (req, res) {
-  console.log("GET requests by event id request:\n", req);
+app.get('/events/:id/requests', function (req, res, next) {
 
-  const eventId = req.params.id
+  const eventId = req.params.id;
+  const requestStatus = req.query.status;
+  let params;
 
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_REQUESTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'event_id-id-index',
-    KeyConditionExpression: "event_id = :event_id", // Am I allowed to query like this, without primary keys? // Is event id
-    ExpressionAttributeValues: {
-      ":event_id": eventId
-    },
-  };
-  console.log('Params:\n', params);
+  if (requestStatus) {
+    console.log("GET", requestStatus, "requests with the event id:", eventId, "request:\n", req);
 
-  // fetch request from the database
-  dynamoDb.query(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
-    } else {
-      console.log('Result:\n', result)
-      if ("Items" in result && result.Items.length > 0) {
-        const response = {
-          statusCode: 200,
-          body: result.Items,
-        };
-        console.log("Response:\n", response)
-
-        res.json({
-          success: 'Found all requests for event id:' + eventId,
-          response: response
-        })
-      } else {
-        res.json({
-          message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
-          invalid_id: eventId
-        })
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: 'eventId-status-index',
+      KeyConditionExpression: "eventId = :eventId and #status = :requestStatus",
+      ExpressionAttributeValues: {
+        ":eventId": eventId,
+        ":requestStatus": requestStatus
+      },
+      ExpressionAttributeNames: {
+        "#status": "status"
       }
-    }
-  });
-});
+    };
+  } else {
+    console.log("GET all requests with the event id:", eventId, "request:\n", req);
 
-/**********************
- * GET requests by event id with pending status
- **********************/
-app.get('/events/:id/requests/pending', function (req, res) {
-  console.log("GET pending requests by event id request:\n", req);
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: 'eventId-id-index',
+      KeyConditionExpression: "eventId = :eventId",
+      ExpressionAttributeValues: {
+        ":eventId": eventId
+      },
+    };
+  }
 
-  const eventId = req.params.id
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_REQUESTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'event_id-status-index',
-    KeyConditionExpression: "event_id = :event_id and #status = :requestStatus",
-    ExpressionAttributeValues: {
-      ":event_id": eventId,
-      ":requestStatus": 'pending'
-    },
-    ExpressionAttributeNames: {
-      "#status": "status"
-    },
-  };
   console.log('Params:\n', params);
 
   // fetch requests with status pending from the database
@@ -191,6 +163,7 @@ app.get('/events/:id/requests/pending', function (req, res) {
     // handle potential errors
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+      next("error in events/:id/requests", error)
     } else {
       console.log('Result:\n', result)
       if ("Items" in result && result.Items.length > 0) {
@@ -199,11 +172,17 @@ app.get('/events/:id/requests/pending', function (req, res) {
           body: result.Items,
         };
         console.log("Response:\n", response)
-
-        res.json({
-          success: 'Found all pending requests for event id:' + eventId,
-          response: response
-        })
+        if (requestStatus) {
+          res.json({
+            success: "Found all " + requestStatus + " requests for event id: " + eventId,
+            response: response
+          })
+        } else {
+          res.json({
+            success: 'Found all requests for event id: ' + eventId,
+            response: response
+          })
+        }
       } else {
         res.json({
           message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
@@ -213,211 +192,6 @@ app.get('/events/:id/requests/pending', function (req, res) {
     }
   });
 })
-
-/**********************
- * GET requests by event id with accepted status
- **********************/
-app.get('/events/:id/requests/accepted', function (req, res) {
-  console.log("GET accepted requests by event id request:\n", req);
-
-  const eventId = req.params.id
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_REQUESTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'event_id-status-index',
-    KeyConditionExpression: "event_id = :event_id and #status = :requestStatus",
-    ExpressionAttributeValues: {
-      ":event_id": eventId,
-      ":requestStatus": 'accepted'
-    },
-    ExpressionAttributeNames: {
-      "#status": "status"
-    },
-  };
-  console.log('Params:\n', params);
-
-  // fetch requests with status pending from the database
-  dynamoDb.query(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
-    } else {
-      console.log('Result:\n', result)
-      if ("Items" in result && result.Items.length > 0) {
-        const response = {
-          statusCode: 200,
-          body: result.Items,
-        };
-        console.log("Response:\n", response)
-
-        res.json({
-          success: 'Found all accepted requests for event id:' + eventId,
-          response: response
-        })
-      } else {
-        res.json({
-          message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
-          invalid_id: eventId
-        })
-      }
-    }
-  });
-})
-
-/**********************
- * GET requests by event id with rejected status
- **********************/
-app.get('/events/:id/requests/rejected', function (req, res) {
-  console.log("GET rejected requests by event id request:\n", req);
-
-  const eventId = req.params.id
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_REQUESTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'event_id-status-index',
-    KeyConditionExpression: "event_id = :event_id and #status = :requestStatus",
-    ExpressionAttributeValues: {
-      ":event_id": eventId,
-      ":requestStatus": 'rejected'
-    },
-    ExpressionAttributeNames: {
-      "#status": "status"
-    },
-  };
-  console.log('Params:\n', params);
-
-  // fetch requests with status pending from the database
-  dynamoDb.query(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
-    } else {
-      console.log('Result:\n', result)
-      if ("Items" in result && result.Items.length > 0) {
-        const response = {
-          statusCode: 200,
-          body: result.Items,
-        };
-        console.log("Response:\n", response)
-
-        res.json({
-          success: 'Found all rejected requests for event id:' + eventId,
-          response: response
-        })
-      } else {
-        res.json({
-          message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
-          invalid_id: eventId
-        })
-      }
-    }
-  });
-})
-
-/**********************
- * GET requests by event id with now playing status
- **********************/
-app.get('/events/:id/requests/now-playing', function (req, res) {
-  console.log("GET now playing requests by event id request:\n", req);
-
-  const eventId = req.params.id
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_REQUESTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'event_id-status-index',
-    KeyConditionExpression: "event_id = :event_id and #status = :requestStatus",
-    ExpressionAttributeValues: {
-      ":event_id": eventId,
-      ":requestStatus": 'now playing'
-    },
-    ExpressionAttributeNames: {
-      "#status": "status"
-    },
-  };
-  console.log('Params:\n', params);
-
-  // fetch requests with status pending from the database
-  dynamoDb.query(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
-    } else {
-      console.log('Result:\n', result)
-      if ("Items" in result && result.Items.length > 0) {
-        const response = {
-          statusCode: 200,
-          body: result.Items,
-        };
-        console.log("Response:\n", response)
-
-        res.json({
-          success: 'Found all now playing requests for event id:' + eventId,
-          response: response
-        })
-      } else {
-        res.json({
-          message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
-          invalid_id: eventId
-        })
-      }
-    }
-  });
-})
-
-/**********************
- * GET requests by event id with complete status
- **********************/
-app.get('/events/:id/requests/complete', function (req, res) {
-  console.log("GET complete requests by event id request:\n", req);
-
-  const eventId = req.params.id
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_REQUESTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'event_id-status-index',
-    KeyConditionExpression: "event_id = :event_id and #status = :requestStatus",
-    ExpressionAttributeValues: {
-      ":event_id": eventId,
-      ":requestStatus": 'complete'
-    },
-    ExpressionAttributeNames: {
-      "#status": "status"
-    },
-  };
-  console.log('Params:\n', params);
-
-  // fetch requests with status pending from the database
-  dynamoDb.query(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
-    } else {
-      console.log('Result:\n', result)
-      if ("Items" in result && result.Items.length > 0) {
-        const response = {
-          statusCode: 200,
-          body: result.Items,
-        };
-        console.log("Response:\n", response)
-
-        res.json({
-          success: 'Found all completed requests for event id:' + eventId,
-          response: response
-        })
-      } else {
-        res.json({
-          message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
-          invalid_id: eventId
-        })
-      }
-    }
-  });
-})
-
 
 /****************************
  * PUT method *
@@ -434,7 +208,7 @@ app.post('/events', function (req, res) {
 
   // Generate uuid & date record
   params.Item.id = uuid.v1();
-  params.Item.date_created = new Date().toJSON().slice(0, 10);
+  params.Item.createdOn = new Date().toJSON();
 
   // Note if table item is being inserted for the first time, the result will be empty
   dynamoDb.put(params, function (err, result) {
@@ -467,7 +241,7 @@ app.put('/events/:id', function (req, res) {
 
   // update item with modified date 
   let item = req.body
-  item.date_modified = new Date().toJSON().slice(0, 10);
+  item.modifiedOn = new Date().toJSON();
 
   // create params
   const params = {

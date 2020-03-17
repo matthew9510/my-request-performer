@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@ENV'
 import { Event } from "../interfaces/events"
+import { AuthService } from '../services/auth.service'
 
 // alter this to match interface
 export interface Events {
@@ -16,15 +17,20 @@ export interface Events {
 })
 export class EventService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+    private authService: AuthService) { }
 
   getEvents() {
-    // not sure if this will get all 
-    // return this.http.get(environment.eventsUrl);
-    return this.http.get('assets/events.json')
+    const headers = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('performerJwt'),
+      })
+    }
+    return this.http.get(`${environment.performersUrl}/${localStorage.getItem('performerSub')}/events`, headers);
+    // return this.http.get('assets/events.json')
   }
 
-  createEvent(event: Event) {
+  createEvent(event) {
     return this.http.post(environment.eventsUrl, event);
   }
 
@@ -33,8 +39,8 @@ export class EventService {
   }
 
   addVenue(venue) {
-    console.log(JSON.stringify(venue))
-    return this.http.put(environment.venuesUrl, JSON.stringify(venue))
+    // console.log(JSON.stringify(venue))
+    return this.http.put(environment.venuesUrl, venue)
   }
 
 }

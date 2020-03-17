@@ -38,27 +38,21 @@ app.options('*', cors()); // include before other routes
 
 
 // get all events associated with a performer id
-app.get('/performers/:id/events/', function (req, res) {
-  console.log("GET EVENTS by id...", req);
+app.get('/performers/:id/events', function (req, res) {
+  console.log("GET EVENTS by performer's id...", req);
 
   const performerId = req.params.id;
 
   // create dynamo db params
   const params = {
     TableName: process.env.DYNAMODB_EVENTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'performer_id-id-index',
-    KeyConditionExpression: "performer_id = :performer_id",
+    IndexName: 'performerId-id-index',
+    KeyConditionExpression: "performerId = :performerId",
     ExpressionAttributeValues: {
-      ":performer_id": performerId
+      ":performerId": performerId
     },
   };
-
   console.log('Params ARE : ', params);
-
-  // res.json({
-  //   message: "params are" + params,
-  //   response: params
-  // })
 
   dynamoDb.query(params, (error, result) => {
     // handle potential errors
@@ -71,7 +65,6 @@ app.get('/performers/:id/events/', function (req, res) {
         body: result.Items,
       };
       res.json({
-        // success: 'Found ' + items_by_event_id.length + ' records where event_id=' + params.Key.event_id,
         success: 'Found all events for performer id: ' + performerId,
         response: response
       })
@@ -82,7 +75,7 @@ app.get('/performers/:id/events/', function (req, res) {
 
 
 // get all venues associated with a performer id
-app.get('/performers/:id/venues/', function (req, res) {
+app.get('/performers/:id/venues', function (req, res) {
   console.log("GET VENUES by id...", req);
 
   const performerId = req.params.id;
@@ -90,19 +83,14 @@ app.get('/performers/:id/venues/', function (req, res) {
   // create dynamo db params
   const params = {
     TableName: process.env.DYNAMODB_VENUES_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'performer_id-id-index',
-    KeyConditionExpression: "performer_id = :performer_id",
+    IndexName: 'performerId-id-index',
+    KeyConditionExpression: "performerId = :performerId",
     ExpressionAttributeValues: {
-      ":performer_id": performerId
+      ":performerId": performerId
     },
   };
 
   console.log('Params ARE : ', params);
-
-  // res.json({
-  //   message: "params are" + params,
-  //   response: params
-  // })
 
   dynamoDb.query(params, (error, result) => {
     // handle potential errors
@@ -115,7 +103,6 @@ app.get('/performers/:id/venues/', function (req, res) {
         body: result.Items,
       };
       res.json({
-        // success: 'Found ' + items_by_event_id.length + ' records where event_id=' + params.Key.event_id,
         success: 'Found all venues for performer id: ' + performerId,
         response: response
       })

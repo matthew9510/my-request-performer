@@ -1,6 +1,6 @@
 service: venues
 app: my-request
-org: softstack
+# org: softstack
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -10,7 +10,9 @@ provider:
   region: us-west-2
   stackName: ${self:app}-${self:service}-stack
   apiName: ${self:app}-${self:service}-api
-  profile: ${self:org}
+  # profile: ${self:org}
+  profile: default
+  stage: dev
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-table
   iamRoleStatements:
@@ -34,6 +36,7 @@ functions:
           method: ANY
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
+    role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
 
 resources:
   Resources:

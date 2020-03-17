@@ -28,12 +28,13 @@ export class ManageEventsComponent implements OnInit {
 
   getEvents() {
     this.eventService.getEvents()
-      .subscribe((res: Events[]) => {
-        this.events = res;
+      .subscribe((res: any) => {
+        this.events = res.response.body;
         this.history = false;
         this.scheduled = true;
       });
   }
+
   getPastEvents() {
     this.eventService.getEvents()
       .subscribe((res: Events[]) => {

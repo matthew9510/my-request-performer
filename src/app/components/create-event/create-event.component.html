@@ -29,9 +29,11 @@
           <mat-label>{{ t('description') }}</mat-label>
           <textarea matInput formControlName="description"></textarea>
         </mat-form-field>
-
-        <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)" accept="image/png, image/jpeg" />
-        <button mat-flat-button color="primary" (click)="imageInput.click()">{{ t('uploadImage') }}</button>
+        <div *ngIf="uploadImage">
+          <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)"
+            accept="image/png, image/jpeg" />
+          <button mat-flat-button color="primary" (click)="imageInput.click()">{{ t('uploadImage') }}</button>
+        </div>
         <mat-card-actions align="end">
           <button mat-button matStepperNext>{{ t('next') }}</button>
         </mat-card-actions>

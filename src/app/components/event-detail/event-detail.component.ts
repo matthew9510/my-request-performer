@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { VenueService } from '@services/venue.service'
 
 @Component({
   selector: 'app-eventdetails',
@@ -9,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class EventdetailsComponent implements OnInit {
   event: any;
+  venue: any;
 
   @Input()
   set eventData(eventData) {
@@ -20,9 +22,16 @@ export class EventdetailsComponent implements OnInit {
 
   constructor(
     private router: Router,
-  ) { }
+    private venueService: VenueService
+  ) {
+
+
+  }
 
   ngOnInit() {
+    this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
+      this.venue = res.response.body.Item
+    })
   }
 
   cloneEvent() {

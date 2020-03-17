@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { EventService } from 'src/app/services/event.service';
 import { PerformerService } from '@services/performer.service';
 import { Router } from '@angular/router';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-create-event',
@@ -15,9 +16,10 @@ export class CreateEventComponent implements OnInit {
   venueForm: FormGroup;
   eventForm: FormGroup;
   eventTimeAndDateForm: FormGroup;
-  addingVenue = false;
+  addingVenue = true;
   eventToClone;
-  venues: any[] = []
+  uploadImage = false; // hide uploading image for now
+  venues: any[] = [];
 
   constructor(private fb: FormBuilder,
     private eventService: EventService,
@@ -28,24 +30,16 @@ export class CreateEventComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.eventDetailForm = this.fb.group({
-    //   title: [null, Validators.required],
-    //   description: [null, Validators.required],
-    //   coverFee: [null],
-    //   genre: [null, Validators.required],
-    //   url: [null],
-    //   image: [null],
-    // })
     this.eventDetailForm = this.fb.group({
       title: [null, Validators.required],
       description: [null, Validators.required],
       coverFee: [null],
       genre: [null, Validators.required],
       url: [null],
-      image: [null],
-      status: ["Lit"],
-      performer_id: ["08cdaf46-a954-4c39-8f84-88e3d6b02551"],
-      venue_id: ["d7cfa70b-8684-43ac-b72e-7005dcf27202"],
+      status: ["created"],
+      performerId: [localStorage.getItem('performerSub')],
+      venueId: [null],
+      // image: [null],
     })
     this.eventTimeAndDateForm = this.fb.group({
       date: [null, Validators.required],
@@ -53,18 +47,20 @@ export class CreateEventComponent implements OnInit {
       endTime: [null, Validators.required],
     })
 
-    this.venueForm = this.fb.group({
-      id: [null, Validators.required, this.venueValidator],
-    })
+    // Take away selecting previous venues for now
+    // this.venueForm = this.fb.group({
+    //   id: [null, Validators.required, this.venueValidator],
+    // })
+    this.displayAddVenue();
   }
 
-  venueValidator(control: AbstractControl): { [key: string]: boolean } | null {
-    if (control.touched) {
-      return { 'venueError': true }
-    }
-
-    return null
-  }
+  // make sure a person auto-completes with one of their venues
+  // venueValidator(control: AbstractControl): { [key: string]: boolean } | null {
+  //   if (control.touched) {
+  //     return { 'venueError': true }
+  //   }
+  //   return null
+  // }
 
   displayAddVenue() {
     this.addingVenue = true;
@@ -76,6 +72,7 @@ export class CreateEventComponent implements OnInit {
       postalCode: [null, Validators.required],
       country: [null, Validators.required],
       url: [null],
+      performerId: [localStorage.getItem('performerSub')]
     });
 
     if (this.eventToClone !== undefined) {
@@ -83,76 +80,47 @@ export class CreateEventComponent implements OnInit {
     }
   }
 
-  renameVenueFormProperties() {
-    // function to rename venue properties
-    if (this.addingVenue) {
-      return {
-        name: this.venueForm.get('name').value,
-        street_address: this.venueForm.get('streetAddress').value,
-        city: this.venueForm.get('city').value,
-        state: this.venueForm.get('state').value,
-        postal_code: this.venueForm.get('postalCode').value,
-        country: this.venueForm.get('country').value,
-        url: this.venueForm.get('url').value,
-        performer_id: '12345'
-      }
-    }
-    else {
-      return { venue_id: this.venueForm.get('id').value }
-    }
+  prepareEvent(venueId) {
+    // Reassign date with desired format
+    this.eventTimeAndDateForm.value.date = String(this.eventTimeAndDateForm.value.date._i.year) + '-' + String(this.eventTimeAndDateForm.value.date._i.month + 1) + '-' + String(this.eventTimeAndDateForm.value.date._i.date)
+
+    // concatenate all forms together 
+    let newEvent = new Object();
+    Object.assign(newEvent, this.eventDetailForm.value, { venueId: venueId }, this.eventTimeAndDateForm.value);
+
+    return newEvent;
   }
 
-  renameEventTimeAndDateFormProperties() {
-    // function to rename event time and date properties
-    return {
-      date: this.eventTimeAndDateForm.get('date').value,
-      event_start_time: this.eventTimeAndDateForm.get('startTime').value,
-      event_endd_time: this.eventTimeAndDateForm.get('endTime').value,
-    }
-  }
 
-  renameEventFormProperties() {
-    // function to rename event properties
-    return {
-      title: this.eventDetailForm.get('title').value,
-      description: this.eventDetailForm.get('description').value,
-      coverFee: this.eventDetailForm.get('coverFee').value,
-      genre: this.eventDetailForm.get('genre').value,
-      url: this.eventDetailForm.get('url').value,
-      image: this.eventDetailForm.get('description').value
-    }
-  }
-
-  prepareEvent() {
-    // return {
-    //   venue_id: 
-    // }
-  }
-
+  // add upload image later
   createEvent() {
     if (this.addingVenue) {
-      // make a post to add venue
-      let venue = this.renameVenueFormProperties()
-      this.eventService.addVenue(venue).subscribe((res: any) => {
-        console.log(res)
-        let venue_id = res.id
-        // upload image 
-        // in subscribe link image_cognito path
-        // create event 
-        // upload event 
-        let event = this.prepareEvent()
-      }, (err) => {
+      // Create entry in venue table
+      this.eventService.addVenue(this.venueForm.value).subscribe((res: any) => {
+        let venueId = res.record.id;
 
+        // create a event object
+        let event = this.prepareEvent(venueId)
+
+        // create entry in event table 
+        this.eventService.createEvent(event).subscribe((res) => {
+          // redirect to events
+          this.router.navigate(['/events'])
+        }, (err) => {
+          console.error("Couldn't create event", err)
+        })
+      }, (err) => {
+        console.error("Couldn't create venue", err)
       })
     }
     else {
-
+      // you don't have to addVenue, just append the venue_id
     }
   }
 
-  imageUploaded(image) {
-    console.log(image.target)
-    console.log(image.target.files[0])
-  }
+  // imageUploaded(image) {
+  //   console.log(image.target)
+  //   console.log(image.target.files[0])
+  // }
 
 }

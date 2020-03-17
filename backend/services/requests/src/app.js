@@ -36,6 +36,12 @@ app.use(function (req, res, next) {
 
 app.options('*', cors()); // include before other routes
 
+function customSort(request1, request2) {
+  const obj1LatestDate = request1.hasOwnProperty('modifiedOn') ? request1.modifiedOn : request1.createdOn
+  const obj2LatestDate = request2.hasOwnProperty('modifiedOn') ? request2.modifiedOn : request2.createdOn
+  return new Date(obj1LatestDate) - new Date(obj2LatestDate);
+}
+
 /**********************
  * GET all method *
  **********************/
@@ -50,6 +56,9 @@ app.get('/requests', function (req, res) {
 
   // fetch event from the database
   dynamoDb.scan(params, (error, result) => {
+    // Sort requests in chronological order
+    result.Items = result.Items.sort(customSort)
+
     // handle potential errors
     if (error) {
       console.error("Unable to find items. Error JSON:", JSON.stringify(error, null, 2));
@@ -129,7 +138,7 @@ app.post('/requests', function (req, res) {
 
   // Generate uuid & date record
   params.Item.id = uuid.v1();
-  params.Item.date_created = new Date().toJSON().slice(0, 10);
+  params.Item.createdOn = new Date().toJSON()
 
   dynamoDb.put(params, function (err, result) {
     if (err) {
@@ -185,11 +194,11 @@ app.delete('/requests', function (req, res) {
 app.put('/requests/:id', function (req, res) {
   console.log("UPDATE event request...", req);
 
-  const requestId = req.params.id
+  const requestId = req.params.id;
 
   // update item with modified date 
-  let item = req.body
-  item.date_modified = new Date().toJSON().slice(0, 10);
+  let item = req.body;
+  item.modifiedOn = new Date().toJSON();
 
   // create params
   const params = {

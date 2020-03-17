@@ -51,6 +51,7 @@ import { CurrencyPipe } from '@angular/common';
 import { RequestsService } from './services/requests.service';
 import { EventService } from './services/event.service';
 import { PayoutService } from './services/payout.service';
+import { VenueService } from './services/venue.service';
 
 // Configuring the Amplify provider with specified Amplify JS modules
 // https://aws-amplify.github.io/docs/js/angular#option-2-configuring-the-amplify-provider-with-specified-amplify-js-modules
@@ -131,7 +132,8 @@ import { NotAuthGuard } from './guards/not-auth.guard'
     PayoutService,
     AuthService,
     AuthGuard,
-    NotAuthGuard
+    NotAuthGuard,
+    VenueService
   ],
   bootstrap: [AppComponent]
 })

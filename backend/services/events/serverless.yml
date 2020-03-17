@@ -34,9 +34,22 @@ functions:
     events:
       - http:
           path: /{proxy+}
-          method: ANY     
+          method: ANY
+          # authorizer:
+          #   name: cognito-pool-auth
+          #   arn: arn:aws:cognito-idp:us-west-2:418615587574:userpool/us-west-2_cyimjlwtU
+          # cors: # removed true
+          #   origin: '*' # <-- Specify allowed origin
+          #   headers: # <-- Specify allowed headers
+          #     - Content-Type
+          #     - X-Amz-Date
+          #     - Authorization
+          #     - X-Api-Key
+          #     - X-Amz-Security-Token
+          #     - X-Amz-User-Agent 
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
+    role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
 
 resources:
   Resources:
@@ -56,3 +69,20 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    # GatewayResponseDefault4XX:
+    #   Type: 'AWS::ApiGateway::GatewayResponse'
+    #   Properties:
+    #     ResponseParameters:
+    #       gatewayresponse.header.Access-Control-Allow-Origin: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'" 
+    #       gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'" 
+    #       gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+    #     ResponseType: DEFAULT_4XX
+    #     RestApiId: "9kwwlfe0x0"
+    # GatewayResponseDefault5XX:
+    #   Type: 'AWS::ApiGateway::GatewayResponse'
+    #   Properties:
+    #     ResponseParameters:
+    #       gatewayresponse.header.Access-Control-Allow-Origin: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'" 
+    #       gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'" 
+    #     ResponseType: DEFAULT_5XX
+    #     RestApiId: "9kwwlfe0x0"
