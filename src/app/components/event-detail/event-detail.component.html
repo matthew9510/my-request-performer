@@ -5,7 +5,19 @@
     <span class="venue">{{venue?.name}}</span><br>
     <span class="title">{{event?.title}}</span>
   </mat-card-content>
-  <button mat-icon-button color="primary" (click)="cloneEvent()">
-    <mat-icon>file_copy</mat-icon>
-  </button>
+
+  <div class="buttons">
+    <button mat-raised-button color="accent" (click)="cloneEvent()">
+      Edit
+    </button>
+
+    <span class="buttons-spacing">
+
+    </span>
+
+    <button mat-raised-button color="primary" (click)="startEvent(event?.id)">
+      Start
+    </button>
+  </div>
+
 </mat-card>

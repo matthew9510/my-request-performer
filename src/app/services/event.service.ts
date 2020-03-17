@@ -17,6 +17,10 @@ export interface Events {
 })
 export class EventService {
 
+  activeEvent = false;
+  currentEventId = null;
+  currentEvent = null;
+
   constructor(private http: HttpClient,
     private authService: AuthService) { }
 
@@ -41,6 +45,34 @@ export class EventService {
   addVenue(venue) {
     // console.log(JSON.stringify(venue))
     return this.http.put(environment.venuesUrl, venue)
+  }
+
+  getEvent(eventId) {
+    return this.http.get(`${environment.eventsUrl}/${eventId}`)
+  }
+
+  updateEvent(eventId, event) {
+    return this.http.put(`${environment.eventsUrl}/${eventId}`, event)
+  }
+
+  startEvent(eventId) {
+    // Invoke changing status of event to started
+    // Get currentEvent
+    this.getEvent(eventId).subscribe((res: any) => {
+      let event = res.response.body.Item;
+      console.log("Event before patch", event)
+
+      // Change event status to started
+      event.status = "started"
+      // Update the event entry with the status changed to started
+      this.updateEvent(eventId, event).subscribe((res: any) => {
+        // Set appropriate service properties
+        this.activeEvent = true;
+        this.currentEventId = eventId;
+        this.currentEvent = res.response
+        console.log("current Event", this.currentEvent)
+      })
+    })
   }
 
 }

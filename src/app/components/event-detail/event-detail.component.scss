@@ -15,6 +15,7 @@ mat-card {
   //   margin-left: 0;
   // }
 }
+
 // mat-icon {
 //   margin-top: 5px;
 // }
@@ -52,4 +53,14 @@ mat-card {
   font-size: small;
   font-weight: normal;
   text-align: left;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+}
+
+.buttons-spacing {
+  padding-left: 5px;
+  padding-right: 5px;
 }

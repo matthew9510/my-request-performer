@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { VenueService } from '@services/venue.service'
+import { EventService } from '@services/event.service'
 
 @Component({
   selector: 'app-eventdetails',
@@ -22,7 +23,8 @@ export class EventdetailsComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private venueService: VenueService
+    private venueService: VenueService,
+    private eventService: EventService
   ) {
 
 
@@ -38,4 +40,8 @@ export class EventdetailsComponent implements OnInit {
     this.router.navigate([`/event/${this.event.id}/clone`], { state: this.event });
   }
 
+  startEvent(eventId) {
+    this.eventService.startEvent(eventId)
+    this.router.navigate(['/requests'])
+  }
 }
