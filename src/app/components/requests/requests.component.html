@@ -18,12 +18,12 @@
             <div [class.largeScreenChild]="isLargeScreen" class="subheader-wrapper">
               <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
               <mat-menu #eventMenu="matMenu" xPosition="before">
-                <button mat-menu-item>End Event</button>
+                <button mat-menu-item (click)="endEvent()">End Event</button>
               </mat-menu>
               <button mat-icon-button [matMenuTriggerFor]="eventMenu"><mat-icon>more_vert</mat-icon></button>
             </div>
 
-            <div *ngIf="nowPlayingRequest.currentlyPlaying; else selectNextSong" [class.largeScreenChild]="isLargeScreen">
+            <div *ngIf="currentlyPlaying; else selectNextSong" [class.largeScreenChild]="isLargeScreen">
               <app-request-detail 
                 [song]="nowPlayingRequest.song" 
                 [artist]="nowPlayingRequest.artist"
@@ -35,7 +35,7 @@
             </div>
             <ng-template #selectNextSong>
               <p class="body-text">
-                {{ t('no current song playing message') }}
+                <!-- {{ t('no current song playing message') }} -->
               </p>
             </ng-template>
 
@@ -88,12 +88,5 @@
       </mat-tab>
     </mat-tab-group>
 
-    <!-- <div id="fab-button-wrapper">
-      <div id="fab-button">
-        <button class="extended-fab-button" mat-fab color="primary">
-          <span>{{ t('play next') }}</span>
-        </button>
-      </div>
-    </div> -->
 </ng-template>
 </ng-container>

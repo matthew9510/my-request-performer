@@ -45,5 +45,10 @@
     "createEvent": "Create Event",
     "next": "Next",
     "back": "Back"
+  },
+  "manage events": {
+    "menu item scheduled events": "Upcoming Events",
+    "menu item historical events": "Past Events",
+    "search": "Search"
   }
 }

@@ -7,6 +7,7 @@ import { translate } from '@ngneat/transloco';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Requests } from '../../interfaces/requests';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-requests',
@@ -14,23 +15,18 @@ import { Requests } from '../../interfaces/requests';
   styleUrls: ['./requests.component.scss']
 })
 export class RequestsComponent implements OnInit {
-  event_id: string = '705346f8-c9da-4dc4-b0b8-6898595dcaaf';
-  // not sure if this will be necessary once we are able to do patch requests
-  updatedStatus: string = '';
+  eventId: string = '6a118640-6805-11ea-a4ab-ab5d9877af50';
   eventStatus: string = "active";
   acceptedRequests: Requests[];
   pendingRequests: Requests[];
-
-  // now playing request is hard coded for now. there will be only one request with the status 'now-playing' at any given time
-  nowPlayingRequest = {
-    song: 'Return to Innocence',
-    artist: 'Enigma',
-    amount: 4.20,
-    currentlyPlaying: true,
-    memo: `Shout out for Matt's birthday!`,
-    status: 'now playing'
-  }
-
+  nowPlayingRequest: any = {
+    song: null,
+    artist: null,
+    amount: null,
+    memo: null,
+    status: null
+  };
+  currentlyPlaying: boolean = false;
 
   constructor(
     public requestsService: RequestsService,
@@ -39,33 +35,46 @@ export class RequestsComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private actRoute: ActivatedRoute
   ) {
-    // this.event_id = this.actRoute.snapshot.params.id;
+    // this.eventId = this.actRoute.snapshot.params.id;
+
+    // checks all requests from the backend every 5 seconds
+    // interval(5000).subscribe(x => {
+    //   this.onGetRequestsByEventId();
+    // });
   }
 
 
   ngOnInit() {
-    this.requestsService.onFetchRequests();
     this.onGetRequestsByEventId();
   }
 
   onGetRequestsByEventId() {
-    this.requestsService.getRequestsByEventId(this.event_id).subscribe(
-      (res) => {
-        // console.log(res);
-        this.pendingRequests = res['response']
-          .filter((el: { status: string; }) => el.status === 'pending')
-        console.log(this.pendingRequests)
+    this.requestsService.getRequestsByEventId(this.eventId, "pending")
+      .subscribe((res) => {
+        if (res['response'] !== undefined) {
+          this.pendingRequests = res['response']['body'];
+        }
+      }, (err) => {
+        console.log(err);
+      })
+    this.requestsService.getRequestsByEventId(this.eventId, "accepted")
+      .subscribe((res) => {
+        if (res['response'] !== undefined) {
+          this.acceptedRequests = res['response']['body'];
+        }
+      }, (err) => {
+        console.log(err);
+      })
+    this.requestsService.getRequestsByEventId(this.eventId, "now playing")
+      .subscribe((res) => {
+        if (res['response'] !== undefined) {
+          this.nowPlayingRequest = res['response']['body'][0];
+          this.currentlyPlaying = true;
+        }
       }, (err) => {
         console.log(err);
       })
   }
-
-  // onFetchRequests() {
-  //   this.requestsService.fetchPendingRequests()
-  //     .subscribe((res: Requests[]) => this.pendingRequests = res);
-  //   this.requestsService.fetchAcceptedRequests()
-  //     .subscribe((res: Requests[]) => this.acceptedRequests = res);
-  // }
 
   get isLargeScreen() {
     return this.breakpointObserver.isMatched('(min-width: 700px)');
@@ -75,18 +84,9 @@ export class RequestsComponent implements OnInit {
     this.eventStatus = 'active';
   }
 
-  endCurrentSong() {
-    this.nowPlayingRequest = {
-      song: null,
-      artist: null,
-      amount: null,
-      currentlyPlaying: false,
-      memo: null,
-      status: null
-    }
-    const message = translate('snackbar song ended');
-    this.openSnackBar(message);
-  };
+  endEvent() {
+    this.eventStatus = 'completed';
+  }
 
   openSnackBar(message: string) {
     let durationSeconds = 2;
@@ -96,7 +96,6 @@ export class RequestsComponent implements OnInit {
     });
   };
 
-  // may need to pass in request_id as well to be able to change the status
   openDialog(index: number, requestType: string): void {
     const message = translate('confirm dialog message');
     const title = translate('confirm dialog title');
@@ -121,56 +120,52 @@ export class RequestsComponent implements OnInit {
 
   rejectRequest(index: number, requestType: string) {
     if (requestType === 'acceptedRequests') {
-      this.requestsService.acceptedRequests.splice(index, 1);
+      this.acceptedRequests[index].status = "rejected";
+      this.onChangeRequestStatus(this.acceptedRequests[index], this.acceptedRequests[index].id);
     }
     if (requestType === 'pendingRequests') {
-      this.requestsService.pendingRequests.splice(index, 1);
+      this.pendingRequests[index].status = "rejected";
+      this.onChangeRequestStatus(this.pendingRequests[index], this.pendingRequests[index].id);
     }
   }
 
+  endCurrentSong() {
+    this.nowPlayingRequest.status = "completed";
+    this.onChangeRequestStatus(this.nowPlayingRequest, this.nowPlayingRequest.id);
+    this.currentlyPlaying = false;
+    const message = translate('snackbar song ended');
+    this.openSnackBar(message);
+  };
+
   playNext(index: number) {
+    this.endCurrentSong();
+    this.acceptedRequests[index].status = "now playing";
+    this.onChangeRequestStatus(this.acceptedRequests[index], this.acceptedRequests[index].id)
     this.nowPlayingRequest = {
-      song: this.requestsService.acceptedRequests[index].song,
-      artist: this.requestsService.acceptedRequests[index].artist,
-      amount: this.requestsService.acceptedRequests[index].amount,
-      memo: this.requestsService.acceptedRequests[index].memo,
-      status: this.requestsService.acceptedRequests[index].status,
-      currentlyPlaying: true
+      song: this.acceptedRequests[index].song,
+      artist: this.acceptedRequests[index].artist,
+      amount: this.acceptedRequests[index].amount,
+      memo: this.acceptedRequests[index].memo,
+      status: this.acceptedRequests[index].status
     }
-    this.rejectRequest(index, 'acceptedRequests');
     const message = translate('snackbar now playing')
     this.openSnackBar(`${this.nowPlayingRequest.song} ${message}`);
   }
 
   acceptRequest(index: number) {
-    this.requestsService.acceptedRequests.push(this.requestsService.pendingRequests[index]);
-    this.rejectRequest(index, 'pendingRequests');
+    this.pendingRequests[index].status = "accepted";
+    this.onChangeRequestStatus(this.pendingRequests[index], this.pendingRequests[index].id);
     const message = translate('snackbar message accepted');
     this.openSnackBar(message);
   }
 
-  // these methods were used to grab the request data from the requests JSON files, may be reusable once backend is set up
-
-  // onFetchRequests() {
-  //   this.requestsService.fetchPendingRequests()
-  //     .subscribe((res: Requests[]) => this.pendingRequests = res);
-  //   this.requestsService.fetchAcceptedRequests()
-  //     .subscribe((res: Requests[]) => this.acceptedRequests = res);
-  // }
-
-  // onChangeStatus(status) {
-  //   console.log(status)
-  //   this.updatedStatus = status;
-  //   this.onPatchRequestStatus(this.updatedStatus, 'requestId')
-  // }
-
-  // not finished yet - waiting on backend set up
-  // onPatchRequestStatus(newStatus, requestId) {
-  //   this.requestsService.patchRequestStatus(newStatus, requestId)
-  //     .subscribe((res => {
-  //       console.log(res);
-  //       this.onFetchRequests();
-  //     }));
-  // }
+  onChangeRequestStatus(request: Requests, requestId: string | number) {
+    this.requestsService.changeRequestStatus(request, requestId)
+      .subscribe((res) =>
+        this.onGetRequestsByEventId()
+      ), (
+        (err: any) => console.log(err)
+      )
+  }
 
 }
