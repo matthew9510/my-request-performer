@@ -21,9 +21,11 @@ export class EventService {
   currentEventId = null;
   currentEvent = null;
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private authService: AuthService) { }
 
+  // gets all events (all statuses) for the performer that is currently logged in
   getEvents() {
     const headers = {
       headers: new HttpHeaders({
@@ -31,7 +33,6 @@ export class EventService {
       })
     }
     return this.http.get(`${environment.performersUrl}/${localStorage.getItem('performerSub')}/events`, headers);
-    // return this.http.get('assets/events.json')
   }
 
   createEvent(event) {

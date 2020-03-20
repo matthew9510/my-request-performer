@@ -26,6 +26,16 @@ $angular-v8-warn: mat-palette($mat-red);
 // Create the theme object (a Sass map containing all of the palettes).
 $angular-v8-theme: mat-light-theme($angular-v8-primary, $angular-v8-accent, $angular-v8-warn);
 
+// storing the colors for the variables below
+$app-primary: mat-palette($mat-indigo);
+$app-accent:  mat-palette($mat-pink, A200, A100, A400);
+$app-warn:    mat-palette($mat-red);
+
+// these can be used as variables in individual components if this styles.css file is imported
+$primary: mat-color($app-primary);
+$accent: mat-color($app-accent);
+$warn: mat-color($app-warn);
+
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.

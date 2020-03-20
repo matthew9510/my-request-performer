@@ -3,7 +3,6 @@ import { EventService } from '../../services/event.service';
 import { Events } from '../../services/event.service';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-manage-events',
   templateUrl: './manage-events.component.html',
@@ -11,40 +10,36 @@ import { Router } from '@angular/router';
 })
 export class ManageEventsComponent implements OnInit {
   events: any;
-  pastEvents: any;
   history: boolean;
-  scheduled: boolean;
   searchText: string;
-  selected: string = 'Scheduled';
+  eventsListTitle: string = 'Scheduled Events';
+  // activeEvents: any;
 
   constructor(private eventService: EventService, private router: Router) {
   }
 
   ngOnInit() {
-    if (this.selected === 'Scheduled') {
-      this.getEvents();
-    }
+    this.getEventsByStatus('created');
   }
 
-  getEvents() {
+  getEventsByStatus(status: string) {
+    this.eventService.getEvents()
+      .subscribe((res) => {
+        this.events = null;
+        this.events = res['response']['body']
+          .filter((el: { status: string; }) => el.status === status);
+        console.log(this.events)
+      })
+  }
+
+  getAllEvents() {
     this.eventService.getEvents()
       .subscribe((res: any) => {
         this.events = res.response.body;
-        this.history = false;
-        this.scheduled = true;
       });
   }
 
-  getPastEvents() {
-    this.eventService.getEvents()
-      .subscribe((res: Events[]) => {
-        this.pastEvents = res;
-        this.history = true;
-        this.scheduled = false;
-      });
-  }
-
-  createEvent() {
+  routeToCreateEvent() {
     this.router.navigate(['/create-event'])
   }
 

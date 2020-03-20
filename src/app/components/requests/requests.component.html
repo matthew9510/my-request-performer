@@ -11,7 +11,7 @@
   </div>
   <ng-template #activeEvent>
     <!-- disablePagination will not work in current version of angular material-->
-    <mat-tab-group disablePagination="true" mat-align-tabs="center">
+    <mat-tab-group disablePagination="true" mat-align-tabs="center" class="mat-app-background">
       <mat-tab class="tab-label" label="Accepted">
         <ng-template matTabContent>
           <div [class.largeScreenDisplay]="isLargeScreen">

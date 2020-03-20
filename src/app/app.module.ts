@@ -39,7 +39,7 @@ import {
   MatInputModule,
   MatSnackBarModule,
   MatExpansionModule,
-  MatMenuModule
+  MatMenuModule,
 } from '@angular/material';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CreateEventComponent } from './components/create-event/create-event.component';

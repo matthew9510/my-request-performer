@@ -1,39 +1,61 @@
 <ng-container *transloco="let t; read: 'manage events'">
-  <div id="toolbar">
-    <mat-select id="leftToolbar" [(value)]="selected">
-      <mat-option value="Scheduled" (click)="getEvents()">
-        {{ t('menu item scheduled events') }}
-      </mat-option>
-      <mat-option value="History" (click)="getPastEvents()">
-        {{t('menu item historical events') }}
-      </mat-option>
-      <mat-option (click)="createEvent()">
-        <mat-icon>add</mat-icon> {{ t('menu item new event') }}
-      </mat-option>
-    </mat-select>
 
-    <div id="rightToolbar">
-      <mat-form-field *ngIf="scheduled || history" appearance="outline">
-        <mat-label>
-          <mat-icon>search</mat-icon>
-          {{ t('search') }}
-        </mat-label>
-        <input type="search" matInput id="searchInput" [(ngModel)]="searchText" >
-      </mat-form-field>
+    <!-- Expansion panel for header of events page and inputs for search and filter -->
+    <mat-expansion-panel id="toolbar" class="mat-elevation-z0">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <!-- Shows which events are displaying based on filter -->
+          <h3>{{ eventsListTitle }}</h3>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div id="expansion-panel-content">
+        <!-- Search input using filter pipe -->
+        <!-- filter pipe is not currently working -->
+        <mat-form-field appearance="outline">
+          <mat-label><mat-icon>search</mat-icon> {{ t('search') }}</mat-label>
+          <input type="search" matInput id="searchInput" [(ngModel)]="searchText">
+        </mat-form-field>
+
+        <!-- dropdown that filters events by status -->
+        <mat-form-field appearance="outline">
+          <mat-label>Event Status</mat-label>
+          <mat-select [(value)]="eventsListTitle">
+
+            <mat-option value="All Events" (click)="getAllEvents()">
+              {{ t('menu item all events') }}
+            </mat-option>
+
+            <mat-option value="Scheduled Events" (click)="getEventsByStatus('created')">
+              {{ t('menu item upcoming events') }}
+            </mat-option>
+
+            <mat-option value="Past Events" (click)="getEventsByStatus('completed')">
+              {{ t('menu item past events') }}
+            </mat-option>
+
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+    </mat-expansion-panel>
+
+
+    <!-- Displays events & has infinite scroll -->
+    <cdk-virtual-scroll-viewport itemSize="10">
+      <mat-list class="events">
+        <app-eventdetails  *cdkVirtualFor="let event of events | filter : searchText" mat-list-item class="event" [eventData]="event">
+        </app-eventdetails>
+      </mat-list>
+    </cdk-virtual-scroll-viewport>
+
+    <div id="fab-button-wrapper">
+      <div id="fab-button">
+        <button mat-fab color="primary" (click)="routeToCreateEvent()">
+          <!-- Button message if event is active -->
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <cdk-virtual-scroll-viewport itemSize="80" *ngIf="!history">
-    <mat-list class="events">
-      <app-eventdetails *cdkVirtualFor="let event of events | filter : searchText" mat-list-item class="event" [eventData]="event">
-      </app-eventdetails>
-    </mat-list>
-  </cdk-virtual-scroll-viewport>
-
-  <cdk-virtual-scroll-viewport itemSize="80" *ngIf="!scheduled">
-    <mat-list class="events" >
-      <app-eventdetails *cdkVirtualFor="let pastEvent of pastEvents | filter : searchText" mat-list-item class="event" [eventData]="pastEvent">
-      </app-eventdetails>
-    </mat-list>
-  </cdk-virtual-scroll-viewport>
 </ng-container>

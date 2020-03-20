@@ -38,9 +38,9 @@ export class RequestsComponent implements OnInit {
     // this.eventId = this.actRoute.snapshot.params.id;
 
     // checks all requests from the backend every 5 seconds
-    // interval(5000).subscribe(x => {
-    //   this.onGetRequestsByEventId();
-    // });
+    interval(5000).subscribe(x => {
+      this.onGetRequestsByEventId();
+    });
   }
 
 
