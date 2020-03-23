@@ -106,6 +106,7 @@ app.get('/events/:id', function (req, res) {
           response: response
         })
       } else {
+        console.log("result of an non existent event", result) // response will be empty
         res.json({
           message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
           invalid_id: eventId
@@ -126,8 +127,12 @@ app.get('/events/:id/requests', function (req, res, next) {
   const requestStatus = req.query.status;
   let params;
 
+  console.log("GET: /events/:id/requests request object", req)
+
+  // Set up query //
   if (requestStatus) {
-    console.log("GET", requestStatus, "requests with the event id:", eventId, "request:\n", req);
+    console.log("EventId:", eventId)
+    console.log("Status:", requestStatus)
 
     // create params
     params = {
@@ -143,7 +148,7 @@ app.get('/events/:id/requests', function (req, res, next) {
       }
     };
   } else {
-    console.log("GET all requests with the event id:", eventId, "request:\n", req);
+    console.log("EventId:", eventId)
 
     // create params
     params = {
@@ -156,22 +161,39 @@ app.get('/events/:id/requests', function (req, res, next) {
     };
   }
 
+  // Print constructed params //
   console.log('Params:\n', params);
 
-  // fetch requests with status pending from the database
+  // Todo //
+  // Question - Can I hit an endpoint defined in this file? Or should I just use another query by using a query
+  // Make Query //
+  // Does the event even exist? //
+  // psuedo-logic
+  //  hit event/:id
+  //    in subscribe check the response
+  //      if an event exists what are the parameters
+  //      if an event doesn't exist what are the parameters 
+  //        if an event doesn't exist (response should be an empty object - format response) then throw an error to the console and to the next function or just send back a response with status 200 but body saying don't exist
+  //        else, if an event exists then continue on with querying the event's requests
+
+
+  // fetch requests from the database
   dynamoDb.query(params, (error, result) => {
-    // handle potential errors
+    // handle potential Dynamo db server errors
     if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+      console.error("Unable to find item(s). Error JSON:", JSON.stringify(error, null, 2));
       next("error in events/:id/requests", error)
     } else {
+      // Print the result
       console.log('Result:\n', result)
-      if ("Items" in result && result.Items.length > 0) {
-        const response = {
-          statusCode: 200,
-          body: result.Items,
-        };
-        console.log("Response:\n", response)
+
+      // First up response of now-playing being empty for an event
+      const response = {
+        statusCode: 200,
+        body: result.Items,
+      };
+
+      if (response.body.length >= 1) {
         if (requestStatus) {
           res.json({
             success: "Found all " + requestStatus + " requests for event id: " + eventId,
@@ -184,10 +206,17 @@ app.get('/events/:id/requests', function (req, res, next) {
           })
         }
       } else {
-        res.json({
-          message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
-          invalid_id: eventId
-        })
+        if (requestStatus) {
+          res.json({
+            success: "Found no " + requestStatus + " requests for event id: " + eventId,
+            response: response
+          })
+        } else {
+          res.json({
+            success: 'Found no requests for event id: ' + eventId,
+            response: response
+          })
+        }
       }
     }
   });

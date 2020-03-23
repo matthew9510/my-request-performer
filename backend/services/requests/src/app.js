@@ -117,7 +117,7 @@ app.get('/requests/:id', function (req, res) {
       } else {
         res.json({
           message: 'Unable to find record, please check event id ' + requestId + ' was entered correctly... ',
-          invalid_id: eventId
+          invalid_id: requestId
         })
       }
     }
