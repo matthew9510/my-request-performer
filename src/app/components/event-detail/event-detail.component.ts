@@ -14,7 +14,7 @@ export class EventdetailsComponent implements OnInit {
   venue: any;
 
   @Input()
-  set eventData(eventData) {
+  set eventData(eventData: { date: moment.MomentInput; }) {
     if (eventData) {
       eventData.date = moment(eventData.date).format('MMM DD');
       this.event = eventData;
@@ -40,8 +40,8 @@ export class EventdetailsComponent implements OnInit {
     this.router.navigate([`/event/${this.event.id}/clone`], { state: this.event });
   }
 
-  startEvent(eventId) {
-    this.eventService.startEvent(eventId)
-    this.router.navigate(['/requests'])
+  startEvent(eventId: any) {
+    // this.eventService.startEvent(eventId)
+    this.router.navigate([`/event/${this.event.id}`])
   }
 }

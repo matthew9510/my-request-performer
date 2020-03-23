@@ -50,6 +50,10 @@ cdk-virtual-scroll-viewport {
     width: 700px;
     margin: 0 auto;
   }
+  .events {
+    width: 700px;
+    margin: 0 auto;
+  }
 }
 
 mat-expansion-panel {
@@ -74,4 +78,8 @@ mat-expansion-panel {
   position: fixed !important;
   bottom: 4.5rem;
   z-index: 99;
+}
+
+mat-form-field {
+  margin: 2px;
 }

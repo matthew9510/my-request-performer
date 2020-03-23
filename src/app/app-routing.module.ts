@@ -18,11 +18,11 @@ const routes: Routes = [
   { path: 'payout', component: PayoutComponent, data: { title: 'Payout' }, canActivate: [NotAuthGuard] },
   { path: 'history', component: HistoryComponent, data: { title: 'History' }, canActivate: [NotAuthGuard] },
   { path: 'profile', component: ProfileComponent, data: { title: 'Profile' }, canActivate: [NotAuthGuard] },
-  { path: 'requests', component: RequestsComponent, data: { title: 'Requests' }, canActivate: [NotAuthGuard] },
+  { path: 'event/:id', component: RequestsComponent, data: { title: 'Requests' }, canActivate: [NotAuthGuard] },
   { path: 'events', component: ManageEventsComponent, data: { title: 'Manage Events' }, canActivate: [NotAuthGuard] },
   { path: 'create-event', component: CreateEventComponent, data: { title: 'Create Event' }, canActivate: [NotAuthGuard] },
   { path: 'event/:id/clone', component: CreateEventComponent, data: { title: 'Clone Event' }, canActivate: [NotAuthGuard] },
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent, data: { title: 'Log in' }, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

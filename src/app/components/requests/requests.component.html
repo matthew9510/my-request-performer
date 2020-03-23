@@ -1,6 +1,10 @@
 <ng-container *transloco="let t; read: 'requests'">
+
+<!-- This is what appears when the event is not active -->
   <div *ngIf="eventStatus !== 'active'; else activeEvent">
-    <p class="body-text">{{ t('inactive event message') }}</p>
+    <p class="body-text" *ngIf="eventStatus === 'created'">{{ t('inactive event message') }}</p>
+    <p class="body-text" *ngIf="eventStatus === 'paused'">Event paused. Click Start to resume.</p>
+    <p class="body-text" *ngIf="eventStatus === 'completed'">This event is completed.</p>
     <div id="fab-button-wrapper">
       <div id="fab-button">
         <button class="extended-fab-button" mat-fab color="primary" (click)="startEvent()">
@@ -9,21 +13,29 @@
       </div>
     </div>
   </div>
+
+  <!-- What appears when the event is active -->
   <ng-template #activeEvent>
     <!-- disablePagination will not work in current version of angular material-->
     <mat-tab-group disablePagination="true" mat-align-tabs="center" class="mat-app-background">
       <mat-tab class="tab-label" label="Accepted">
+
         <ng-template matTabContent>
-          <div [class.largeScreenDisplay]="isLargeScreen">
-            <div [class.largeScreenChild]="isLargeScreen" class="subheader-wrapper">
+          <div [class.large-screen-display]="isLargeScreen">
+            <div [class.large-screen-child]="isLargeScreen" class="subheader-wrapper">
               <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
+
+              <!-- Change event status menu -->
               <mat-menu #eventMenu="matMenu" xPosition="before">
+                <button mat-menu-item (click)="startEvent()">Start Event</button>
+                <button mat-menu-item (click)="startEvent()">Pause Event</button>
                 <button mat-menu-item (click)="endEvent()">End Event</button>
               </mat-menu>
               <button mat-icon-button [matMenuTriggerFor]="eventMenu"><mat-icon>more_vert</mat-icon></button>
             </div>
 
-            <div *ngIf="currentlyPlaying; else selectNextSong" [class.largeScreenChild]="isLargeScreen">
+            <!-- Now playing song -->
+            <div *ngIf="currentlyPlaying; else selectNextSong" [class.large-screen-child]="isLargeScreen">
               <app-request-detail 
                 [song]="nowPlayingRequest.song" 
                 [artist]="nowPlayingRequest.artist"
@@ -33,14 +45,17 @@
                 <button endSongButton mat-flat-button class="request-button" color="accent" (click)="endCurrentSong()">{{ t('end song button') }}</button>
               </app-request-detail>
             </div>
+
+            <!-- Message that shows up when there is no song currently selected -->
             <ng-template #selectNextSong>
               <p class="body-text">
-                <!-- {{ t('no current song playing message') }} -->
+                {{ t('no current song playing message') }}
               </p>
             </ng-template>
 
-            <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
-            <mat-list [class.largeScreenChild]="isLargeScreen">
+            <!-- Accepted requests/Up Next -->
+            <h3 [class.large-screen-child]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
+            <mat-list [class.large-screen-child]="isLargeScreen">
               <app-request-detail mat-list-item 
                 [song]="request.song" 
                 [artist]="request.artist" 
@@ -59,12 +74,15 @@
         </ng-template>
       </mat-tab>
 
+      <!-- Pending requests tab -->
       <mat-tab label="Pending">
         <ng-template matTabContent>
-          <div [class.largeScreenDisplay]="isLargeScreen">
-            <h3 [class.largeScreenChild]="isLargeScreen" class="request-subheader" mat-subheader>
+          <div [class.large-screen-display]="isLargeScreen">
+            <h3 [class.large-screen-child]="isLargeScreen" class="request-subheader" mat-subheader>
               {{ t('pending requests') }}</h3>
-            <mat-list [class.largeScreenChild]="isLargeScreen">
+
+            <!-- Pending request items -->
+            <mat-list [class.large-screen-child]="isLargeScreen">
               <app-request-detail mat-list-item 
                 [song]="request.song" 
                 [artist]="request.artist" 
@@ -72,8 +90,6 @@
                 [status]="request.status" 
                 *ngFor="let request of pendingRequests; index as i">
 
-                <!-- Had to remove the following line to test if it works:
-                            *ngIf="status === 'pending'" -->
                 <button acceptButton mat-icon-button class="request-button" (click)="acceptRequest(i)">
                   <mat-icon color="primary" class="request-button-icon">done</mat-icon>
                 </button>

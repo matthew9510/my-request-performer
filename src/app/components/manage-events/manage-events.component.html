@@ -7,7 +7,7 @@
           <!-- Shows which events are displaying based on filter -->
           <h3>{{ eventsListTitle }}</h3>
         </mat-panel-title>
-      </mat-expansion-panel-header>
+      </mat-expansion-panel-header> 
 
       <div id="expansion-panel-content">
         <!-- Search input using filter pipe -->
@@ -26,6 +26,10 @@
               {{ t('menu item all events') }}
             </mat-option>
 
+            <mat-option value="Active Events" (click)="getEventsByStatus('active')">
+              Active Events
+            </mat-option>
+
             <mat-option value="Scheduled Events" (click)="getEventsByStatus('created')">
               {{ t('menu item upcoming events') }}
             </mat-option>
@@ -42,12 +46,18 @@
 
 
     <!-- Displays events & has infinite scroll -->
-    <cdk-virtual-scroll-viewport itemSize="10">
+    <!-- <cdk-virtual-scroll-viewport itemSize="10">
       <mat-list class="events">
-        <app-eventdetails  *cdkVirtualFor="let event of events | filter : searchText" mat-list-item class="event" [eventData]="event">
+        <app-eventdetails *cdkVirtualFor="let event of events | filter : searchText" mat-list-item class="event" [eventData]="event">
         </app-eventdetails>
       </mat-list>
-    </cdk-virtual-scroll-viewport>
+    </cdk-virtual-scroll-viewport> -->
+
+    <!-- Displays events without infinite scroll -->
+      <mat-list class="events">
+        <app-eventdetails *ngFor="let event of events | filter : searchText" mat-list-item class="event" [eventData]="event">
+        </app-eventdetails>
+      </mat-list>
 
     <div id="fab-button-wrapper">
       <div id="fab-button">

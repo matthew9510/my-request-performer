@@ -16,7 +16,6 @@ export interface Events {
   providedIn: 'root'
 })
 export class EventService {
-
   activeEvent = false;
   currentEventId = null;
   currentEvent = null;
@@ -35,7 +34,7 @@ export class EventService {
     return this.http.get(`${environment.performersUrl}/${localStorage.getItem('performerSub')}/events`, headers);
   }
 
-  createEvent(event) {
+  createEvent(event: Object) {
     return this.http.post(environment.eventsUrl, event);
   }
 
@@ -43,37 +42,76 @@ export class EventService {
     return this.http.get(environment.venuesUrl, event_id)
   }
 
-  addVenue(venue) {
+  addVenue(venue: any) {
     // console.log(JSON.stringify(venue))
     return this.http.put(environment.venuesUrl, venue)
   }
 
-  getEvent(eventId) {
+  getEvent(eventId: string) {
     return this.http.get(`${environment.eventsUrl}/${eventId}`)
   }
 
-  updateEvent(eventId, event) {
+  updateEvent(eventId: any, event: any) {
     return this.http.put(`${environment.eventsUrl}/${eventId}`, event)
   }
 
-  startEvent(eventId) {
+  startEvent(eventId: string) {
     // Invoke changing status of event to started
     // Get currentEvent
     this.getEvent(eventId).subscribe((res: any) => {
-      let event = res.response.body.Item;
-      console.log("Event before patch", event)
+      let event = res['response']['body']['Item'];
+      // console.log("Event before patch", event)
 
       // Change event status to started
-      event.status = "started"
+      event.status = "active";
       // Update the event entry with the status changed to started
-      this.updateEvent(eventId, event).subscribe((res: any) => {
-        // Set appropriate service properties
-        this.activeEvent = true;
-        this.currentEventId = eventId;
-        this.currentEvent = res.response
-        console.log("current Event", this.currentEvent)
-      })
+      this.updateEvent(eventId, event)
+        .subscribe((res: any) => {
+          // Set appropriate service properties
+          this.activeEvent = true;
+          this.currentEventId = eventId;
+          this.currentEvent = res.response
+          // console.log("current Event", this.currentEvent)
+        })
     })
   }
 
+  pauseEvent(eventId: string) {
+    // Invoke changing status of event to started
+    // Get currentEvent
+    this.getEvent(eventId).subscribe((res: any) => {
+      let event = res['response']['body']['Item'];
+
+      // Change event status to started
+      event.status = "paused";
+      // Update the event entry with the status changed to started
+      this.updateEvent(eventId, event)
+        .subscribe((res: any) => {
+          console.log(event)
+          // Set appropriate service properties
+          // this.activeEvent = true;
+          this.currentEventId = eventId;
+          this.currentEvent = res.response
+        })
+    })
+  }
+
+  endEvent(eventId: string) {
+    // Invoke changing status of event to started
+    // Get currentEvent
+    this.getEvent(eventId).subscribe((res: any) => {
+      let event = res['response']['body']['Item'];
+
+      // Change event status to started
+      event.status = "completed";
+      // Update the event entry with the status changed to started
+      this.updateEvent(eventId, event)
+        .subscribe((res: any) => {
+          // Set appropriate service properties
+          // this.activeEvent = true;
+          this.currentEventId = eventId;
+          this.currentEvent = res.response
+        })
+    })
+  }
 }

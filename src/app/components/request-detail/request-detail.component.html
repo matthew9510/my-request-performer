@@ -1,13 +1,13 @@
-<mat-card class="mat-elevation-z0 outline mat-app-background" [class.cardSmallScreen]="isSmallScreen"
-  [class.cardLargeScreen]="isLargeScreen">
-  <div id="request-info-wrapper" [class.requestInfoSmallScreen]="isSmallScreen">
+<mat-card class="mat-elevation-z0 outline mat-app-background" [class.card-small-screen]="isSmallScreen"
+  [class.card-large-screen]="isLargeScreen">
+  <div id="request-info-wrapper" [class.request-info-small-screen]="isSmallScreen">
     <span class="song-name mat-body-strong truncate">{{ song }}</span>
     <p class="artist-name mat-body truncate">{{ artist }}</p>
     <div *ngIf="memo">
       <p class="memo-text mat-body"><b>Message:</b> {{ memo }}</p>
     </div>
   </div>
-  <div id="tip-and-buttons" [class.actionsSmallScreen]="isSmallScreen">
+  <div id="tip-and-buttons" [class.actions-small-screen]="isSmallScreen">
     <div id="amount-wrapper">
       <span class="tip-amount" *ngIf="amount">{{ amount | currency }}</span>
     </div>

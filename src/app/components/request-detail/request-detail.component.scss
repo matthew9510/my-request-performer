@@ -10,7 +10,7 @@ mat-card {
   padding: 16px;
 }
 
-.cardSmallScreen {
+.card-small-screen {
   display: flex;
   flex-wrap: wrap;
 }
@@ -25,7 +25,7 @@ mat-card {
   white-space: nowrap;
 }
 
-.requestInfoSmallScreen {
+.request-info-small-screen {
   flex: 1 0 100%;
   width: 100%;
 }
@@ -38,7 +38,7 @@ mat-card {
   // flex-wrap: wrap-reverse;
 }
 
-.actionsSmallScreen {
+.actions-small-screen {
   display: flex;
   flex: 1 0 100% !important;
   justify-content: flex-end !important;
