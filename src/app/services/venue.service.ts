@@ -18,4 +18,9 @@ export class VenueService {
     };
     return this.http.get(`${environment.venuesUrl}/${venueId}`, headers)
   }
+
+  addVenue(venue) {
+    // console.log(JSON.stringify(venue))
+    return this.http.put(environment.venuesUrl, venue)
+  }
 }

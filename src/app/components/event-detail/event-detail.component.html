@@ -1,21 +1,23 @@
 <mat-card class="mat-card-container mat-elevation-z0" color="accent">
   <img mat-card-image src="../assets/images/test-image.png" alt="" class="image">
-  <span class="date">{{event?.date}}</span>
+  <span class="date">{{shortenedDate}}</span>
   <mat-card-content class="info">
     <span class="venue">{{venue?.name}}</span><br>
     <span class="title">{{event?.title}}</span>
     <span>{{ event.status }}</span>
   </mat-card-content>
 
-<!-- Need to add these menu items to transloco -->
+  <!-- Need to add these menu items to transloco -->
 
   <!-- Change event status menu -->
   <mat-menu #eventMenu="matMenu" xPosition="before">
-    <button mat-menu-item (click)="cloneEvent()">Edit Event</button>
+    <button mat-menu-item (click)="editEvent()">Edit Event</button>
     <button mat-menu-item (click)="startEvent(event?.id)">Start Event</button>
     <!-- <button mat-menu-item (click)="endEvent()">End Event</button> -->
   </mat-menu>
-  <button mat-icon-button [matMenuTriggerFor]="eventMenu"><mat-icon>more_vert</mat-icon></button>
+  <button mat-icon-button [matMenuTriggerFor]="eventMenu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
 
   <!-- <div class="buttons">
     <button mat-raised-button color="accent" (click)="cloneEvent()">

@@ -5,6 +5,7 @@ import { EventService } from 'src/app/services/event.service';
 import { PerformerService } from '@services/performer.service';
 import { Router } from '@angular/router';
 import { ThrowStmt } from '@angular/compiler';
+import { VenueService } from '@services/venue.service'
 
 @Component({
   selector: 'app-create-event',
@@ -16,17 +17,24 @@ export class CreateEventComponent implements OnInit {
   venueForm: FormGroup;
   eventForm: FormGroup;
   eventTimeAndDateForm: FormGroup;
-  addingVenue = true;
+  addingVenue = false;
+  editEvent = false;
   eventToClone;
+  venueToClone;
   uploadImage = false; // hide uploading image for now
   venues: any[] = [];
 
   constructor(private fb: FormBuilder,
     private eventService: EventService,
     private performerService: PerformerService,
-    private router: Router
+    private router: Router,
+    private venueService: VenueService
   ) {
-    this.eventToClone = this.router.getCurrentNavigation().extras.state;
+    if (this.router.getCurrentNavigation().extras.state) {
+      this.editEvent = true
+      this.eventToClone = this.router.getCurrentNavigation().extras.state.event;
+      this.venueToClone = this.router.getCurrentNavigation().extras.state.venue;
+    }
   }
 
   ngOnInit() {
@@ -41,6 +49,7 @@ export class CreateEventComponent implements OnInit {
       venueId: [null],
       // image: [null],
     })
+
     this.eventTimeAndDateForm = this.fb.group({
       date: [null, Validators.required],
       startTime: [null, Validators.required],
@@ -48,10 +57,23 @@ export class CreateEventComponent implements OnInit {
     })
 
     // Take away selecting previous venues for now
-    // this.venueForm = this.fb.group({
-    //   id: [null, Validators.required, this.venueValidator],
-    // })
-    this.displayAddVenue();
+    this.venueForm = this.fb.group({
+      id: [null, Validators.required],
+    })
+
+    if (this.editEvent === true) {
+      console.log("clone", this.eventToClone)
+      this.eventDetailForm.patchValue(this.eventToClone);
+      this.eventTimeAndDateForm.patchValue(this.eventToClone);
+      this.venueForm.patchValue(this.eventToClone);
+
+      // Set Date to correct format for mat-datepicker
+      this.eventTimeAndDateForm.controls.date.setValue(new Date(this.eventToClone.date));
+    }
+    else {
+      this.displayAddVenue();
+    }
+
   }
 
   // make sure a person auto-completes with one of their venues
@@ -74,10 +96,6 @@ export class CreateEventComponent implements OnInit {
       url: [null],
       performerId: [localStorage.getItem('performerSub')]
     });
-
-    if (this.eventToClone !== undefined) {
-      this.eventForm.patchValue(this.eventToClone);
-    }
   }
 
   prepareEvent(venueId) {
@@ -96,7 +114,7 @@ export class CreateEventComponent implements OnInit {
   createEvent() {
     if (this.addingVenue) {
       // Create entry in venue table
-      this.eventService.addVenue(this.venueForm.value).subscribe((res: any) => {
+      this.venueService.addVenue(this.venueForm.value).subscribe((res: any) => {
         let venueId = res.record.id;
 
         // create a event object

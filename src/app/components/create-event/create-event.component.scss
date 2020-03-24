@@ -1,4 +1,4 @@
-form{
+form {
   display: flex;
   flex-direction: column;
   width: 90%;
@@ -16,6 +16,14 @@ form{
   width: 100%;
   padding: 0;
 }
+
 .venue-button {
   width: 100%;
+}
+
+@media screen and (min-width: 700px) {
+  .stepper-div {
+    width: 700px;
+    margin: 0 auto;
+  }
 }

@@ -1,5 +1,5 @@
-<ng-container *transloco="let t; read: 'createEvent'" class="mat-app-background">
-  <mat-horizontal-stepper #stepper labelPosition="bottom">
+<ng-container *transloco="let t; read: 'createEvent'">
+  <mat-horizontal-stepper #stepper labelPosition="bottom" class="stepper-div mat-app-background">
     <mat-step [stepControl]="eventDetailForm">
       <form [formGroup]="eventDetailForm" class="createEventForm">
         <ng-template matStepLabel>{{ t('eventDetails') }}</ng-template>
@@ -48,7 +48,8 @@
 
         <mat-form-field>
           <mat-label>{{ t('chooseADate') }}</mat-label>
-          <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()">
+          <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()"
+            [value]="this.eventTimeAndDateForm.value.date">
           <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
           <mat-datepicker #myDatepicker></mat-datepicker>
         </mat-form-field>
@@ -79,6 +80,7 @@
         <mat-form-field *ngIf="!addingVenue">
           <mat-label>{{ t('venue') }}</mat-label>
           <input matInput formControlName="id" [matAutocomplete]="auto" autocomplete="zalsdjflsadfkjfl">
+
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let venue of venues" [value]='venue.id'>{{venue.name}}</mat-option>
             <mat-option class="add-venue-option">

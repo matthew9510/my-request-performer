@@ -12,11 +12,12 @@ import { EventService } from '@services/event.service'
 export class EventdetailsComponent implements OnInit {
   event: any;
   venue: any;
+  shortenedDate: any;
 
   @Input()
   set eventData(eventData: { date: moment.MomentInput; }) {
     if (eventData) {
-      eventData.date = moment(eventData.date).format('MMM DD');
+      this.shortenedDate = moment(eventData.date).format('MMM DD');
       this.event = eventData;
     }
   }
@@ -25,10 +26,7 @@ export class EventdetailsComponent implements OnInit {
     private router: Router,
     private venueService: VenueService,
     private eventService: EventService
-  ) {
-
-
-  }
+  ) { }
 
   ngOnInit() {
     this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
@@ -36,8 +34,8 @@ export class EventdetailsComponent implements OnInit {
     })
   }
 
-  cloneEvent() {
-    this.router.navigate([`/event/${this.event.id}/clone`], { state: this.event });
+  editEvent() {
+    this.router.navigate([`/event/${this.event.id}/clone`], { state: { event: this.event, venue: this.venue } });
   }
 
   startEvent(eventId: any) {
