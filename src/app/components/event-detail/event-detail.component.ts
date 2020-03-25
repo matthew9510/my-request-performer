@@ -40,6 +40,7 @@ export class EventdetailsComponent implements OnInit {
 
   startEvent(eventId: any) {
     // this.eventService.startEvent(eventId)
+    this.eventService.currentEventId = eventId;
     this.router.navigate([`/event/${this.event.id}`])
   }
 }

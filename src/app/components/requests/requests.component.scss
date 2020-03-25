@@ -47,6 +47,8 @@ mat-tab-group {
 
 .request-subheader {
   padding-bottom: 0px;
+  display: flex;
+  justify-content: space-between;
 }
 
 mat-list {
@@ -62,14 +64,16 @@ mat-list {
 .request-button-icon {
   margin: 0px;
 }
-
+// this class is assigned when screen width is 700px or greater
 .large-screen-display {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+// this class is assigned when screen width is 700px or greater
 .large-screen-child {
+  // if max-width instead of fixed width, things get squished together
   width: 700px;
 }
 
@@ -79,5 +83,9 @@ mat-list {
 
 .body-text {
   margin: 50px;
+  text-align: center;
+}
+
+.refresh-button {
   text-align: center;
 }

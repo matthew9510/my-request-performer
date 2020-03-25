@@ -78,8 +78,12 @@
       <mat-tab label="Pending">
         <ng-template matTabContent>
           <div [class.large-screen-display]="isLargeScreen">
-            <h3 [class.large-screen-child]="isLargeScreen" class="request-subheader" mat-subheader>
-              {{ t('pending requests') }}</h3>
+            <div [class.large-screen-child]="isLargeScreen" class="request-subheader" mat-subheader>
+              <h3>{{ t('pending requests') }}</h3>
+              <button mat-icon-button color="primary" (click)="onGetRequestsByEventId()">
+                <mat-icon class="refresh-button">refresh</mat-icon>
+              </button>
+            </div>
 
             <!-- Pending request items -->
             <mat-list [class.large-screen-child]="isLargeScreen">

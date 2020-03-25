@@ -55,6 +55,8 @@ export class EventService {
     return this.http.put(`${environment.eventsUrl}/${eventId}`, event)
   }
 
+  // work in progress
+  // shouldn't have to use getEvent() here. should pass event object instead
   startEvent(eventId: string) {
     // Invoke changing status of event to started
     // Get currentEvent
@@ -76,6 +78,8 @@ export class EventService {
     })
   }
 
+  // work in progress
+  // shouldn't have to use getEvent() here. should pass event object instead
   pauseEvent(eventId: string) {
     // Invoke changing status of event to started
     // Get currentEvent
@@ -96,6 +100,8 @@ export class EventService {
     })
   }
 
+  // work in progress
+  // shouldn't have to use getEvent() here. should pass event object instead
   endEvent(eventId: string) {
     // Invoke changing status of event to started
     // Get currentEvent

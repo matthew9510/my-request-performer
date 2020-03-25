@@ -42,8 +42,15 @@ export class RequestsComponent implements OnInit {
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
     // checks all requests from the backend every 5 seconds
-    interval(5000).subscribe(x => {
-      this.onGetRequestsByEventId();
+    interval(20000).subscribe(x => {
+      this.requestsService.getRequestsByEventId(this.eventId, "pending")
+        .subscribe((res) => {
+          if (res['response']['body'].length > 0) {
+            this.pendingRequests = res['response']['body'];
+          }
+        }, (err) => {
+          console.log(err);
+        })
     });
   }
 
@@ -73,6 +80,8 @@ export class RequestsComponent implements OnInit {
       .subscribe((res) => {
         if (res['response']['body'].length > 0) {
           this.pendingRequests = res['response']['body'];
+        } else {
+          this.pendingRequests = null;
         }
       }, (err) => {
         console.log(err);
@@ -81,6 +90,8 @@ export class RequestsComponent implements OnInit {
       .subscribe((res) => {
         if (res['response']['body'].length > 0) {
           this.acceptedRequests = res['response']['body'];
+        } else {
+          this.acceptedRequests = null;
         }
       }, (err) => {
         console.log(err);
@@ -90,6 +101,14 @@ export class RequestsComponent implements OnInit {
         if (res['response']['body'].length > 0) {
           this.nowPlayingRequest = res['response']['body'][0];
           this.currentlyPlaying = true;
+        } else {
+          this.nowPlayingRequest = {
+            song: null,
+            artist: null,
+            amount: null,
+            memo: null,
+            status: null
+          };
         }
       }, (err) => {
         console.log(err);
@@ -185,6 +204,7 @@ export class RequestsComponent implements OnInit {
   };
 
   playNext(index: number) {
+    console.log('clicked')
     this.endCurrentSong();
     this.acceptedRequests[index].status = "now playing";
     const request = this.acceptedRequests[index];
@@ -203,9 +223,10 @@ export class RequestsComponent implements OnInit {
 
   onChangeRequestStatus(request: Requests, requestId: string | number) {
     this.requestsService.changeRequestStatus(request, requestId)
-      .subscribe((res) =>
-        this.onGetRequestsByEventId()
-      ), (
+      .subscribe((res) => {
+        console.log('success ' + request.song)
+        this.onGetRequestsByEventId();
+      }), (
         (err: any) => console.log(err)
       )
   }
