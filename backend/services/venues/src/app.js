@@ -36,13 +36,17 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * GET all method *
  **********************/
 app.get('/venues', function (req, res) {
-  console.log("GET all venues request:\n", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("GET all venues request:\n", req);
 
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // fetch venue from the database
   dynamoDb.scan(params, (error, result) => {
@@ -55,7 +59,7 @@ app.get('/venues', function (req, res) {
         statusCode: 200,
         body: result,
       };
-      console.log("Response:\n", response);
+      if (debug) console.log("Response:\n", response);
 
       res.json({
         success: 'Successfully found records from the venues table!',
@@ -70,8 +74,9 @@ app.get('/venues', function (req, res) {
  * GET by id method *
  **********************/
 app.get('/venues/:id', function (req, res) {
-  console.log("GET venues by id request:\n", req);
 
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
   const venueId = req.params.id;
 
   // create params
@@ -81,7 +86,7 @@ app.get('/venues/:id', function (req, res) {
       id: venueId
     },
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // fetch venue from the database
   dynamoDb.get(params, (error, result) => {
@@ -89,14 +94,14 @@ app.get('/venues/:id', function (req, res) {
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      console.log('Result:\n', result)
+      if (debug) console.log('Result:\n', result)
       if ("Item" in result && "id" in result.Item) {
         // create a response
         const response = {
           statusCode: 200,
           body: result,
         };
-        console.log("Response:\n", response)
+        if (debug) console.log("Response:\n", response)
 
         res.json({
           success: 'Successfully found record with id: ' + venueId + ' in the venue table!',
@@ -116,7 +121,6 @@ app.get('/venues/:id', function (req, res) {
 /****************************
  * PUT method *
  ****************************/
-
 app.put('/venues', function (req, res) {
 
   let params = {

@@ -27,7 +27,7 @@ app.use(awsServerlessExpressMiddleware.eventContext());
 
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT");
@@ -40,8 +40,12 @@ app.options('*', cors()); // include before other routes
  * GET method *
  **********************/
 
-app.get('/images', function(req, res) {
-  console.log("GET IMAGES...", req);
+app.get('/images', function (req, res) {
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("GET IMAGES...", req);
 
   // create params
   const params = {
@@ -51,7 +55,7 @@ app.get('/images', function(req, res) {
     },
   };
 
-  console.log(params);
+  if (debug) console.log("params", params);
 
   // fetch event from the database
   dynamoDb.get(params, (error, result) => {
@@ -65,7 +69,10 @@ app.get('/images', function(req, res) {
           statusCode: 200,
           body: result.Item,
         };
-        res.json({success: 'Successfully found item in the images table!', response: result.Item})
+        res.json({
+          success: 'Successfully found item in the images table!',
+          response: result.Item
+        })
       } else {
         res.json({
           message: 'Unable to find record, please check id was entered correctly... ',
@@ -80,7 +87,7 @@ app.get('/images', function(req, res) {
  * PUT method *
  ****************************/
 
-app.put('/images', function(req, res) {
+app.put('/images', function (req, res) {
 
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -91,7 +98,7 @@ app.put('/images', function(req, res) {
   params.Item.id = uuid.v1();
   params.Item.date_created = new Date().toJSON().slice(0, 10);
 
-  dynamoDb.put(params, function(err, result) {
+  dynamoDb.put(params, function (err, result) {
     if (err) {
       console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
@@ -99,7 +106,10 @@ app.put('/images', function(req, res) {
         statusCode: 200,
         body: params.Item,
       };
-      res.json({success: 'Successfully added item to the images table!', record: response.body})
+      res.json({
+        success: 'Successfully added item to the images table!',
+        record: response.body
+      })
     }
   });
 });
@@ -108,8 +118,12 @@ app.put('/images', function(req, res) {
  * DELETE method *
  ****************************/
 
-app.delete('/images', function(req, res) {
-  console.log("DELETE EVENT REQUEST...", req.body);
+app.delete('/images', function (req, res) {
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("DELETE EVENT REQUEST...", req.body);
 
   // create params
   const params = {
@@ -119,7 +133,7 @@ app.delete('/images', function(req, res) {
     },
   };
 
-  dynamoDb.delete(params, function(err, result) {
+  dynamoDb.delete(params, function (err, result) {
     if (err) {
       console.error("Unable to DELETE item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
@@ -127,7 +141,10 @@ app.delete('/images', function(req, res) {
         statusCode: 200,
         body: req.body,
       };
-      res.json({success: 'delete call for images table succeeded!', response: response});
+      res.json({
+        success: 'delete call for images table succeeded!',
+        response: response
+      });
     }
   });
 });
@@ -136,8 +153,12 @@ app.delete('/images', function(req, res) {
  * PATCH method *
  ****************************/
 
-app.patch('/images', function(req, res) {
-  console.log("UPDATE EVENT REQUEST...", req);
+app.patch('/images', function (req, res) {
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("UPDATE EVENT REQUEST...", req);
 
   // create params
   const params = {
@@ -146,12 +167,16 @@ app.patch('/images', function(req, res) {
       id: req.query.id,
     },
     UpdateExpression: "set #n = :val1",
-    ExpressionAttributeValues:{":val1":req.query.name},
-    ExpressionAttributeNames:{"#n": "name"},
-    ReturnValues:"UPDATED_NEW"
+    ExpressionAttributeValues: {
+      ":val1": req.query.name
+    },
+    ExpressionAttributeNames: {
+      "#n": "name"
+    },
+    ReturnValues: "UPDATED_NEW"
   };
 
-  dynamoDb.update(params, function(err, result) {
+  dynamoDb.update(params, function (err, result) {
     if (err) {
       console.error("Unable to Update item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
@@ -159,12 +184,15 @@ app.patch('/images', function(req, res) {
         statusCode: 200,
         body: result,
       };
-      res.json({success: 'UPDATE for record on images table succeeded!', response: response.body});
+      res.json({
+        success: 'UPDATE for record on images table succeeded!',
+        response: response.body
+      });
     }
   });
 });
 
-app.listen(3000, function() {
+app.listen(3000, function () {
   console.log("My Request API...")
 });
 

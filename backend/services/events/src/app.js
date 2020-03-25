@@ -40,13 +40,17 @@ app.options('*', cors()); // include before other routes
  * GET all method *
  **********************/
 app.get('/events', function (req, res) {
-  console.log("GET all events request:\n", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("GET all events request:\n", req);
 
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // fetch event from the database
   dynamoDb.scan(params, (error, result) => {
@@ -59,7 +63,7 @@ app.get('/events', function (req, res) {
         statusCode: 200,
         body: result,
       };
-      console.log("Response:\n", response);
+      if (debug) console.log("Response:\n", response);
 
       res.json({
         success: 'Successfully found records from the events table!',
@@ -73,10 +77,12 @@ app.get('/events', function (req, res) {
  * GET by id method *
  **********************/
 app.get('/events/:id', function (req, res) {
-  console.log("GET events by id request:\n", req);
 
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
   const eventId = req.params.id;
 
+  if (debug) console.log("GET events by id request:\n", req);
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -84,7 +90,7 @@ app.get('/events/:id', function (req, res) {
       id: eventId
     },
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // fetch event from the database
   dynamoDb.get(params, (error, result) => {
@@ -92,21 +98,21 @@ app.get('/events/:id', function (req, res) {
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      console.log('Result:\n', result)
+      if (debug) console.log('Result:\n', result)
       if ("Item" in result && "id" in result.Item) {
         // create a response
         const response = {
           statusCode: 200,
           body: result,
         };
-        console.log("Response:\n", response)
+        if (debug) console.log("Response:\n", response)
 
         res.json({
           success: 'Successfully found record with id: ' + eventId + ' in the events table!',
           response: response
         })
       } else {
-        console.log("result of an non existent event", result) // response will be empty
+        if (debug) console.log("result of an non existent event", result) // response will be empty
         res.json({
           message: 'Unable to find record, please check event id ' + eventId + ' was entered correctly... ',
           invalid_id: eventId
@@ -123,16 +129,18 @@ app.get('/events/:id', function (req, res) {
  **********************/
 app.get('/events/:id/requests', function (req, res, next) {
 
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
   const eventId = req.params.id;
   const requestStatus = req.query.status;
   let params;
 
-  console.log("GET: /events/:id/requests request object", req)
+  if (debug) console.log("GET: /events/:id/requests request object", req)
 
   // Set up query //
   if (requestStatus) {
-    console.log("EventId:", eventId)
-    console.log("Status:", requestStatus)
+    if (debug) console.log("EventId:", eventId)
+    if (debug) console.log("Status:", requestStatus)
 
     // create params
     params = {
@@ -148,7 +156,7 @@ app.get('/events/:id/requests', function (req, res, next) {
       }
     };
   } else {
-    console.log("EventId:", eventId)
+    if (debug) console.log("EventId:", eventId)
 
     // create params
     params = {
@@ -162,7 +170,7 @@ app.get('/events/:id/requests', function (req, res, next) {
   }
 
   // Print constructed params //
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // Todo //
   // Question - Can I hit an endpoint defined in this file? Or should I just use another query by using a query
@@ -185,7 +193,7 @@ app.get('/events/:id/requests', function (req, res, next) {
       next("error in events/:id/requests", error)
     } else {
       // Print the result
-      console.log('Result:\n', result)
+      if (debug) console.log('Result:\n', result)
 
       // First up response of now-playing being empty for an event
       const response = {
@@ -227,13 +235,17 @@ app.get('/events/:id/requests', function (req, res, next) {
  ****************************/
 
 app.post('/events', function (req, res) {
-  console.log("POST events request:\n", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("POST events request:\n", req);
 
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: req.body
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // Generate uuid & date record
   params.Item.id = uuid.v1();
@@ -248,7 +260,7 @@ app.post('/events', function (req, res) {
         statusCode: 200,
         body: params.Item,
       };
-      console.log('Response:\n', response);
+      if (debug) console.log('Response:\n', response);
 
       res.json({
         success: 'Successfully added item to the events table!',
@@ -264,7 +276,11 @@ app.post('/events', function (req, res) {
  ****************************/
 // requires the body to be the item to update
 app.put('/events/:id', function (req, res) {
-  console.log("UPDATE event request...", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("UPDATE event request...", req);
 
   const eventId = req.params.id
 
@@ -277,11 +293,11 @@ app.put('/events/:id', function (req, res) {
     TableName: process.env.DYNAMODB_TABLE,
     Item: item
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // Note if table item is being updated then the result will be the new item
   dynamoDb.put(params, function (err, result) {
-    console.log("Result:", result)
+    if (debug) console.log("Result:", result)
     if (err) {
       console.error("Unable to Update item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
@@ -289,7 +305,7 @@ app.put('/events/:id', function (req, res) {
         statusCode: 200,
         body: params.Item,
       };
-      console.log('Response:\n', response);
+      if (debug) console.log('Response:\n', response);
 
       res.json({
         success: 'UPDATE for record on events table succeeded!',
@@ -304,7 +320,11 @@ app.put('/events/:id', function (req, res) {
  ****************************/
 
 app.delete('/events/:id', function (req, res) {
-  console.log("DELETE event request\n", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("DELETE event request\n", req);
 
   const eventId = req.params.id
 
@@ -315,7 +335,7 @@ app.delete('/events/:id', function (req, res) {
       id: eventId,
     },
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   dynamoDb.delete(params, function (err, result) {
     if (err) {
@@ -325,7 +345,7 @@ app.delete('/events/:id', function (req, res) {
         statusCode: 200,
         body: req.body,
       };
-      console.log('Response:\n', response);
+      if (debug) console.log('Response:\n', response);
 
       res.json({
         success: 'Delete call for events table succeeded!',

@@ -46,13 +46,17 @@ function customSort(request1, request2) {
  * GET all method *
  **********************/
 app.get('/requests', function (req, res) {
-  console.log("GET all requests request:\n", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("GET all requests request:\n", req);
 
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // fetch event from the database
   dynamoDb.scan(params, (error, result) => {
@@ -68,7 +72,7 @@ app.get('/requests', function (req, res) {
         statusCode: 200,
         body: result,
       };
-      console.log("Response:\n", response);
+      if (debug) console.log("Response:\n", response);
 
       res.json({
         success: 'Successfully found records from the requests table!',
@@ -82,7 +86,11 @@ app.get('/requests', function (req, res) {
  * GET by id method *
  **********************/
 app.get('/requests/:id', function (req, res) {
-  console.log("GET requests by id request:\n", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("GET requests by id request:\n", req);
 
   const requestId = req.params.id;
 
@@ -93,7 +101,7 @@ app.get('/requests/:id', function (req, res) {
       id: requestId
     },
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // fetch event from the database
   dynamoDb.get(params, (error, result) => {
@@ -101,14 +109,14 @@ app.get('/requests/:id', function (req, res) {
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      console.log('Result:\n', result)
+      if (debug) console.log('Result:\n', result)
       if ("Item" in result && "id" in result.Item) {
         // create a response
         const response = {
           statusCode: 200,
           body: result,
         };
-        console.log("Response:\n", response)
+        if (debug) console.log("Response:\n", response)
 
         res.json({
           success: 'Successfully found record with id: ' + requestId + ' in the events table!',
@@ -161,7 +169,11 @@ app.post('/requests', function (req, res) {
  ****************************/
 
 app.delete('/requests', function (req, res) {
-  console.log("DELETE REQUEST RECORD...", req.body);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("DELETE REQUEST RECORD...", req.body);
 
   // create params
   const params = {
@@ -192,7 +204,11 @@ app.delete('/requests', function (req, res) {
  ****************************/
 // requires the body to be the item to update
 app.put('/requests/:id', function (req, res) {
-  console.log("UPDATE event request...", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("UPDATE event request...", req);
 
   const requestId = req.params.id;
 
@@ -205,11 +221,11 @@ app.put('/requests/:id', function (req, res) {
     TableName: process.env.DYNAMODB_TABLE,
     Item: item
   };
-  console.log('Params:\n', params);
+  if (debug) console.log('Params:\n', params);
 
   // Note if table item is being updated then the result will be the new item
   dynamoDb.put(params, function (err, result) {
-    console.log("Result:", result)
+    if (debug) console.log("Result:", result)
     if (err) {
       console.error("Unable to Update item. Error JSON:", JSON.stringify(err, null, 2));
     } else {
@@ -217,7 +233,7 @@ app.put('/requests/:id', function (req, res) {
         statusCode: 200,
         body: params.Item,
       };
-      console.log('Response:\n', response);
+      if (debug) console.log('Response:\n', response);
 
       res.json({
         success: 'UPDATE for record on requests table succeeded!',

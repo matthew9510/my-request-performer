@@ -39,7 +39,11 @@ app.options('*', cors()); // include before other routes
 
 // get all events associated with a performer id
 app.get('/performers/:id/events', function (req, res) {
-  console.log("GET EVENTS by performer's id...", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+
+  if (debug) console.log("GET EVENTS by performer's id...", req);
 
   const performerId = req.params.id;
 
@@ -52,14 +56,14 @@ app.get('/performers/:id/events', function (req, res) {
       ":performerId": performerId
     },
   };
-  console.log('Params ARE : ', params);
+  if (debug) console.log('Params ARE : ', params);
 
   dynamoDb.query(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      console.log("result is", result)
+      if (debug) console.log("result is", result)
       const response = {
         statusCode: 200,
         body: result.Items,
@@ -76,9 +80,13 @@ app.get('/performers/:id/events', function (req, res) {
 
 // get all venues associated with a performer id
 app.get('/performers/:id/venues', function (req, res) {
-  console.log("GET VENUES by id...", req);
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
 
   const performerId = req.params.id;
+
+  if (debug) console.log("GET VENUES by id...", req);
 
   // create dynamo db params
   const params = {
@@ -90,14 +98,14 @@ app.get('/performers/:id/venues', function (req, res) {
     },
   };
 
-  console.log('Params ARE : ', params);
+  if (debug) console.log('Params ARE : ', params);
 
   dynamoDb.query(params, (error, result) => {
     // handle potential errors
     if (error) {
       console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
     } else {
-      console.log("result is", result)
+      if (debug) console.log("result is", result)
       const response = {
         statusCode: 200,
         body: result.Items,
