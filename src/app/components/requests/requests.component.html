@@ -1,23 +1,20 @@
 <ng-container *transloco="let t; read: 'requests'">
 
 <!-- This is what appears when the event is not active -->
-  <div *ngIf="eventStatus !== 'active'; else activeEvent">
+  <div *ngIf="(eventStatus === 'completed') || (eventStatus === 'created')">
     <p class="body-text" *ngIf="eventStatus === 'created'">{{ t('inactive event message') }}</p>
-    <p class="body-text" *ngIf="eventStatus === 'paused'">Event paused. Click Start to resume.</p>
     <p class="body-text" *ngIf="eventStatus === 'completed'">This event is completed.</p>
-    <div id="fab-button-wrapper">
-      <div id="fab-button">
-        <button class="extended-fab-button" mat-fab color="primary" (click)="startEvent()">
-          <span class="fab-button-text"> {{ t('start event fab') }}</span>
+      <p class="body-text">
+        <button mat-flat-button color="primary" (click)="startEvent()">
+          <span> {{ t('start event fab') }}</span>
         </button>
-      </div>
-    </div>
+      </p>
   </div>
 
   <!-- What appears when the event is active -->
-  <ng-template #activeEvent>
+  <!-- <ng-template #activeEvent>   -->
     <!-- disablePagination will not work in current version of angular material-->
-    <mat-tab-group disablePagination="true" mat-align-tabs="center" class="mat-app-background">
+    <mat-tab-group *ngIf="(eventStatus === 'active') || (eventStatus === 'paused')" disablePagination="true" mat-align-tabs="center" class="mat-app-background">
       <mat-tab class="tab-label" label="Accepted">
 
         <ng-template matTabContent>
@@ -25,14 +22,26 @@
             <div [class.large-screen-child]="isLargeScreen" class="subheader-wrapper">
               <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
 
-              <!-- Change event status menu -->
-              <mat-menu #eventMenu="matMenu" xPosition="before">
-                <button mat-menu-item (click)="startEvent()">Start Event</button>
-                <button mat-menu-item (click)="startEvent()">Pause Event</button>
-                <button mat-menu-item (click)="endEvent()">End Event</button>
-              </mat-menu>
-              <button mat-icon-button [matMenuTriggerFor]="eventMenu"><mat-icon>more_vert</mat-icon></button>
-            </div>
+            <!-- Change event status menu -->
+            <mat-menu #eventMenu="matMenu" xPosition="before">
+              <button mat-menu-item (click)="startEvent()">
+                Start Event
+              </button>
+              <button mat-menu-item (click)="pauseEvent()">
+                Pause Event
+              </button>
+              <button mat-menu-item (click)="endEvent()">
+                End Event
+              </button>
+            </mat-menu>
+
+            <button mat-button [matMenuTriggerFor]="eventMenu">
+              <mat-icon [color]="eventStatusMenuIconColor">
+                {{ eventStatusMenuIcon }}
+              </mat-icon>
+                {{ eventMenuStatus }}
+            </button>
+          </div>
 
             <!-- Now playing song -->
             <div *ngIf="currentlyPlaying; else selectNextSong" [class.large-screen-child]="isLargeScreen">
@@ -81,9 +90,10 @@
             <div [class.large-screen-child]="isLargeScreen" class="request-subheader" mat-subheader>
               <h3>{{ t('pending requests') }}</h3>
               <button mat-icon-button color="primary" (click)="onGetRequestsByEventId()">
-                <mat-icon class="refresh-button">refresh</mat-icon>
+                <mat-icon>refresh</mat-icon>
               </button>
             </div>
+            <p class="body-text" *ngIf="eventStatus === 'paused'">Event paused. You will not receive any new incoming pending requests while paused.</p>
 
             <!-- Pending request items -->
             <mat-list [class.large-screen-child]="isLargeScreen">
@@ -108,5 +118,5 @@
       </mat-tab>
     </mat-tab-group>
 
-</ng-template>
+  <!-- </ng-template> -->
 </ng-container>

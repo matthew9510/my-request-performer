@@ -1,6 +1,6 @@
 <ng-container *transloco="let t">
 	<mat-toolbar color="primary" role="navigation" aria-label="Bottom">
-		<a routerLink="event/{{ eventService.currentEventId }}" routerLinkActive="active-link" mat-icon-button disableRipple=true>
+		<a routerLink="event/{{ eventService.currentEvent.id }}" routerLinkActive="active-link" mat-icon-button disableRipple=true *ngIf="eventService.currentEvent">
 			<mat-icon>home</mat-icon>
 			<span>{{t("requests.title")}}</span>
 		</a>

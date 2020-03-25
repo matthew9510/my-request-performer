@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from 'src/app/services/event.service';
-import { Events } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-history',
@@ -18,7 +17,7 @@ export class HistoryComponent implements OnInit {
 
   getPastEvents() {
     this.eventService.getEvents()
-      .subscribe((res: Events[]) => {
+      .subscribe((res) => {
         this.events = res;
       });
   }

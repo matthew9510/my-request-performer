@@ -1,20 +1,14 @@
-@import '../../../styles.scss';
-
 mat-toolbar {
   height: 56px;
 }
 
 .header-toolbar{
-  // background-color: rgb(138, 135, 133);
-  background-color: $header-background;
   position: fixed;
   top: 0;
   font-size: 16px;
-
 }
 
 .header-nav{
   padding: 15px;
   margin: 0 auto;
-  color: $header-text;
 }

@@ -38,9 +38,9 @@ export class EventdetailsComponent implements OnInit {
     this.router.navigate([`/event/${this.event.id}/clone`], { state: { event: this.event, venue: this.venue } });
   }
 
-  startEvent(eventId: any) {
-    // this.eventService.startEvent(eventId)
-    this.eventService.currentEventId = eventId;
+  navigateToEvent(eventId: any) {
+    this.eventService.currentEvent = this.event;
+    this.eventService.currentEvent.id = eventId;
     this.router.navigate([`/event/${this.event.id}`])
   }
 }

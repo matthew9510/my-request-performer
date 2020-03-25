@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
-import { Events } from '../../services/event.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -28,7 +27,6 @@ export class ManageEventsComponent implements OnInit {
         this.events = null;
         this.events = res['response']['body']
           .filter((el: { status: string; }) => el.status === status);
-        console.log(this.events)
       })
   }
 

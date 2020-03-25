@@ -11,25 +11,11 @@
   <!-- Change event status menu -->
   <mat-menu #eventMenu="matMenu" xPosition="before">
     <button mat-menu-item (click)="editEvent()">Edit Event</button>
-    <button mat-menu-item (click)="startEvent(event?.id)">Go to Event</button>
+    <button mat-menu-item (click)="navigateToEvent(event?.id)">Go to Event</button>
     <!-- <button mat-menu-item (click)="endEvent()">End Event</button> -->
   </mat-menu>
   <button mat-icon-button [matMenuTriggerFor]="eventMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
-
-  <!-- <div class="buttons">
-    <button mat-raised-button color="accent" (click)="cloneEvent()">
-      Edit
-    </button>
-
-    <span class="buttons-spacing">
-
-    </span>
-
-    <button mat-raised-button color="primary" (click)="startEvent(event?.id)">
-      Start
-    </button>
-  </div> -->
 
 </mat-card>
