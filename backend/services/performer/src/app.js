@@ -50,7 +50,7 @@ app.get('/performers/:id/events', function (req, res) {
   // create dynamo db params
   const params = {
     TableName: process.env.DYNAMODB_EVENTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'performerId-id-index',
+    IndexName: 'performerId-date-index',
     KeyConditionExpression: "performerId = :performerId",
     ExpressionAttributeValues: {
       ":performerId": performerId
