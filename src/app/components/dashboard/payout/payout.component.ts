@@ -10,7 +10,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 })
 export class PayoutComponent implements OnInit {
 
-  public acceptedRequests = [];
+  public completedRequests = [];
   earnings: number;
 
   constructor(
@@ -23,11 +23,12 @@ export class PayoutComponent implements OnInit {
   }
 
   onFetchRequests() {
-    // let data = this.requestsService.fetchAcceptedRequests()
-    //   .subscribe((requests: Requests[]) => {
-    //     this.acceptedRequests = requests;
-    //     this.calculateTotalEarnings(requests);
-    //   });
+    this.requestsService.getAllRequestsByPerformerId(localStorage.getItem('performerSub'), "completed")
+      .subscribe((requests: any) => {
+        console.log(requests.response.body)
+        this.completedRequests = requests.response.body;
+        this.calculateTotalEarnings(requests.response.body);
+      });
   }
 
   calculateTotalEarnings(requests) {

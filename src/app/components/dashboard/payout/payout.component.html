@@ -1,28 +1,28 @@
 <div class="header-items">
-	<div class="total-earnings">
-		<h1 id="money-color">{{earnings | currency}}</h1>
-		<h4>Total Earnings</h4>
-		<button class="extended-fab-button" mat-raised-button color="primary">
-            <span>Payout</span>
-        </button>
-	</div>
+  <div class="total-earnings">
+    <h1 id="money-color">{{earnings | currency}}</h1>
+    <h4>Total Earnings</h4>
+    <button class="extended-fab-button" mat-raised-button color="primary">
+      <span>Payout</span>
+    </button>
+  </div>
 </div>
 
 <mat-divider></mat-divider>
 
 <mat-toolbar>
-	<mat-toolbar-row>
-		<h1>Earnings Details</h1>
-	</mat-toolbar-row>
+  <mat-toolbar-row>
+    <h1>Earnings Details</h1>
+  </mat-toolbar-row>
 </mat-toolbar>
 <div class="label-container">
-	<h4 class="labels">Time</h4>
-	<h4 class="labels">Song</h4>
-	<h4 class="labels">Amount</h4>
+  <h4 class="labels">Time</h4>
+  <h4 class="labels">Song</h4>
+  <h4 class="labels">Amount</h4>
 </div>
 
-<mat-list *ngFor="let request of acceptedRequests">
-	<app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
-		[status]="request.status" (updatedStatus)="onChangeStatus($event)">
-	</app-request-detail>
+<mat-list *ngFor="let request of completedRequests">
+  <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
+    [status]="request.status" (updatedStatus)="onChangeStatus($event)">
+  </app-request-detail>
 </mat-list>

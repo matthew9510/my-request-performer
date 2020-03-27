@@ -32,4 +32,12 @@ export class RequestsService {
     return this.http.put(`${environment.requestsUrl}/${requestId}`, request);
   }
 
+  getAllRequestsByPerformerId(performerId: string, status: string) {
+    const headers = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('performerJwt'),
+      })
+    };
+    return this.http.get(`${environment.performersUrl}/${performerId}/requests?status=${status}`, headers);
+  }
 }

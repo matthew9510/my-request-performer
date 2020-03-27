@@ -136,7 +136,8 @@ export class RequestsComponent implements OnInit {
             artist: null,
             amount: null,
             memo: null,
-            status: null
+            status: null,
+            id: null
           };
         }
       }, (err) => {
@@ -174,7 +175,8 @@ export class RequestsComponent implements OnInit {
         artist: null,
         amount: null,
         memo: null,
-        status: null
+        status: null,
+        id: null
       };
     }
     if (this.pendingRequests !== null) {
@@ -285,7 +287,8 @@ export class RequestsComponent implements OnInit {
       artist: null,
       amount: null,
       memo: null,
-      status: null
+      status: null,
+      id: null
     };
     const message = translate('snackbar song ended');
     this.openSnackBar(message);
