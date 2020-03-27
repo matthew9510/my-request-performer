@@ -78,7 +78,7 @@
                 *ngFor="let request of acceptedRequests; index as i">
 
                 <button rejectButton mat-button class="request-button" color="warn"
-                  (click)="openRejectRequestDialog(i, 'acceptedRequests')">{{ t('reject') }}</button>
+                  (click)="openRejectRequestDialog(request, 'acceptedRequests')">{{ t('reject') }}</button>
                 <button playNextButton mat-flat-button class="request-button" color="primary"
                   (click)="playNext(i)">{{ t('play next') }}</button>
 
@@ -107,6 +107,8 @@
               <span [hidden]="reverse">▼</span>
               <span [hidden]="!reverse">▲</span>
             </div>
+            <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
+            
             <!-- <div class="sort-item" [class.active]="order === 'song'" (click)="setOrder('song')">
               Song title 
               <span [hidden]="reverse">▼</span>
@@ -133,11 +135,11 @@
                 [status]="request.status" 
                 *ngFor="let request of pendingRequests | orderBy: order:!reverse:'case-insensitive'; index as i">
 
-                <button acceptButton mat-icon-button class="request-button" (click)="acceptRequest(i)">
+                <button acceptButton mat-icon-button class="request-button" (click)="acceptRequest(request)">
                   <mat-icon color="primary" class="request-button-icon">done</mat-icon>
                 </button>
 
-                <button rejectButton mat-icon-button class="request-button" (click)="openRejectRequestDialog(i, 'pendingRequests')">
+                <button rejectButton mat-icon-button class="request-button" (click)="openRejectRequestDialog(request, 'pendingRequests')">
                   <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
                 </button>
               </app-request-detail>

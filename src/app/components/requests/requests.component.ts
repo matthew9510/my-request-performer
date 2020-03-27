@@ -69,7 +69,6 @@ export class RequestsComponent implements OnInit {
     if (this.order === value) {
       this.reverse = !this.reverse;
     }
-
     this.order = value;
   }
 
@@ -209,7 +208,7 @@ export class RequestsComponent implements OnInit {
     });
   };
 
-  openRejectRequestDialog(index: number, requestType: string): void {
+  openRejectRequestDialog(request: any, requestType: string): void {
     const message = translate('request confirm dialog message');
     const title = translate('request confirm dialog title');
     const action = translate('request confirm dialog action');
@@ -225,7 +224,7 @@ export class RequestsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       const message = translate('snackbar message rejected');
       if (result) {
-        this.rejectRequest(index, requestType);
+        this.rejectRequest(request, requestType);
         this.openSnackBar(message);
       };
     });
@@ -253,27 +252,27 @@ export class RequestsComponent implements OnInit {
     });
   }
 
-  acceptRequest(index: number) {
-    this.pendingRequests[index].status = "accepted";
-    const request = this.pendingRequests[index];
-    this.pendingRequests.splice(index, index + 1);
-    this.onChangeRequestStatus(request, request.id);
+  acceptRequest(request: any) {
+    request.status = "accepted";
+    const updatedReq = request;
+    // this.pendingRequests.splice(index, index + 1);
+    this.onChangeRequestStatus(updatedReq, request.id);
     const message = translate('snackbar message accepted');
     this.openSnackBar(message);
   }
 
-  rejectRequest(index: number, requestType: string) {
+  rejectRequest(request: any, requestType: string) {
     if (requestType === 'acceptedRequests') {
-      this.acceptedRequests[index].status = "rejected";
-      const request = this.acceptedRequests[index];
-      this.acceptedRequests.splice(index, index + 1);
-      this.onChangeRequestStatus(request, request.id);
+      request.status = "rejected";
+      const updatedReq = request;
+      // this.acceptedRequests.splice(index, index + 1);
+      this.onChangeRequestStatus(updatedReq, request.id);
     }
     if (requestType === 'pendingRequests') {
-      this.pendingRequests[index].status = "rejected";
-      const request = this.pendingRequests[index];
-      this.pendingRequests.splice(index, index + 1);
-      this.onChangeRequestStatus(request, request.id);
+      request.status = "rejected";
+      const updatedReq = request;
+      // this.pendingRequests.splice(index, index + 1);
+      this.onChangeRequestStatus(updatedReq, request.id);
     }
   }
 
