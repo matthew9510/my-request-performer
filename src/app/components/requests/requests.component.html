@@ -1,19 +1,24 @@
 <ng-container *transloco="let t; read: 'requests'">
 
-<!-- This is what appears when the event is not active -->
+  <div id="event-title-banner" *ngIf="event" >
+    <span class="event-title">{{ event.title }}</span><br>
+    <span class="venue-name">{{ event.venue }}</span>
+  </div>
+
+<!--Appears when the event is not started yet, or if event is ended -->
   <div *ngIf="(eventStatus === 'completed') || (eventStatus === 'created')">
     <p class="body-text" *ngIf="eventStatus === 'created'">{{ t('inactive event message') }}</p>
-    <p class="body-text" *ngIf="eventStatus === 'completed'">This event is completed.</p>
-      <p class="body-text">
+    <p class="body-text" *ngIf="eventStatus === 'completed'">This event has ended.</p>
+      <p class="body-text" *ngIf="eventStatus === 'created'">
         <button mat-flat-button color="primary" (click)="startEvent()">
           <span> {{ t('start event fab') }}</span>
         </button>
       </p>
   </div>
 
-  <!-- What appears when the event is active -->
-  <!-- <ng-template #activeEvent>   -->
-    <!-- disablePagination will not work in current version of angular material-->
+  <!-- Appears when the event is active -->
+
+  <!-- disablePagination will not work in current version of angular material-->
     <mat-tab-group *ngIf="(eventStatus === 'active') || (eventStatus === 'paused')" disablePagination="true" mat-align-tabs="center" class="mat-app-background">
       <mat-tab class="tab-label" label="Accepted">
 
@@ -30,7 +35,7 @@
               <button mat-menu-item (click)="pauseEvent()">
                 Pause Event
               </button>
-              <button mat-menu-item (click)="endEvent()">
+              <button mat-menu-item (click)="openEndEventDialog()">
                 End Event
               </button>
             </mat-menu>
@@ -73,7 +78,7 @@
                 *ngFor="let request of acceptedRequests; index as i">
 
                 <button rejectButton mat-button class="request-button" color="warn"
-                  (click)="openDialog(i, 'acceptedRequests')">{{ t('reject') }}</button>
+                  (click)="openRejectRequestDialog(i, 'acceptedRequests')">{{ t('reject') }}</button>
                 <button playNextButton mat-flat-button class="request-button" color="primary"
                   (click)="playNext(i)">{{ t('play next') }}</button>
 
@@ -95,6 +100,30 @@
             </div>
             <p class="body-text" *ngIf="eventStatus === 'paused'">Event paused. You will not receive any new incoming pending requests while paused.</p>
 
+          <!-- Sorting for pending requests -->
+          <div class="sort" *ngIf="pendingRequests">
+            <div class="sort-item" [class.active]="order === 'createdOn'" (click)="setOrder('createdOn')">
+              Newest
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div>
+            <!-- <div class="sort-item" [class.active]="order === 'song'" (click)="setOrder('song')">
+              Song title 
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div>
+            <div class="sort-item" [class.active]="order === 'artist'" (click)="setOrder('artist')">
+              Artist 
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div> -->
+            <div class="sort-item" [class.active]="order === 'amount'" (click)="setOrder('amount')">
+              Tip Amount 
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div>
+          </div>
+
             <!-- Pending request items -->
             <mat-list [class.large-screen-child]="isLargeScreen">
               <app-request-detail mat-list-item 
@@ -102,13 +131,13 @@
                 [artist]="request.artist" 
                 [amount]="request.amount"
                 [status]="request.status" 
-                *ngFor="let request of pendingRequests; index as i">
+                *ngFor="let request of pendingRequests | orderBy: order:!reverse:'case-insensitive'; index as i">
 
                 <button acceptButton mat-icon-button class="request-button" (click)="acceptRequest(i)">
                   <mat-icon color="primary" class="request-button-icon">done</mat-icon>
                 </button>
 
-                <button rejectButton mat-icon-button class="request-button" (click)="openDialog(i, 'pendingRequests')">
+                <button rejectButton mat-icon-button class="request-button" (click)="openRejectRequestDialog(i, 'pendingRequests')">
                   <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
                 </button>
               </app-request-detail>
@@ -118,5 +147,4 @@
       </mat-tab>
     </mat-tab-group>
 
-  <!-- </ng-template> -->
 </ng-container>

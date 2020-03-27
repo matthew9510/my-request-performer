@@ -1,5 +1,7 @@
+@import 'src/styles.scss';
+
 mat-tab-group {
-  height: 100%;
+  height: calc(100% - 60.5px);
 }
 
 .subheader-wrapper {
@@ -76,4 +78,45 @@ mat-list {
 .body-text {
   margin: 50px;
   text-align: center;
+}
+
+#event-title-banner {
+  padding: 10px;
+  background-color: $header-background;
+  color: $header-text;
+  text-align: center;
+}
+
+.event-title {
+  font-size: large;
+  font-weight: bold;
+}
+
+.venue-name {
+  opacity: .8;
+}
+
+.sort {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 680px;
+  padding: 5px 10px 5px 10px;
+
+  span {
+    visibility: hidden;
+  }
+}
+
+.sort-item {
+  font-size: small;
+  cursor: pointer;
+
+  &.active {
+    color: #000;
+
+    span {
+      visibility: visible;
+    }
+  }
 }

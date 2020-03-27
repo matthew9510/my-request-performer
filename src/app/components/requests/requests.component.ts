@@ -6,9 +6,10 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { translate } from '@ngneat/transloco';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Requests } from '../../interfaces/requests';
 import { interval } from 'rxjs';
+import { OrderPipe } from 'ngx-order-pipe';
 
 @Component({
   selector: 'app-requests',
@@ -31,7 +32,8 @@ export class RequestsComponent implements OnInit {
   event: any;
   eventStatusMenuIcon: string = 'fiber_manual_record';
   eventMenuStatus: string = 'Inactive';
-
+  order: string = 'createdOn';
+  reverse: boolean = false;
 
   constructor(
     public requestsService: RequestsService,
@@ -40,7 +42,7 @@ export class RequestsComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private _snackBar: MatSnackBar,
     private actRoute: ActivatedRoute,
-    private router: Router
+    private orderPipe: OrderPipe
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
 
@@ -57,11 +59,20 @@ export class RequestsComponent implements OnInit {
     });
   }
 
-
   ngOnInit() {
     this.onGetEventById();
     this.onGetRequestsByEventId();
   }
+
+  // sets order for pending requests
+  setOrder(value: string) {
+    if (this.order === value) {
+      this.reverse = !this.reverse;
+    }
+
+    this.order = value;
+  }
+
 
   // checks the event id in url to check status
   onGetEventById() {
@@ -170,14 +181,12 @@ export class RequestsComponent implements OnInit {
     if (this.pendingRequests !== null) {
       this.pendingRequests.map(req => req.status = 'rejected');
       for (let request of this.pendingRequests) {
-        console.log(request + " " + request.id)
         this.onChangeRequestStatus(request, request.id)
       }
     }
     if (this.acceptedRequests !== null) {
       this.acceptedRequests.map(req => req.status = 'rejected');
       for (let request of this.acceptedRequests) {
-        console.log(request + " " + request.id)
         this.onChangeRequestStatus(request, request.id)
       }
     }
@@ -200,10 +209,10 @@ export class RequestsComponent implements OnInit {
     });
   };
 
-  openDialog(index: number, requestType: string): void {
-    const message = translate('confirm dialog message');
-    const title = translate('confirm dialog title');
-    const action = translate('confirm dialog action');
+  openRejectRequestDialog(index: number, requestType: string): void {
+    const message = translate('request confirm dialog message');
+    const title = translate('request confirm dialog title');
+    const action = translate('request confirm dialog action');
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: {
@@ -217,6 +226,28 @@ export class RequestsComponent implements OnInit {
       const message = translate('snackbar message rejected');
       if (result) {
         this.rejectRequest(index, requestType);
+        this.openSnackBar(message);
+      };
+    });
+  }
+
+  openEndEventDialog(): void {
+    const message = translate('event confirm dialog message');
+    const title = translate('event confirm dialog title');
+    const action = translate('event confirm dialog action');
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        title,
+        message,
+        action
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      const message = translate('snackbar event ended');
+      if (result) {
+        this.endEvent();
         this.openSnackBar(message);
       };
     });
