@@ -146,8 +146,9 @@ app.get('/events/:id/requests', function (req, res, next) {
     // create params
     params = {
       TableName: process.env.DYNAMODB_REQUESTS_TABLE,
-      IndexName: 'eventId-status-index',
-      KeyConditionExpression: "eventId = :eventId and #status = :requestStatus",
+      IndexName: 'eventId-createdOn-index',
+      KeyConditionExpression: "eventId = :eventId",
+      FilterExpression: "#status = :requestStatus",
       ExpressionAttributeValues: {
         ":eventId": eventId,
         ":requestStatus": requestStatus
@@ -162,7 +163,7 @@ app.get('/events/:id/requests', function (req, res, next) {
     // create params
     params = {
       TableName: process.env.DYNAMODB_REQUESTS_TABLE,
-      IndexName: 'eventId-id-index',
+      IndexName: 'eventId-createdOn-index',
       KeyConditionExpression: "eventId = :eventId",
       ExpressionAttributeValues: {
         ":eventId": eventId
@@ -172,19 +173,6 @@ app.get('/events/:id/requests', function (req, res, next) {
 
   // Print constructed params //
   if (debug) console.log('Params:\n', params);
-
-  // Todo //
-  // Question - Can I hit an endpoint defined in this file? Or should I just use another query by using a query
-  // Make Query //
-  // Does the event even exist? //
-  // psuedo-logic
-  //  hit event/:id
-  //    in subscribe check the response
-  //      if an event exists what are the parameters
-  //      if an event doesn't exist what are the parameters 
-  //        if an event doesn't exist (response should be an empty object - format response) then throw an error to the console and to the next function or just send back a response with status 200 but body saying don't exist
-  //        else, if an event exists then continue on with querying the event's requests
-
 
   // fetch requests from the database
   dynamoDb.query(params, (error, result) => {
