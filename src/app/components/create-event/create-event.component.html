@@ -79,7 +79,11 @@
 
         <mat-form-field *ngIf="!addingVenue">
           <mat-label>{{ t('venue') }}</mat-label>
-          <input matInput formControlName="id" [matAutocomplete]="auto" autocomplete="zalsdjflsadfkjfl">
+          <input *ngIf="!editEvent" matInput formControlName="id" [matAutocomplete]="auto"
+            autocomplete="zalsdjflsadfkjfl">
+          <input *ngIf="editEvent" matInput [value]="venueToClone.name" [matAutocomplete]="auto"
+            autocomplete="zalsdjflsadfkjfl">
+
 
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let venue of venues" [value]='venue.id'>{{venue.name}}</mat-option>
@@ -130,8 +134,10 @@
 
         <mat-card-actions align="end">
           <button mat-button matStepperPrevious>{{ t('back') }}</button>
-          <button mat-flat-button color="accent" [disabled]="(venueForm.invalid)" type="submit"
+          <button *ngIf="!editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit"
             (click)="createEvent()">{{ t('createEvent') }}</button>
+          <button *ngIf="editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit"
+            (click)="updateEvent()">{{ t('editEvent') }}</button>
         </mat-card-actions>
       </form>
     </mat-step>

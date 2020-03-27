@@ -62,7 +62,6 @@ export class CreateEventComponent implements OnInit {
     })
 
     if (this.editEvent === true) {
-      console.log("clone", this.eventToClone)
       this.eventDetailForm.patchValue(this.eventToClone);
       this.eventTimeAndDateForm.patchValue(this.eventToClone);
       this.venueForm.patchValue(this.eventToClone);
@@ -99,14 +98,24 @@ export class CreateEventComponent implements OnInit {
   }
 
   prepareEvent(venueId) {
-    // Reassign date with desired format
-    this.eventTimeAndDateForm.value.date = String(this.eventTimeAndDateForm.value.date._i.year) + '-' + String(this.eventTimeAndDateForm.value.date._i.month + 1) + '-' + String(this.eventTimeAndDateForm.value.date._i.date)
-
-    // concatenate all forms together 
-    let newEvent = new Object();
-    Object.assign(newEvent, this.eventDetailForm.value, { venueId: venueId }, this.eventTimeAndDateForm.value);
-
-    return newEvent;
+    if (!this.editEvent) { // if creating a new event
+      // Reassign date with desired format
+      this.eventTimeAndDateForm.value.date = String(this.eventTimeAndDateForm.value.date._i.year) + '-' + String(this.eventTimeAndDateForm.value.date._i.month + 1) + '-' + String(this.eventTimeAndDateForm.value.date._i.date)
+      // concatenate all forms together 
+      let newEvent = new Object();
+      Object.assign(newEvent, this.eventDetailForm.value, { venueId: venueId }, this.eventTimeAndDateForm.value);
+      return newEvent;
+    }
+    else { // if editing the event 
+      // concatenate all forms together 
+      let newEvent = this.eventToClone
+      Object.assign(newEvent, this.eventDetailForm.value, this.eventTimeAndDateForm.value)
+      // convert date to the correct format 
+      newEvent.date = new Date(newEvent.date)
+      newEvent.date = String(newEvent.date.getFullYear()) + "-" + String(newEvent.date.getMonth() + 1) + "-" + String(newEvent.date.getDate())
+      // return concatenated object 
+      return newEvent
+    }
   }
 
 
@@ -134,6 +143,19 @@ export class CreateEventComponent implements OnInit {
     else {
       // you don't have to addVenue, just append the venue_id
     }
+  }
+
+  updateEvent() {
+    // create a event object
+    let event = this.prepareEvent(this.venueToClone.id)
+
+    // edit entry in event table 
+    this.eventService.editEvent(event).subscribe((res) => {
+      // redirect to events
+      this.router.navigate(['/events'])
+    }, (err) => {
+      console.error("Couldn't create event", err)
+    })
   }
 
   // imageUploaded(image) {

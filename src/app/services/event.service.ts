@@ -27,6 +27,15 @@ export class EventService {
     return this.http.post(environment.eventsUrl, event);
   }
 
+  editEvent(event: any) {
+    const headers = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('performerJwt'),
+      })
+    }
+    return this.http.put(`${environment.eventsUrl}/${event.id}`, event, headers);
+  }
+
   getVenues(event_id) {
     return this.http.get(environment.venuesUrl, event_id)
   }

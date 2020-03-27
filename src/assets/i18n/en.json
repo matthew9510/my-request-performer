@@ -43,6 +43,7 @@
     "country": "Country",
     "website": "Website",
     "createEvent": "Create Event",
+    "editEvent": "Save Changes",
     "next": "Next",
     "back": "Back"
   },
