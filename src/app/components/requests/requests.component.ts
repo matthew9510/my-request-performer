@@ -30,7 +30,6 @@ export class RequestsComponent implements OnInit {
   currentlyPlaying: boolean = false;
   event: any;
   eventStatusMenuIcon: string = 'fiber_manual_record';
-  eventStatusMenuIconColor: string = 'warn';
   eventMenuStatus: string = 'Inactive';
 
 
@@ -48,9 +47,9 @@ export class RequestsComponent implements OnInit {
     // checks all pending requests from the backend every 20 seconds
     interval(20000).subscribe(x => {
       this.requestsService.getRequestsByEventId(this.eventId, "pending")
-        .subscribe((res) => {
-          if (res['response']['body'].length > 0) {
-            this.pendingRequests = res['response']['body'];
+        .subscribe((res: any) => {
+          if (res.response.body.length > 0) {
+            this.pendingRequests = res.response.body;
           }
         }, (err) => {
           console.log(err);
@@ -68,27 +67,26 @@ export class RequestsComponent implements OnInit {
   onGetEventById() {
     this.eventService.getEvent(this.eventId)
       .subscribe(
-        (res) => {
-          if (res['response'] !== undefined) {
-            this.event = res['response']['body']['Item']
+        (res: any) => {
+          if (res.response !== undefined) {
+            this.event = res.response.body.Item;
             this.eventStatus = this.event['status'];
             this.eventService.currentEvent = this.event;
 
             // updates status menu appearance
-            if (this.eventStatus === 'active') {
-              this.eventStatusMenuIcon = 'play_circle_filled';
-              this.eventStatusMenuIconColor = 'accent';
-              this.eventMenuStatus = 'Active';
-            }
-            if (this.eventStatus === 'paused') {
-              this.eventStatusMenuIcon = 'pause_circle_filled';
-              this.eventStatusMenuIconColor = 'primary';
-              this.eventMenuStatus = 'Paused';
-            }
-            if (this.eventStatus === 'completed') {
-              this.eventStatusMenuIcon = 'remove_circle';
-              this.eventStatusMenuIconColor = 'warn';
-              this.eventMenuStatus = 'Ended';
+            switch (this.eventStatus) {
+              case "active":
+                this.eventStatusMenuIcon = 'play_circle_filled';
+                this.eventMenuStatus = 'Active';
+                break;
+              case "paused":
+                this.eventStatusMenuIcon = 'pause_circle_filled';
+                this.eventMenuStatus = 'Paused';
+                break;
+              case "completed":
+                this.eventStatusMenuIcon = 'remove_circle';
+                this.eventMenuStatus = 'Ended';
+                break;
             }
           }
         },
@@ -98,9 +96,9 @@ export class RequestsComponent implements OnInit {
 
   onGetRequestsByEventId() {
     this.requestsService.getRequestsByEventId(this.eventId, "pending")
-      .subscribe((res) => {
-        if (res['response']['body'].length > 0) {
-          this.pendingRequests = res['response']['body'];
+      .subscribe((res: any) => {
+        if (res.response.body.length > 0) {
+          this.pendingRequests = res.response.body;
         } else {
           this.pendingRequests = null;
         }
@@ -108,9 +106,9 @@ export class RequestsComponent implements OnInit {
         console.log(err);
       })
     this.requestsService.getRequestsByEventId(this.eventId, "accepted")
-      .subscribe((res) => {
-        if (res['response']['body'].length > 0) {
-          this.acceptedRequests = res['response']['body'];
+      .subscribe((res: any) => {
+        if (res.response.body.length > 0) {
+          this.acceptedRequests = res.response.body;
         } else {
           this.acceptedRequests = null;
         }
@@ -118,9 +116,9 @@ export class RequestsComponent implements OnInit {
         console.log(err);
       })
     this.requestsService.getRequestsByEventId(this.eventId, "now playing")
-      .subscribe((res) => {
-        if (res['response']['body'].length > 0) {
-          this.nowPlayingRequest = res['response']['body'][0];
+      .subscribe((res: any) => {
+        if (res.response.body.length > 0) {
+          this.nowPlayingRequest = res.response.body[0];
           this.currentlyPlaying = true;
         } else {
           this.nowPlayingRequest = {
@@ -146,7 +144,6 @@ export class RequestsComponent implements OnInit {
     // changes on front end
     this.eventStatus = 'active';
     this.eventStatusMenuIcon = 'play_circle_filled';
-    this.eventStatusMenuIconColor = 'primary';
     this.eventMenuStatus = 'Active';
   }
 
@@ -156,8 +153,34 @@ export class RequestsComponent implements OnInit {
     // changes on front end
     this.eventStatus = 'completed';
     this.eventStatusMenuIcon = 'remove_circle';
-    this.eventStatusMenuIconColor = 'primary';
     this.eventMenuStatus = 'Ended';
+
+    if (this.nowPlayingRequest) {
+      this.nowPlayingRequest.status = "completed";
+      this.onChangeRequestStatus(this.nowPlayingRequest, this.nowPlayingRequest.id);
+      this.currentlyPlaying = false;
+      this.nowPlayingRequest = {
+        song: null,
+        artist: null,
+        amount: null,
+        memo: null,
+        status: null
+      };
+    }
+    if (this.pendingRequests !== null) {
+      this.pendingRequests.map(req => req.status = 'rejected');
+      for (let request of this.pendingRequests) {
+        console.log(request + " " + request.id)
+        this.onChangeRequestStatus(request, request.id)
+      }
+    }
+    if (this.acceptedRequests !== null) {
+      this.acceptedRequests.map(req => req.status = 'rejected');
+      for (let request of this.acceptedRequests) {
+        console.log(request + " " + request.id)
+        this.onChangeRequestStatus(request, request.id)
+      }
+    }
   }
 
   pauseEvent() {
@@ -166,7 +189,6 @@ export class RequestsComponent implements OnInit {
     // changes on front end
     this.eventStatus = 'paused';
     this.eventStatusMenuIcon = 'pause_circle_filled';
-    this.eventStatusMenuIconColor = 'primary';
     this.eventMenuStatus = 'Paused';
   }
 

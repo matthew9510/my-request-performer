@@ -23,9 +23,9 @@ export class ManageEventsComponent implements OnInit {
 
   getEventsByStatus(status: string) {
     this.eventService.getEvents()
-      .subscribe((res) => {
+      .subscribe((res: any) => {
         this.events = null;
-        this.events = res['response']['body']
+        this.events = res.response.body
           .filter((el: { status: string; }) => el.status === status);
       })
   }
