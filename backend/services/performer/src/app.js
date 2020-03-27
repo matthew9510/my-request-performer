@@ -120,6 +120,102 @@ app.get('/performers/:id/venues', function (req, res) {
 });
 
 
+/**********************
+ * GET requests by event id possibly with a specific pending status
+ **********************/
+app.get('/performers/:id/requests', function (req, res, next) {
+
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
+  const performerId = req.params.id;
+  const requestStatus = req.query.status;
+  let params;
+
+  if (debug) console.log("GET: /performers/:id/requests request object", req)
+
+  // Set up query //
+  if (requestStatus) {
+    if (debug) console.log("PerformerId:", performerId)
+    if (debug) console.log("Status:", requestStatus)
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: 'performerId-modifiedOn-index',
+      KeyConditionExpression: "performerId = :performerId",
+      FilterExpression: "#status = :requestStatus",
+      ExpressionAttributeValues: {
+        ":performerId": performerId,
+        ":requestStatus": requestStatus
+      },
+      ExpressionAttributeNames: {
+        "#status": "status"
+      }
+    };
+  } else {
+    if (debug) console.log("performerId:", performerId)
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: 'performerId-modifiedOn-index',
+      KeyConditionExpression: "performerId = :performerId",
+      ExpressionAttributeValues: {
+        ":performerId": performerId
+      },
+    };
+  }
+
+  // Print constructed params //
+  if (debug) console.log('Params:\n', params);
+
+
+  // fetch requests from the database
+  dynamoDb.query(params, (error, result) => {
+    // handle potential Dynamo db server errors
+    if (error) {
+      console.error("Unable to find item(s). Error JSON:", JSON.stringify(error, null, 2));
+      next("error in performers/:id/requests", error)
+    } else {
+      // Print the result
+      if (debug) console.log('Result:\n', result)
+
+      // First up response of now-playing being empty for an event
+      const response = {
+        statusCode: 200,
+        body: result.Items,
+      };
+
+      if (response.body.length >= 1) {
+        if (requestStatus) {
+          res.json({
+            success: "Found all " + requestStatus + " requests for performer id: " + performerId,
+            response: response
+          })
+        } else {
+          res.json({
+            success: 'Found all requests for performer id: ' + performerId,
+            response: response
+          })
+        }
+      } else {
+        if (requestStatus) {
+          res.json({
+            success: "Found no " + requestStatus + " requests for performer id: " + performerId,
+            response: response
+          })
+        } else {
+          res.json({
+            success: 'Found no requests for performer id: ' + performerId,
+            response: response
+          })
+        }
+      }
+    }
+  });
+})
+
+
 
 app.listen(3000, function () {
   console.log("My Request API...")

@@ -17,6 +17,7 @@ provider:
     DYNAMODB_TABLE: ${self:app}-${self:service}-table
     DYNAMODB_EVENTS_TABLE: ${self:app}-events-table
     DYNAMODB_VENUES_TABLE: ${self:app}-venues-table
+    DYNAMODB_REQUESTS_TABLE : my-request-requests-table
   iamRoleStatements:
     - Effect: Allow
       Action:
