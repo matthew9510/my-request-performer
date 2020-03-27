@@ -147,6 +147,8 @@ app.post('/requests', function (req, res) {
   // Generate uuid & date record
   params.Item.id = uuid.v1();
   params.Item.createdOn = new Date().toJSON()
+  params.Item.modifiedOn = new Date().toJSON()
+
 
   dynamoDb.put(params, function (err, result) {
     if (err) {
