@@ -40,6 +40,8 @@ import {
   MatSnackBarModule,
   MatExpansionModule,
   MatMenuModule,
+  MatTableModule,
+  MatSortModule
 } from '@angular/material';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CreateEventComponent } from './components/create-event/create-event.component';
@@ -116,7 +118,9 @@ import { NotAuthGuard } from './guards/not-auth.guard'
     MatSnackBarModule,
     MatExpansionModule,
     MatMenuModule,
-    OrderModule
+    OrderModule,
+    MatTableModule,
+    MatSortModule
   ],
   providers: [
     FilterPipe,

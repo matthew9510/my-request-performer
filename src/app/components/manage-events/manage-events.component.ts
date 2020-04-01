@@ -12,7 +12,6 @@ export class ManageEventsComponent implements OnInit {
   history: boolean;
   searchText: string;
   eventsListTitle: string = 'Scheduled Events';
-  // activeEvents: any;
 
   constructor(private eventService: EventService, private router: Router) {
   }

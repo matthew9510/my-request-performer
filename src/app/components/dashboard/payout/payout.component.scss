@@ -97,3 +97,24 @@ mat-list {
     justify-content: center;
     flex-direction: column;
 }
+
+table {
+    width: 100%;
+}
+
+.filter-input {
+    width: calc(100% - 20px);
+    margin: 10px 10px 0 10px;
+    font-size: 12px;
+}
+
+.amount-cell {
+    text-align: right;
+}
+
+.amount-cell-header {
+    text-align: right !important;
+    display: flex;
+    justify-content: flex-end;
+    height: 56px;
+}

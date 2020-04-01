@@ -1,56 +1,16 @@
-.title {
-  align-self: center;
-}
-
-.events {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  padding: 0;
-}
-
-cdk-virtual-scroll-viewport {
-  height: 100%;
-
-  mat-list {
-    margin-top: 5px;
-    padding: 0;
-    min-height: 100%;
-  }
-}
-
-// :host ::ng-deep .mat-tab-body-wrapper {
-//   height: 88%;
-// }
-
-@media screen and (min-width: 700px) {
-  // toolbar is the expansion panel
-  #toolbar {
-    width: 700px;
-    margin: 0 auto;
-  }
-}
-
 @media screen and (max-width: 400px) {
   #toolbar {
     flex-direction: column;
   }
-  .cdk-virtual-scroll-viewport {
-    height: 72%;
-  }
-}
-
-// need to figure out a way to dynamically change the height of this viewport depending on whether the expansion panel is collapsed or expanded
-cdk-virtual-scroll-viewport {
-  height: 90%;
 }
 
 @media screen and (min-width: 700px) {
-  .cdk-virtual-scroll-viewport {
+  .events {
     width: 700px;
     margin: 0 auto;
   }
-  .events {
+  // toolbar is the expansion panel
+  #toolbar {
     width: 700px;
     margin: 0 auto;
   }

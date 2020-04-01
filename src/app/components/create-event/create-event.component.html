@@ -134,9 +134,9 @@
 
         <mat-card-actions align="end">
           <button mat-button matStepperPrevious>{{ t('back') }}</button>
-          <button *ngIf="!editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit"
+          <button *ngIf="!editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid)" type="submit"
             (click)="createEvent()">{{ t('createEvent') }}</button>
-          <button *ngIf="editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit"
+          <button *ngIf="editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid)" type="submit"
             (click)="updateEvent()">{{ t('editEvent') }}</button>
         </mat-card-actions>
       </form>

@@ -10,7 +10,6 @@ export class FilterPipe implements PipeTransform {
     if (!searchText) return items;
 
     searchText = searchText.toLowerCase();
-    console.log(items)
     return items.filter(it => {
       return it.title.toLowerCase().includes(searchText)
       // until the venue issues are resolved, this needs to be commented out or it will break the filter
