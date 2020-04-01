@@ -34,9 +34,13 @@
             accept="image/png, image/jpeg" />
           <button mat-flat-button color="primary" (click)="imageInput.click()">{{ t('uploadImage') }}</button>
         </div>
-        <mat-card-actions align="end">
-          <button mat-button matStepperNext>{{ t('next') }}</button>
-        </mat-card-actions>
+
+        <div class="navigate-stepper-step-one">
+          <button mat-button color="primary" matStepperNext>{{ t('next') }}</button>
+        </div>
+        <div class="cancel">
+          <button mat-button color="warn" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
+        </div>
 
       </form>
     </mat-step>
@@ -64,11 +68,15 @@
           <input type="time" matInput formControlName="endTime">
         </mat-form-field>
 
+        <div class="navigate-stepper-other-steps">
+          <button mat-button color="primary" matStepperPrevious>{{ t('back') }}</button>
+          <button mat-button color="primary" matStepperNext>{{ t('next') }}</button>
+        </div>
 
-        <mat-card-actions align="end">
-          <button mat-button matStepperPrevious>{{ t('back') }}</button>
-          <button mat-button matStepperNext>{{ t('next') }}</button>
-        </mat-card-actions>
+        <div class="cancel">
+          <button mat-button color="warn" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
+        </div>
+
       </form>
     </mat-step>
 
@@ -132,13 +140,18 @@
           </mat-form-field>
         </div>
 
-        <mat-card-actions align="end">
-          <button mat-button matStepperPrevious>{{ t('back') }}</button>
-          <button *ngIf="!editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid)" type="submit"
+        <div class="navigate-stepper-other-steps">
+          <button mat-button class="back-button" color="primary" matStepperPrevious>{{ t('back') }}</button>
+          <button *ngIf="!editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit"
             (click)="createEvent()">{{ t('createEvent') }}</button>
           <button *ngIf="editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid)" type="submit"
             (click)="updateEvent()">{{ t('editEvent') }}</button>
-        </mat-card-actions>
+        </div>
+
+        <div class="cancel">
+          <button mat-button color="warn" class="cancel-button" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
+        </div>
+
       </form>
     </mat-step>
   </mat-horizontal-stepper>

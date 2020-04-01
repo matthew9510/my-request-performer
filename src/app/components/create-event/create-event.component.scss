@@ -27,3 +27,21 @@ form {
     margin: 0 auto;
   }
 }
+
+.navigate-stepper-step-one {
+  display: flex;
+  flex-direction: row !important;
+  justify-content: flex-end;
+}
+
+.navigate-stepper-other-steps {
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-between;
+}
+
+.cancel {
+  display: flex;
+  flex-direction: row !important;
+  justify-content: center;
+}

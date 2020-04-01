@@ -158,6 +158,10 @@ export class CreateEventComponent implements OnInit {
     })
   }
 
+  cancelUpdateEvent() {
+    this.router.navigate(['/events'])
+  }
+
   // imageUploaded(image) {
   //   console.log(image.target)
   //   console.log(image.target.files[0])
