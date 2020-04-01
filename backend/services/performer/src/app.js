@@ -37,56 +37,111 @@ app.use(function (req, res, next) {
 app.options('*', cors()); // include before other routes
 
 
-// get all events associated with a performer id
-app.get('/performers/:id/events', function (req, res) {
+/**********************
+ * GET all events associated with a performer id with a specific status
+ **********************/
+app.get('/performers/:id/events', function (req, res, next) {
 
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true")
-
-  if (debug) console.log("GET EVENTS by performer's id...", req);
-
   const performerId = req.params.id;
+  const eventStatus = req.query.status;
+  let params;
 
-  // create dynamo db params
-  const params = {
-    TableName: process.env.DYNAMODB_EVENTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
-    IndexName: 'performerId-date-index',
-    KeyConditionExpression: "performerId = :performerId",
-    ExpressionAttributeValues: {
-      ":performerId": performerId
-    },
-  };
-  if (debug) console.log('Params ARE : ', params);
+  if (debug) console.log("GET: /performers/:id/events request object", req)
 
+  // Set up query //
+  if (eventStatus) {
+    if (debug) console.log("PerformerId:", performerId)
+    if (debug) console.log("Event status:", eventStatus)
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_EVENTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
+      IndexName: 'performerId-date-index',
+      KeyConditionExpression: "performerId = :performerId",
+      FilterExpression: "#status = :eventStatus",
+      ExpressionAttributeValues: {
+        ":performerId": performerId,
+        ":eventStatus": eventStatus
+      },
+      ExpressionAttributeNames: {
+        "#status": "status"
+      }
+    }
+
+  } else {
+    if (debug) console.log("performerId:", performerId)
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_EVENTS_TABLE, //process.env.DYNAMODB_REQUESTS_TABLE, // DYNAMODB_REQUESTS_TABLE === my-request-requests-table
+      IndexName: 'performerId-date-index',
+      KeyConditionExpression: "performerId = :performerId",
+      ExpressionAttributeValues: {
+        ":performerId": performerId
+      }
+    };
+  }
+  // Print constructed params //
+  if (debug) console.log('Params:\n', params);
+
+
+  // fetch requests from the database
   dynamoDb.query(params, (error, result) => {
-    // handle potential errors
+    // handle potential Dynamo db server errors
     if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+      console.error("Unable to find item(s). Error JSON:", JSON.stringify(error, null, 2));
+      next("error in performers/:id/events", error)
     } else {
-      if (debug) console.log("result is", result)
+      // Print the result
+      if (debug) console.log('Result:\n', result)
+
+      // First up response of now-playing being empty for an event
       const response = {
         statusCode: 200,
         body: result.Items,
       };
-      res.json({
-        success: 'Found all events for performer id: ' + performerId,
-        response: response
-      })
+
+      if (response.body.length >= 1) {
+        if (eventStatus) {
+          res.json({
+            success: "Found all " + eventStatus + " events for performer id: " + performerId,
+            response: response
+          })
+        } else {
+          res.json({
+            success: 'Found all events for performer id: ' + performerId,
+            response: response
+          })
+        }
+      } else {
+        if (eventStatus) {
+          res.json({
+            success: "Found no " + eventStatus + " events for performer id: " + performerId,
+            response: response
+          })
+        } else {
+          res.json({
+            success: 'Found no events for performer id: ' + performerId,
+            response: response
+          })
+        }
+      }
     }
   });
+})
 
-});
 
-
-// get all venues associated with a performer id
-app.get('/performers/:id/venues', function (req, res) {
+/**********************
+ * GET all venues associated with a performer id
+ **********************/
+app.get('/performers/:id/venues', function (req, res, next) {
 
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true")
-
   const performerId = req.params.id;
-
-  if (debug) console.log("GET VENUES by id...", req);
+  if (debug) console.log("GET: /performers/:id/venues request object", req)
 
   // create dynamo db params
   const params = {
@@ -97,31 +152,42 @@ app.get('/performers/:id/venues', function (req, res) {
       ":performerId": performerId
     },
   };
-
   if (debug) console.log('Params ARE : ', params);
 
+  // fetch requests from the database
   dynamoDb.query(params, (error, result) => {
-    // handle potential errors
+    // handle potential Dynamo db server errors
     if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+      console.error("Unable to find item(s). Error JSON:", JSON.stringify(error, null, 2));
+      next("error in performers/:id/venues", error)
     } else {
-      if (debug) console.log("result is", result)
+      // Print the result
+      if (debug) console.log('Result:\n', result)
+
+      // First up response of now-playing being empty for an event
       const response = {
         statusCode: 200,
         body: result.Items,
       };
-      res.json({
-        success: 'Found all venues for performer id: ' + performerId,
-        response: response
-      })
+
+      if (response.body.length >= 1) {
+        res.json({
+          success: 'Found all venues for performer id: ' + performerId,
+          response: response
+        })
+      } else {
+        res.json({
+          success: 'Found no venues for performer id: ' + performerId,
+          response: response
+        })
+      }
     }
   });
-
-});
+})
 
 
 /**********************
- * GET requests by event id possibly with a specific pending status
+ * GET requests by performer id possibly with a specific status
  **********************/
 app.get('/performers/:id/requests', function (req, res, next) {
 
