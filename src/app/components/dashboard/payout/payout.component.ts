@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { RequestsService } from 'src/app/services/requests.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort, MatTableDataSource } from '@angular/material';
@@ -9,11 +9,10 @@ import { MatSort, MatTableDataSource } from '@angular/material';
   styleUrls: ['./payout.component.scss']
 })
 export class PayoutComponent implements OnInit {
-
   completedRequests: any[];
   earnings: number;
-  displayedColumns: string[] = ['song', 'artist', 'amount'];
-  dataSource;
+  displayedColumns: string[] = ['date', 'song', 'artist', 'amount'];
+  dataSource: MatTableDataSource<any>;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   constructor(
@@ -28,7 +27,7 @@ export class PayoutComponent implements OnInit {
   onFetchRequests() {
     this.requestsService.getAllRequestsByPerformerId(localStorage.getItem('performerSub'), "completed")
       .subscribe((requests: any) => {
-        // console.log(requests.response.body)
+        console.log(requests.response.body)
         this.completedRequests = requests.response.body;
         this.calculateTotalEarnings(requests.response.body);
         // populates the data table and enables sort

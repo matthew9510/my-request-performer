@@ -1,12 +1,13 @@
 <ng-container *transloco="let t; read: 'createEvent'">
-  <mat-horizontal-stepper #stepper labelPosition="bottom" class="stepper-div mat-app-background">
+  <mat-horizontal-stepper #stepper labelPosition="bottom" class="stepper-div mat-app-background" (animationDone)="setFocus()" (selectionChange)="setTargetId($event)">
     <mat-step [stepControl]="eventDetailForm">
       <form [formGroup]="eventDetailForm" class="createEventForm">
         <ng-template matStepLabel>{{ t('eventDetails') }}</ng-template>
 
         <mat-form-field>
           <mat-label>{{ t('eventTitle') }}</mat-label>
-          <input matInput formControlName="title">
+          <input matInput formControlName="title" id="input0">
+          <mat-error>Must enter an event title</mat-error>
         </mat-form-field>
 
         <mat-form-field>
@@ -31,15 +32,16 @@
         </mat-form-field>
         <div *ngIf="uploadImage">
           <input #imageInput hidden="true" type="file" (change)="imageUploaded($event)"
-            accept="image/png, image/jpeg" />
+            accept="image/png, image/jpeg"/>
           <button mat-flat-button color="primary" (click)="imageInput.click()">{{ t('uploadImage') }}</button>
         </div>
 
-        <div class="navigate-stepper-step-one">
-          <button mat-button color="primary" matStepperNext>{{ t('next') }}</button>
+        <div class="stepper-nav-buttons">
+          <button mat-button class="hidden" color="primary" matStepperNext>{{ t('back') }}</button>
+          <button mat-button color="primary" type="submit" matStepperNext>{{ t('next') }}</button>
         </div>
         <div class="cancel">
-          <button mat-button color="warn" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
+          <button mat-stroked-button color="warn" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
         </div>
 
       </form>
@@ -47,35 +49,46 @@
 
 
     <mat-step [stepControl]="eventTimeAndDateForm">
-      <form [formGroup]="eventTimeAndDateForm" class="createEventForm">
+      <form [formGroup]="eventTimeAndDateForm" class="createEventForm date-form">
         <ng-template matStepLabel>{{ t('dateAndTime') }}</ng-template>
 
-        <mat-form-field>
-          <mat-label>{{ t('chooseADate') }}</mat-label>
-          <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()"
-            [value]="this.eventTimeAndDateForm.value.date">
-          <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-          <mat-datepicker #myDatepicker></mat-datepicker>
-        </mat-form-field>
+          <mat-form-field class="date-select">
+            <mat-label>{{ t('chooseADate') }}</mat-label>
+            <input matInput [matDatepicker]="myDatepicker" formControlName="date" (focus)="myDatepicker.open()"
+              [value]="eventTimeAndDateForm.value.date" id="input1" required>
+            <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker></mat-datepicker>
+            <mat-error>Date is required</mat-error>
+          </mat-form-field>
 
-        <mat-form-field>
-          <mat-label for="EnterTime">{{ t('startTime') }}</mat-label>
-          <input type="time" matInput formControlName="startTime">
-        </mat-form-field>
+          <p>
+            <mat-form-field class="time-select">
+              <mat-label for="EnterTime">{{ t('startTime') }}</mat-label>
+              <mat-select type="time" formControlName="startTime">
+                <mat-option *ngFor="let time of times" [value]="time">
+                  {{ time }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
 
-        <mat-form-field>
-          <mat-label for="EndTime">{{ t('endTime') }}</mat-label>
-          <input type="time" matInput formControlName="endTime">
-        </mat-form-field>
+            <mat-form-field class="time-select">
+              <mat-label for="EndTime">{{ t('endTime') }}</mat-label>
+              <mat-select type="time" formControlName="endTime">
+                <mat-option *ngFor="let time of times" [value]="time">
+                  {{ time }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </p>
 
-        <div class="navigate-stepper-other-steps">
-          <button mat-button color="primary" matStepperPrevious>{{ t('back') }}</button>
-          <button mat-button color="primary" matStepperNext>{{ t('next') }}</button>
-        </div>
+          <div class="stepper-nav-buttons">
+            <button mat-button color="primary" matStepperPrevious>{{ t('back') }}</button>
+            <button mat-button color="primary" type="submit" matStepperNext>{{ t('next') }}</button>
+          </div>
 
-        <div class="cancel">
-          <button mat-button color="warn" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
-        </div>
+          <div class="cancel">
+            <button mat-stroked-button color="warn" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
+          </div>
 
       </form>
     </mat-step>
@@ -88,9 +101,9 @@
         <mat-form-field *ngIf="!addingVenue">
           <mat-label>{{ t('venue') }}</mat-label>
           <input *ngIf="!editEvent" matInput formControlName="id" [matAutocomplete]="auto"
-            autocomplete="zalsdjflsadfkjfl">
+            autocomplete="zalsdjflsadfkjfl" id="input2">
           <input *ngIf="editEvent" matInput [value]="venueToClone.name" [matAutocomplete]="auto"
-            autocomplete="zalsdjflsadfkjfl">
+            autocomplete="zalsdjflsadfkjfl" id="input2">
 
 
           <mat-autocomplete #auto="matAutocomplete">
@@ -103,10 +116,10 @@
           </mat-autocomplete>
         </mat-form-field>
 
-        <div *ngIf="addingVenue">
+        <div class="venue-form" *ngIf="addingVenue">
           <mat-form-field>
             <mat-label>{{ t('name') }}</mat-label>
-            <input matInput formControlName="name">
+            <input matInput formControlName="name" id="input2">
           </mat-form-field>
 
           <mat-form-field>
@@ -140,7 +153,7 @@
           </mat-form-field>
         </div>
 
-        <div class="navigate-stepper-other-steps">
+        <div class="stepper-nav-buttons">
           <button mat-button class="back-button" color="primary" matStepperPrevious>{{ t('back') }}</button>
           <button *ngIf="!editEvent" mat-flat-button color="accent" [disabled]="(venueForm.invalid )" type="submit"
             (click)="createEvent()">{{ t('createEvent') }}</button>
@@ -149,7 +162,7 @@
         </div>
 
         <div class="cancel">
-          <button mat-button color="warn" class="cancel-button" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
+          <button mat-stroked-button color="warn" class="cancel-button" (click)="cancelUpdateEvent()">{{ t('cancel') }}</button>
         </div>
 
       </form>

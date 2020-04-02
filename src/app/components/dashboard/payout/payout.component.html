@@ -9,36 +9,42 @@
 </div>
 
 <mat-divider></mat-divider>
-
 <mat-toolbar>
   <mat-toolbar-row>
     <h1>Earnings Details</h1>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-form-field class="filter-input" appearance="fill">
-  <mat-label>Filter</mat-label>
-  <input matInput (keyup)="applyFilter($event)">
-</mat-form-field>
+<div id="table-container">
+  <mat-form-field class="filter-input" appearance="fill">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)">
+  </mat-form-field>
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z0" matSort>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" matSort>
 
-  <ng-container matColumnDef="amount">
-    <th mat-header-cell class="amount-cell-header" *matHeaderCellDef mat-sort-header> Tip </th>
-    <td mat-cell class="amount-cell" *matCellDef="let request"> {{request.amount | currency}} </td>
-  </ng-container>
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date / Time </th>
+      <td mat-cell *matCellDef="let request"> {{ request.modifiedOn | date : 'short' }} </td>
+    </ng-container>
 
-  <ng-container matColumnDef="song">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Song </th>
-    <td mat-cell *matCellDef="let request"> {{request.song}} </td>
-  </ng-container>
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell class="amount-cell-header" *matHeaderCellDef mat-sort-header> Tip </th>
+      <td mat-cell class="amount-cell" *matCellDef="let request"> {{request.amount | currency}} </td>
+    </ng-container>
 
-  <ng-container matColumnDef="artist">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist </th>
-    <td mat-cell *matCellDef="let request"> {{request.artist}} </td>
-  </ng-container>
+    <ng-container matColumnDef="song">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Song </th>
+      <td mat-cell *matCellDef="let request"> {{request.song}} </td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <ng-container matColumnDef="artist">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Artist </th>
+      <td mat-cell *matCellDef="let request"> {{request.artist}} </td>
+    </ng-container>
 
-</table>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  </table>
+</div>

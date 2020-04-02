@@ -10,6 +10,18 @@ form {
     flex-direction: column;
     max-width: 800px;
   }
+
+  .stepper-nav-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .cancel {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
 }
 
 .add-venue-option {
@@ -28,20 +40,15 @@ form {
   }
 }
 
-.navigate-stepper-step-one {
-  display: flex;
-  flex-direction: row !important;
-  justify-content: flex-end;
+.time-select {
+  width: 200px;
+  margin-right: 20px;
 }
 
-.navigate-stepper-other-steps {
-  display: flex;
-  flex-direction: row !important;
-  justify-content: space-between;
+.date-select {
+  width: 300px;
 }
 
-.cancel {
-  display: flex;
-  flex-direction: row !important;
-  justify-content: center;
+.hidden {
+  visibility: hidden; 
 }

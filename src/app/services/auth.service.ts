@@ -22,7 +22,7 @@ export class AuthService {
         if (!authState.user) {
           this.user = null;
         } else {
-          console.log(authState.user);
+          // console.log(authState.user);
           this.user = authState.user;
           this.greeting = 'Hello ' + this.user.username;
         }
@@ -32,7 +32,9 @@ export class AuthService {
   logout() {
     localStorage.clear();
     Auth.signOut()
-      .then(data => console.log(data))
+      .then(data =>
+        // console.log(data)
+        data)
       .catch(err => console.log(err));
 
     // // By doing this, you are revoking all the auth tokens(id token, access token and refresh token)
@@ -114,7 +116,7 @@ export class AuthService {
 
   createHeader() {
     const headers = new HttpHeaders().set('Authorization', localStorage.getItem('performerJwt'));
-    console.log(headers);
+    // console.log(headers);
     return headers;
   }
 

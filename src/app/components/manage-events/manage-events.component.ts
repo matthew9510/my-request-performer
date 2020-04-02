@@ -17,10 +17,29 @@ export class ManageEventsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getEventsByStatus('created');
+    // switch statement to remember the last option the user chose to filter by and loads the events accordingly
+    switch (this.eventService.lastSearchStatus) {
+      case 'all':
+        this.eventsListTitle = 'All Events';
+        this.getAllEvents();
+        break;
+      case 'created':
+        this.eventsListTitle = 'Scheduled Events';
+        this.getEventsByStatus(this.eventService.lastSearchStatus)
+        break;
+      case 'active':
+        this.eventsListTitle = 'Active Events';
+        this.getEventsByStatus(this.eventService.lastSearchStatus)
+        break;
+      case 'completed':
+        this.eventsListTitle = 'Past Events';
+        this.getEventsByStatus(this.eventService.lastSearchStatus)
+        break;
+    }
   }
 
   getEventsByStatus(status: string) {
+    this.eventService.lastSearchStatus = status;
     this.eventService.getEvents()
       .subscribe((res: any) => {
         this.events = null;
@@ -30,6 +49,7 @@ export class ManageEventsComponent implements OnInit {
   }
 
   getAllEvents() {
+    this.eventService.lastSearchStatus = 'all';
     this.eventService.getEvents()
       .subscribe((res: any) => {
         this.events = res.response.body;

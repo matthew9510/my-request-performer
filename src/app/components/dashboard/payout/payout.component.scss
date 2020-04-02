@@ -100,10 +100,12 @@ mat-list {
 
 table {
     width: 100%;
+    max-width: 800px;
 }
 
 .filter-input {
     width: calc(100% - 20px);
+    max-width: 700px;
     margin: 10px 10px 0 10px;
     font-size: 12px;
 }
@@ -117,4 +119,16 @@ table {
     display: flex;
     justify-content: flex-end;
     height: 56px;
+}
+
+#table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media screen and (min-width: 800px) {
+    mat-toolbar-row {
+        justify-content: center;
+    }
 }

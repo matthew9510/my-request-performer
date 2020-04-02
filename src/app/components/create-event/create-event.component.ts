@@ -23,6 +23,35 @@ export class CreateEventComponent implements OnInit {
   venueToClone;
   uploadImage = false; // hide uploading image for now
   venues: any[] = [];
+  // for setting autofocus on inputs
+  private targetId = 'input0';
+  // times for start and end time dropdowns
+  times = [
+    '12:00 AM',
+    '1:00 AM',
+    '2:00 AM',
+    '3:00 AM',
+    '4:00 AM',
+    '5:00 AM',
+    '6:00 AM',
+    '7:00 AM',
+    '8:00 AM',
+    '9:00 AM',
+    '10:00 AM',
+    '11:00 AM',
+    '12:00 PM',
+    '1:00 PM',
+    '2:00 PM',
+    '3:00 PM',
+    '4:00 PM',
+    '5:00 PM',
+    '6:00 PM',
+    '7:00 PM',
+    '8:00 PM',
+    '9:00 PM',
+    '10:00 PM',
+    '11:00 PM'
+  ]
 
   constructor(private fb: FormBuilder,
     private eventService: EventService,
@@ -39,10 +68,12 @@ export class CreateEventComponent implements OnInit {
 
   ngOnInit() {
     this.eventDetailForm = this.fb.group({
-      title: [null, Validators.required],
-      description: [null, Validators.required],
+      title: [null,
+        [Validators.required]
+      ],
+      description: [null],
       coverFee: [null],
-      genre: [null, Validators.required],
+      genre: [null],
       url: [null],
       status: ["created"],
       performerId: [localStorage.getItem('performerSub')],
@@ -51,7 +82,9 @@ export class CreateEventComponent implements OnInit {
     })
 
     this.eventTimeAndDateForm = this.fb.group({
-      date: [null, Validators.required],
+      date: [null,
+        [Validators.required]
+      ],
       startTime: [null, Validators.required],
       endTime: [null, Validators.required],
     })
@@ -75,6 +108,16 @@ export class CreateEventComponent implements OnInit {
 
   }
 
+  // these two methods set autofocus on the first input of each step of the stepper
+  setFocus() {
+    const targetElem = document.getElementById(this.targetId);
+    targetElem.focus();
+  }
+
+  setTargetId(event: any) {
+    this.targetId = `input${event.selectedIndex}`;
+  }
+
   // make sure a person auto-completes with one of their venues
   // venueValidator(control: AbstractControl): { [key: string]: boolean } | null {
   //   if (control.touched) {
@@ -87,11 +130,11 @@ export class CreateEventComponent implements OnInit {
     this.addingVenue = true;
     this.venueForm = this.fb.group({
       name: [null, Validators.required],
-      streetAddress: [null, Validators.required],
-      city: [null, Validators.required],
-      state: [null, Validators.required],
-      postalCode: [null, Validators.required],
-      country: [null, Validators.required],
+      streetAddress: [null],
+      city: [null],
+      state: [null],
+      postalCode: [null],
+      country: [null],
       url: [null],
       performerId: [localStorage.getItem('performerSub')]
     });
