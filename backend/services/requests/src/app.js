@@ -138,6 +138,8 @@ app.get('/requests/:id', function (req, res) {
  ****************************/
 
 app.post('/requests', function (req, res) {
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true")
 
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -149,6 +151,15 @@ app.post('/requests', function (req, res) {
   params.Item.createdOn = new Date().toJSON()
   params.Item.modifiedOn = new Date().toJSON()
 
+  if (debug) console.log("params b4", params)
+
+  // Convert empty strings to null for dynamoDB
+  params.Item.firstName = params.Item.firstName === '' ? null : params.Item.firstName
+  params.Item.lastName = params.Item.lastName === '' ? null : params.Item.lastName
+  params.Item.memo = params.Item.memo === '' ? null : params.Item.memo
+
+
+  if (debug) console.log("params:", params)
 
   dynamoDb.put(params, function (err, result) {
     if (err) {
