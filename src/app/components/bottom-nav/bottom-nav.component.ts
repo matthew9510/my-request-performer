@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { EventService } from 'src/app/services/event.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { EventService } from '../../services/event.service';
 
 @Component({
   selector: 'app-bottom-nav',
@@ -9,9 +11,16 @@ import { EventService } from 'src/app/services/event.service';
 export class BottomNavComponent implements OnInit {
   constructor(
     private eventService: EventService,
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
 }

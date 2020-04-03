@@ -27,7 +27,7 @@ export class PayoutComponent implements OnInit {
   onFetchRequests() {
     this.requestsService.getAllRequestsByPerformerId(localStorage.getItem('performerSub'), "completed")
       .subscribe((requests: any) => {
-        console.log(requests.response.body)
+        // console.log(requests.response.body)
         this.completedRequests = requests.response.body;
         this.calculateTotalEarnings(requests.response.body);
         // populates the data table and enables sort
