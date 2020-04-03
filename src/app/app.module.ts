@@ -6,7 +6,6 @@ import { EventdetailsComponent } from './components/event-detail/event-detail.co
 import { ManageEventsComponent } from './components/manage-events/manage-events.component';
 import { RequestsComponent } from './components/requests/requests.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import 'hammerjs';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PayoutComponent } from './components/dashboard/payout/payout.component';
@@ -111,7 +110,6 @@ import { NotAuthGuard } from './guards/not-auth.guard'
     LayoutModule,
     ScrollingModule,
     MatDatepickerModule,
-    MatMomentDateModule,
     MatAutocompleteModule,
     AmplifyAngularModule,
     MatStepperModule,

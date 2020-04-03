@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { VenueService } from '@services/venue.service'
 import { EventService } from '@services/event.service'
@@ -12,14 +11,11 @@ import { EventService } from '@services/event.service'
 export class EventdetailsComponent implements OnInit {
   event: any;
   venue: any;
-  shortenedDate: any;
+
 
   @Input()
-  set eventData(eventData: { date: moment.MomentInput; }) {
-    if (eventData) {
-      this.shortenedDate = moment(eventData.date).format('MMM DD');
-      this.event = eventData;
-    }
+  set eventData(eventData: any) {
+    this.event = eventData;
   }
 
   constructor(

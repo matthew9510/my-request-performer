@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import * as moment from 'moment';
 import { EventService } from 'src/app/services/event.service';
 import { PerformerService } from '@services/performer.service';
 import { Router } from '@angular/router';
@@ -142,8 +141,6 @@ export class CreateEventComponent implements OnInit {
 
   prepareEvent(venueId) {
     if (!this.editEvent) { // if creating a new event
-      // Reassign date with desired format
-      this.eventTimeAndDateForm.value.date = String(this.eventTimeAndDateForm.value.date._i.year) + '-' + String(this.eventTimeAndDateForm.value.date._i.month + 1) + '-' + String(this.eventTimeAndDateForm.value.date._i.date)
       // concatenate all forms together 
       let newEvent = new Object();
       Object.assign(newEvent, this.eventDetailForm.value, { venueId: venueId }, this.eventTimeAndDateForm.value);
@@ -152,10 +149,7 @@ export class CreateEventComponent implements OnInit {
     else { // if editing the event 
       // concatenate all forms together 
       let newEvent = this.eventToClone
-      Object.assign(newEvent, this.eventDetailForm.value, this.eventTimeAndDateForm.value)
-      // convert date to the correct format 
-      newEvent.date = new Date(newEvent.date)
-      newEvent.date = String(newEvent.date.getFullYear()) + "-" + String(newEvent.date.getMonth() + 1) + "-" + String(newEvent.date.getDate())
+      Object.assign(newEvent, this.eventDetailForm.value, this.eventTimeAndDateForm.value) // Need to add venue changes later 
       // return concatenated object 
       return newEvent
     }

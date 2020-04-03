@@ -1,7 +1,7 @@
 <mat-card class="mat-card-container mat-elevation-z0" color="accent">
   <!-- <img mat-card-image src="../assets/images/test-image.png" alt="" class="image"> -->
   <div class="image"></div>
-  <span class="date">{{shortenedDate}}</span>
+  <span class="date">{{event?.date | date : 'MMM d' }}</span>
   <mat-card-content class="info">
     <span class="venue">{{venue?.name}}</span><br>
     <span class="title">{{event?.title}}</span>
