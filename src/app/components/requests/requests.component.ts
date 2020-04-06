@@ -205,9 +205,31 @@ export class RequestsComponent implements OnInit {
     this.eventStatusMenuIcon = 'remove_circle';
     this.eventMenuStatus = 'Ended';
 
-    if (this.nowPlayingRequest) {
-      this.nowPlayingRequest.status = "completed";
-      this.onChangeRequestStatus(this.nowPlayingRequest, this.nowPlayingRequest.id);
+    if (this.currentlyPlaying == true) {
+      // if current song has top-ups alter the top-up statuses in db
+      if (this.nowPlayingRequest.topUps.length > 0) {
+        var topUpAmount = 0
+        for (let topUp of this.nowPlayingRequest.topUps) {
+          let alteredTopUp = JSON.parse(JSON.stringify(topUp))
+          alteredTopUp.status = "completed"
+          this.onChangeRequestStatus(alteredTopUp, topUp.id);
+          topUpAmount += topUp.amount
+        }
+      }
+
+      // change original request status
+      let alteredNowPlayingRequest = JSON.parse(JSON.stringify(this.nowPlayingRequest));
+      alteredNowPlayingRequest.status = "completed"
+
+      // subtract top-up amount if any
+      if (topUpAmount > 0) {
+        alteredNowPlayingRequest.amount -= topUpAmount;
+      }
+      // delete top-ups array from now playing request
+      delete alteredNowPlayingRequest.topUps
+
+      this.onChangeRequestStatus(alteredNowPlayingRequest, this.nowPlayingRequest.id);
+
       this.currentlyPlaying = false;
       this.nowPlayingRequest = {
         song: null,
@@ -217,20 +239,50 @@ export class RequestsComponent implements OnInit {
         status: null,
         id: null
       };
+
     }
+
+    // reject all pending requests 
     if (this.pendingRequests !== null) {
       this.pendingRequests.map(req => req.status = 'rejected');
       for (let request of this.pendingRequests) {
         this.onChangeRequestStatus(request, request.id)
       }
     }
+
+    // reject all accepted Requests
     if (this.acceptedRequests !== null) {
-      this.acceptedRequests.map(req => req.status = 'rejected');
-      for (let request of this.acceptedRequests) {
-        this.onChangeRequestStatus(request, request.id)
+      // for request in accepted requests 
+      for (let acceptedRequest of this.acceptedRequests) {
+        let acceptedRequestToReject = this.acceptedRequests.filter(req => req.originalRequestId === acceptedRequest.originalRequestId)[0];
+
+        // change top-up requests statuses if there are top-ups for a request to be rejected
+        if (acceptedRequestToReject.topUps.length > 0) {
+          var topUpAmount = 0
+          for (let topUp of acceptedRequestToReject.topUps) {
+            let alteredTopUp = JSON.parse(JSON.stringify(topUp))
+            alteredTopUp.status = "rejected"
+            this.onChangeRequestStatus(alteredTopUp, topUp.id);
+            topUpAmount += topUp.amount
+          }
+        }
+
+        // change original request status
+        let alteredOriginalRequest = JSON.parse(JSON.stringify(acceptedRequestToReject));
+        alteredOriginalRequest.status = "rejected"
+        // subtract topup amount if any
+        if (topUpAmount > 0) {
+          alteredOriginalRequest.amount -= topUpAmount;
+        }
+        // delete top up 
+        delete alteredOriginalRequest.topUps;
+        this.onChangeRequestStatus(alteredOriginalRequest, acceptedRequestToReject.id);
       }
+
     }
+
   }
+
 
   pauseEvent() {
     // changes on backend
@@ -321,9 +373,10 @@ export class RequestsComponent implements OnInit {
       let alteredOriginalRequest = JSON.parse(JSON.stringify(acceptedRequestToReject));
       alteredOriginalRequest.status = "rejected"
       // subtract topup amount if any
-      if (topUpAmount) {
+      if (topUpAmount > 0) {
         alteredOriginalRequest.amount -= topUpAmount;
       }
+      delete alteredOriginalRequest.topUps;
       this.onChangeRequestStatus(alteredOriginalRequest, acceptedRequestToReject.id);
     }
     if (requestType === 'pendingRequests') { // note no top-ups for a pending request
@@ -355,7 +408,7 @@ export class RequestsComponent implements OnInit {
       alteredNowPlayingRequest.status = "completed"
 
       // subtract top-up amount if any
-      if (topUpAmount) {
+      if (topUpAmount > 0) {
         alteredNowPlayingRequest.amount -= topUpAmount;
       }
       // delete top-ups array from now playing request
