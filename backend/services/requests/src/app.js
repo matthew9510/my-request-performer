@@ -148,6 +148,12 @@ app.post('/requests', function (req, res) {
 
   // Generate uuid & date record
   params.Item.id = uuid.v1();
+
+  // for new request only
+  if (!params.Item.originalRequestId) {
+    params.Item.originalRequestId = params.Item.id
+  }
+
   params.Item.createdOn = new Date().toJSON()
   params.Item.modifiedOn = new Date().toJSON()
 

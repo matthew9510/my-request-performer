@@ -19,6 +19,7 @@ import { TranslocoRootModule } from './transloco-root.module';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import {
   MatToolbarModule,
   MatIconModule,
@@ -110,6 +111,7 @@ import { NotAuthGuard } from './guards/not-auth.guard'
     LayoutModule,
     ScrollingModule,
     MatDatepickerModule,
+    MatMomentDateModule,
     MatAutocompleteModule,
     AmplifyAngularModule,
     MatStepperModule,
