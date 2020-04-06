@@ -51,6 +51,8 @@ export class RequestsComponent implements OnInit {
     // checks all pending requests from the backend every 20 seconds
     interval(20000).subscribe(x => {
       this.getPendingRequests();
+      this.getAcceptedRequests();
+      this.getNowPlayingRequests();
     });
   }
 
