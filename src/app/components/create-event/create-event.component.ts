@@ -88,6 +88,14 @@ export class CreateEventComponent implements OnInit {
       endTime: [null, Validators.required],
     })
 
+    // when a start time is entered, the end time changes to one value greater than the start time
+    this.eventTimeAndDateForm.valueChanges.subscribe(x => {
+      if (this.eventTimeAndDateForm.value.endTime === null && this.eventTimeAndDateForm.value.startTime !== null) {
+        let index = this.times.indexOf(x.startTime);
+        this.eventTimeAndDateForm.controls.endTime.setValue(this.times[index + 1]);
+      }
+    })
+
     // Take away selecting previous venues for now
     this.venueForm = this.fb.group({
       id: [null, Validators.required],
