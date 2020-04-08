@@ -49,20 +49,25 @@ mat-card {
 }
 
 .tip-amount {
-  font-size: .8em;
+  font-size: 0.8em;
   opacity: 0.87;
 }
 
+.top-up-amount {
+  font-size: 0.6em;
+  opacity: 0.7;
+}
+
 .song-name {
-  font-size: .9em;
+  font-size: 0.9em;
   margin: 0px 0px 8px !important;
   opacity: 0.87;
 }
 
 .artist-name {
-  font-size: .7em;
+  font-size: 0.8em;
   margin: -4px 0px 0px 0px !important;
-  opacity: 0.70;
+  opacity: 0.8;
 }
 
 .truncate {

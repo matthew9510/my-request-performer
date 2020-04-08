@@ -1,17 +1,21 @@
 <ng-container *transloco="let t; read: 'requests'">
-
   <div id="event-title-banner" *ngIf="event">
-    <span class="event-title">{{ event.title }}</span><br>
+    <span class="event-title">{{ event.title }}</span
+    ><br />
     <span class="venue-name">{{ event.venue }}</span>
   </div>
 
   <!--Appears when the event is not started yet, or if event is ended -->
-  <div *ngIf="(eventStatus === 'completed') || (eventStatus === 'created')">
-    <p class="body-text" *ngIf="eventStatus === 'created'">{{ t('inactive event message') }}</p>
-    <p class="body-text" *ngIf="eventStatus === 'completed'">This event has ended.</p>
+  <div *ngIf="eventStatus === 'completed' || eventStatus === 'created'">
+    <p class="body-text" *ngIf="eventStatus === 'created'">
+      {{ t("inactive event message") }}
+    </p>
+    <p class="body-text" *ngIf="eventStatus === 'completed'">
+      This event has ended.
+    </p>
     <p class="body-text" *ngIf="eventStatus === 'created'">
       <button mat-flat-button color="primary" (click)="startEvent()">
-        <span> {{ t('start event fab') }}</span>
+        <span> {{ t("start event fab") }}</span>
       </button>
     </p>
   </div>
@@ -19,14 +23,22 @@
   <!-- Appears when the event is active -->
 
   <!-- disablePagination will not work in current version of angular material-->
-  <mat-tab-group *ngIf="(eventStatus === 'active') || (eventStatus === 'paused')" disablePagination="true"
-    mat-align-tabs="center" class="mat-app-background">
+  <mat-tab-group
+    *ngIf="eventStatus === 'active' || eventStatus === 'paused'"
+    disablePagination="true"
+    mat-align-tabs="center"
+    class="mat-app-background"
+  >
     <mat-tab class="tab-label" label="Accepted">
-
       <ng-template matTabContent>
         <div [class.large-screen-display]="isLargeScreen">
-          <div [class.large-screen-child]="isLargeScreen" class="subheader-wrapper">
-            <h3 class="request-subheader" mat-subheader>{{ t('now playing') }}</h3>
+          <div
+            [class.large-screen-child]="isLargeScreen"
+            class="subheader-wrapper"
+          >
+            <h3 class="request-subheader" mat-subheader>
+              {{ t("now playing") }}
+            </h3>
 
             <!-- Change event status menu -->
             <mat-menu #eventMenu="matMenu" xPosition="before">
@@ -50,32 +62,72 @@
           </div>
 
           <!-- Now playing song -->
-          <div *ngIf="currentlyPlaying; else selectNextSong" [class.large-screen-child]="isLargeScreen">
-            <app-request-detail [song]="nowPlayingRequest.song" [artist]="nowPlayingRequest.artist"
-              [status]="nowPlayingRequest.status" [amount]="nowPlayingRequest.amount" [memo]="nowPlayingRequest.memo">
-              <button endSongButton mat-flat-button class="request-button" color="accent"
-                (click)="endCurrentSong()">{{ t('end song button') }}</button>
+          <div
+            *ngIf="currentlyPlaying; else selectNextSong"
+            [class.large-screen-child]="isLargeScreen"
+          >
+            <app-request-detail
+              [song]="nowPlayingRequest.song"
+              [artist]="nowPlayingRequest.artist"
+              [status]="nowPlayingRequest.status"
+              [amount]="nowPlayingRequest.amount"
+              [memo]="nowPlayingRequest.memo"
+            >
+              <button
+                endSongButton
+                mat-flat-button
+                class="request-button"
+                color="accent"
+                (click)="endCurrentSong()"
+              >
+                {{ t("end song button") }}
+              </button>
             </app-request-detail>
           </div>
 
           <!-- Message that shows up when there is no song currently selected -->
           <ng-template #selectNextSong>
             <p class="body-text">
-              {{ t('no current song playing message') }}
+              {{ t("no current song playing message") }}
             </p>
           </ng-template>
 
           <!-- Accepted requests/Up Next -->
-          <h3 [class.large-screen-child]="isLargeScreen" class="request-subheader" mat-subheader>{{ t('up next') }}</h3>
+          <h3
+            [class.large-screen-child]="isLargeScreen"
+            class="request-subheader"
+            mat-subheader
+          >
+            {{ t("up next") }}
+          </h3>
           <mat-list [class.large-screen-child]="isLargeScreen">
-            <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
-              [status]="request.status" *ngFor="let request of acceptedRequests; index as i">
-
-              <button rejectButton mat-button class="request-button" color="warn"
-                (click)="openRejectRequestDialog(request, 'acceptedRequests')">{{ t('reject') }}</button>
-              <button playNextButton mat-flat-button class="request-button" color="primary"
-                (click)="playNext(request)">{{ t('play next') }}</button>
-
+            <app-request-detail
+              mat-list-item
+              [song]="request.song"
+              [artist]="request.artist"
+              [amount]="request.amount"
+              [status]="request.status"
+              [amountOfTopUps]="request.topUps.length"
+              *ngFor="let request of acceptedRequests; index as i"
+            >
+              <button
+                rejectButton
+                mat-button
+                class="request-button"
+                color="warn"
+                (click)="openRejectRequestDialog(request, 'acceptedRequests')"
+              >
+                {{ t("reject") }}
+              </button>
+              <button
+                playNextButton
+                mat-flat-button
+                class="request-button"
+                color="primary"
+                (click)="playNext(request)"
+              >
+                {{ t("play next") }}
+              </button>
             </app-request-detail>
           </mat-list>
         </div>
@@ -86,18 +138,32 @@
     <mat-tab label="Pending">
       <ng-template matTabContent>
         <div [class.large-screen-display]="isLargeScreen">
-          <div [class.large-screen-child]="isLargeScreen" class="request-subheader" mat-subheader>
-            <h3>{{ t('pending requests') }}</h3>
-            <button mat-icon-button color="primary" (click)="onGetRequestsByEventId()">
+          <div
+            [class.large-screen-child]="isLargeScreen"
+            class="request-subheader"
+            mat-subheader
+          >
+            <h3>{{ t("pending requests") }}</h3>
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="onGetRequestsByEventId()"
+            >
               <mat-icon>refresh</mat-icon>
             </button>
           </div>
-          <p class="body-text" *ngIf="eventStatus === 'paused'">Event paused. You will not receive any new incoming
-            pending requests while paused.</p>
+          <p class="body-text" *ngIf="eventStatus === 'paused'">
+            Event paused. You will not receive any new incoming pending requests
+            while paused.
+          </p>
 
           <!-- Sorting for pending requests -->
           <div class="sort" *ngIf="pendingRequests">
-            <div class="sort-item" [class.active]="order === 'createdOn'" (click)="setOrder('createdOn')">
+            <div
+              class="sort-item"
+              [class.active]="order === 'createdOn'"
+              (click)="setOrder('createdOn')"
+            >
               Newest
               <span [hidden]="reverse">▼</span>
               <span [hidden]="!reverse">▲</span>
@@ -114,7 +180,11 @@
               <span [hidden]="reverse">▼</span>
               <span [hidden]="!reverse">▲</span>
             </div> -->
-            <div class="sort-item" [class.active]="order === 'amount'" (click)="setOrder('amount')">
+            <div
+              class="sort-item"
+              [class.active]="order === 'amount'"
+              (click)="setOrder('amount')"
+            >
               Tip Amount
               <span [hidden]="reverse">▼</span>
               <span [hidden]="!reverse">▲</span>
@@ -123,17 +193,38 @@
 
           <!-- Pending request items -->
           <mat-list [class.large-screen-child]="isLargeScreen">
-            <app-request-detail mat-list-item [song]="request.song" [artist]="request.artist" [amount]="request.amount"
+            <app-request-detail
+              mat-list-item
+              [song]="request.song"
+              [artist]="request.artist"
+              [amount]="request.amount"
               [status]="request.status"
-              *ngFor="let request of pendingRequests | orderBy: order:!reverse:'case-insensitive'; index as i">
-
-              <button acceptButton mat-icon-button class="request-button" (click)="acceptRequest(request)">
-                <mat-icon color="primary" class="request-button-icon">done</mat-icon>
+              *ngFor="
+                let request of pendingRequests
+                  | orderBy: order:!reverse:'case-insensitive';
+                index as i
+              "
+            >
+              <button
+                acceptButton
+                mat-icon-button
+                class="request-button"
+                (click)="acceptRequest(request)"
+              >
+                <mat-icon color="primary" class="request-button-icon"
+                  >done</mat-icon
+                >
               </button>
 
-              <button rejectButton mat-icon-button class="request-button"
-                (click)="openRejectRequestDialog(request, 'pendingRequests')">
-                <mat-icon color="warn" class="request-button-icon">clear</mat-icon>
+              <button
+                rejectButton
+                mat-icon-button
+                class="request-button"
+                (click)="openRejectRequestDialog(request, 'pendingRequests')"
+              >
+                <mat-icon color="warn" class="request-button-icon"
+                  >clear</mat-icon
+                >
               </button>
             </app-request-detail>
           </mat-list>
@@ -141,5 +232,4 @@
       </ng-template>
     </mat-tab>
   </mat-tab-group>
-
 </ng-container>
