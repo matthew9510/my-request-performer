@@ -1,4 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -10,14 +16,13 @@ import { PerformerService } from "@services/performer.service";
 import { Router } from "@angular/router";
 import { ThrowStmt } from "@angular/compiler";
 import { VenueService } from "@services/venue.service";
-import * as moment from "moment";
 
 @Component({
   selector: "app-create-event",
   templateUrl: "./create-event.component.html",
   styleUrls: ["./create-event.component.scss"],
 })
-export class CreateEventComponent implements OnInit {
+export class CreateEventComponent implements OnInit, AfterViewInit {
   eventDetailForm: FormGroup;
   venueForm: FormGroup;
   eventForm: FormGroup;
@@ -28,8 +33,7 @@ export class CreateEventComponent implements OnInit {
   venueToClone;
   uploadImage = false; // hide uploading image for now
   venues: any[] = [];
-  // for setting autofocus on inputs
-  private targetId = "input0";
+
   // times for start and end time dropdowns
   times = [
     "12:00 AM",
@@ -58,6 +62,13 @@ export class CreateEventComponent implements OnInit {
     "11:00 PM",
   ];
 
+  // for setting autofocus on inputs
+  private targetId = "input0";
+  private autoFocusElements: any;
+  @ViewChild("input0", { static: false }) input0: ElementRef;
+  @ViewChild("input1", { static: false }) input1: ElementRef;
+  @ViewChild("input2", { static: false }) input2: ElementRef;
+
   constructor(
     private fb: FormBuilder,
     private eventService: EventService,
@@ -70,6 +81,14 @@ export class CreateEventComponent implements OnInit {
       this.eventToClone = this.router.getCurrentNavigation().extras.state.event;
       this.venueToClone = this.router.getCurrentNavigation().extras.state.venue;
     }
+  }
+  ngAfterViewInit(): void {
+    // initialize to assist setting autofocus on inputs
+    this.autoFocusElements = {
+      input0: this.input0,
+      input1: this.input1,
+      input2: this.input2,
+    };
   }
 
   ngOnInit() {
@@ -91,8 +110,8 @@ export class CreateEventComponent implements OnInit {
       endTime: [null, Validators.required],
     });
 
+    // when a start time is entered, the end time changes to one value greater than the start time
     this.eventTimeAndDateForm.valueChanges.subscribe((x) => {
-      // when a start time is entered, the end time changes to one value greater than the start time
       if (
         this.eventTimeAndDateForm.value.endTime === null &&
         this.eventTimeAndDateForm.value.startTime !== null
@@ -101,41 +120,6 @@ export class CreateEventComponent implements OnInit {
         this.eventTimeAndDateForm.controls.endTime.setValue(
           this.times[index + 1]
         );
-      }
-
-      /** Alter the time on the date object to the start time of the date object
-  make sure the date has been created before doing this logic **/
-      if (
-        this.eventTimeAndDateForm.value.startTime !== null &&
-        this.eventTimeAndDateForm.value.date !== null
-      ) {
-        if (this.editEvent === true) {
-          // Reshape the data coming back from database
-          if (!(this.eventTimeAndDateForm.value.date instanceof moment)) {
-            // Transform date
-            let tempDate = moment(this.eventTimeAndDateForm.value.date);
-            this.eventTimeAndDateForm.controls.date.setValue(tempDate);
-          }
-        }
-
-        // transformation of date to match start time
-        let isAm =
-          this.eventTimeAndDateForm.value.startTime.split(" ")[1] === "AM";
-        let parsedStartTime = this.eventTimeAndDateForm.value.startTime.split(
-          ":"
-        )[0];
-
-        // Convert to 24 hour time for the database
-        if (isAm === true && parsedStartTime === "12") {
-          this.eventTimeAndDateForm.value.date._d.setHours(0);
-        } else if (isAm === true) {
-          this.eventTimeAndDateForm.value.date._d.setHours(parsedStartTime);
-        } else if (isAm === false && parsedStartTime === "12") {
-          this.eventTimeAndDateForm.value.date._d.setHours(parsedStartTime);
-        } else {
-          let newHour = Number(parsedStartTime) + 12;
-          this.eventTimeAndDateForm.value.date._d.setHours(newHour);
-        }
       }
     });
 
@@ -158,12 +142,16 @@ export class CreateEventComponent implements OnInit {
     }
   }
 
-  // these two methods set autofocus on the first input of each step of the stepper
+  /* These two methods below set autofocus on the first input of each step of the stepper */
   setFocus() {
-    const targetElem = document.getElementById(this.targetId);
-    targetElem.focus();
+    // assign the target element accordingly
+    let targetElem = this.autoFocusElements[this.targetId]; // target appropriate viewchild using targetId
+
+    // set focus on the element
+    targetElem.nativeElement.focus();
   }
 
+  // Subscription to mat-vertical-stepper when it switches steps
   setTargetId(event: any) {
     this.targetId = `input${event.selectedIndex}`;
   }
@@ -226,7 +214,6 @@ export class CreateEventComponent implements OnInit {
 
           // create a event object
           let event = this.prepareEvent(venueId);
-          console.log("Payload to db to create new ", event);
 
           // create entry in event table
           this.eventService.createEvent(event).subscribe(
