@@ -1,7 +1,7 @@
-@import 'src/styles.scss';
+@import "src/styles.scss";
 
 mat-tab-group {
-  height: calc(100% - 60.5px);
+  height: calc(100% - 41.5px);
 }
 
 .subheader-wrapper {
@@ -51,6 +51,7 @@ mat-tab-group {
 
 mat-list {
   padding-top: 0px;
+  margin-bottom: 100px;
 }
 
 #buttons-wrapper {
@@ -93,7 +94,7 @@ mat-list {
 }
 
 .venue-name {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .sort {

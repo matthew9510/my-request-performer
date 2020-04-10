@@ -29,7 +29,7 @@
     mat-align-tabs="center"
     class="mat-app-background"
   >
-    <mat-tab class="tab-label" label="Accepted">
+    <mat-tab class="tab-label" [label]="acceptedTabLabel">
       <ng-template matTabContent>
         <div [class.large-screen-display]="isLargeScreen">
           <div
@@ -135,7 +135,7 @@
     </mat-tab>
 
     <!-- Pending requests tab -->
-    <mat-tab label="Pending">
+    <mat-tab [label]="pendingTabLabel">
       <ng-template matTabContent>
         <div [class.large-screen-display]="isLargeScreen">
           <div

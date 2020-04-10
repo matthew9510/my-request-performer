@@ -12,12 +12,14 @@
     <div *ngIf="memo">
       <p class="memo-text mat-body"><b>Message:</b> {{ memo }}</p>
     </div>
+    <!-- Shows number of requests if the request has top ups -->
     <span class="top-up-amount" *ngIf="amountOfTopUps > 0">
       {{ amountOfTopUps + 1 }} people requested this song
     </span>
-    <span class="top-up-amount" *ngIf="amountOfTopUps === 0">
+    <!-- Uncomment this if we want to show if only one person requested the song -->
+    <!-- <span class="top-up-amount" *ngIf="amountOfTopUps === 0">
       1 person requested this song
-    </span>
+    </span> -->
   </div>
   <div id="tip-and-buttons" [class.actions-small-screen]="isSmallScreen">
     <div id="amount-wrapper">
