@@ -31,12 +31,14 @@ const routes: Routes = [
     data: { title: "Event Recap" },
     canActivate: [NotAuthGuard],
   },
-  {
-    path: "profile",
-    component: ProfileComponent,
-    data: { title: "Profile" },
-    canActivate: [NotAuthGuard],
-  },
+  // Removing access to this component until it is functional
+
+  // {
+  //   path: "profile",
+  //   component: ProfileComponent,
+  //   data: { title: "Profile" },
+  //   canActivate: [NotAuthGuard],
+  // },
   {
     path: "event/:id",
     component: RequestsComponent,

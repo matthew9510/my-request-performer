@@ -3,7 +3,7 @@ form {
   flex-direction: column;
   width: 90%;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 50px auto 0 auto;
 
   div {
     display: flex;
@@ -15,6 +15,7 @@ form {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-top: 100px;
   }
 
   .cancel {
@@ -50,5 +51,5 @@ form {
 }
 
 .hidden {
-  visibility: hidden; 
+  visibility: hidden;
 }

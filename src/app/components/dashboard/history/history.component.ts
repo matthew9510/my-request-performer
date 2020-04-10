@@ -13,7 +13,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 export class HistoryComponent implements OnInit {
   completedRequests: any[];
   earnings: number;
-  displayedColumns: string[] = ["date", "song", "artist", "amount"];
+  displayedColumns: string[] = ["modifiedOn", "song", "artist", "amount"];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   eventId: string;

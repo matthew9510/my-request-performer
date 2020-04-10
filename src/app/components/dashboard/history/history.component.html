@@ -1,15 +1,17 @@
 <h1>{{ event?.title }}</h1>
 <div class="venue-info">
   {{ venue?.name }}
-  <span *ngIf="venue.streetAddress">| {{ venue?.streetAddress }} </span>
-  <span *ngIf="venue.city">
+  <span *ngIf="venue?.streetAddress">| {{ venue?.streetAddress }} </span>
+  <span *ngIf="venue?.city">
     | {{ venue?.city }}, {{ venue?.state }} | {{ venue?.postalCode }}
   </span>
 </div>
 <div class="date-info">
   {{ event?.date | date: "fullDate" }}
-  <span *ngIf="event.startTime">| {{ event?.startTime }}</span>
-  <span *ngIf="event.startTime && event.endTime"> to {{ event?.endTime }}</span>
+  <span *ngIf="event?.startTime">| {{ event?.startTime }}</span>
+  <span *ngIf="event?.startTime && event?.endTime">
+    to {{ event?.endTime }}
+  </span>
 </div>
 
 <div class="header-items">
@@ -26,7 +28,7 @@
   </mat-form-field>
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" matSort>
-    <ng-container matColumnDef="date">
+    <ng-container matColumnDef="modifiedOn">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Time</th>
       <td mat-cell *matCellDef="let request">
         {{ request.modifiedOn | date: "shortTime" }}
@@ -62,6 +64,6 @@
   </table>
 </div>
 
-<div *ngIf="completedRequests.length === 0">
+<div *ngIf="completedRequests?.length === 0">
   <h5>No requests were completed for this event.</h5>
 </div>
