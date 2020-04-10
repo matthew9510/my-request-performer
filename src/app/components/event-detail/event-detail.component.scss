@@ -1,14 +1,15 @@
-@import 'src/styles.scss';
+@import "src/styles.scss";
 
 mat-card {
   width: 100%;
-  height: 80px;
+  min-height: 80px;
   padding: 5px 10px;
   margin: 5px 0px;
 
   mat-card-content {
     align-self: center;
     flex-grow: 1;
+    margin-bottom: 0;
   }
 }
 
@@ -19,25 +20,31 @@ mat-card {
 
 .image {
   // commented out until event images are enabled
-  
+
   // border-bottom-left-radius: 3px;
   // border-bottom-right-radius: 3px;
   // height: 100%;
   // margin: unset !important;
   // width: unset;
+
+  // margin-right: 20px;
+  // border-radius: 3px;
+  // height: 70px;
+  // width: 70px;
+}
+
+.date-container {
+  width: 60px;
+  text-align: center;
   margin-right: 20px;
-  border-radius: 3px;
-  height: 70px;
-  width: 70px;
 }
 
 .date {
   font-weight: bold;
-  // color: white;
-  position: absolute;
-  transform: translate(18%, 120%);
-  align-self: start;
+  align-self: center;
+  justify-self: center;
   color: $primary;
+  // text-align: center;
 }
 
 .venue {
@@ -45,13 +52,16 @@ mat-card {
   font-size: small;
   font-weight: lighter;
   text-align: left;
-  opacity: .8;
+  opacity: 0.8;
+  line-height: 1.5;
 }
 
 .title {
   font-size: medium;
   font-weight: normal;
   text-align: left;
+  color: $accent;
+  line-height: 1.5;
 }
 
 .buttons {
@@ -62,4 +72,19 @@ mat-card {
 .buttons-spacing {
   padding-left: 5px;
   padding-right: 5px;
+}
+
+.edit-event-menu {
+  margin-left: 10px;
+}
+
+.amount {
+  justify-self: center;
+  width: 40px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.amount-wrapper {
+  text-align: right;
 }

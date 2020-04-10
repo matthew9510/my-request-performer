@@ -1,12 +1,67 @@
-<mat-toolbar>
-	<mat-toolbar-row>
-		<h1>Past Events</h1>
-	</mat-toolbar-row>
-</mat-toolbar>
+<h1>{{ event?.title }}</h1>
+<div class="venue-info">
+  {{ venue?.name }}
+  <span *ngIf="venue.streetAddress">| {{ venue?.streetAddress }} </span>
+  <span *ngIf="venue.city">
+    | {{ venue?.city }}, {{ venue?.state }} | {{ venue?.postalCode }}
+  </span>
+</div>
+<div class="date-info">
+  {{ event?.date | date: "fullDate" }}
+  <span *ngIf="event.startTime">| {{ event?.startTime }}</span>
+  <span *ngIf="event.startTime && event.endTime"> to {{ event?.endTime }}</span>
+</div>
 
-<cdk-virtual-scroll-viewport itemSize="80">
-	<mat-list class="events">
-		<app-eventdetails *cdkVirtualFor="let event of events" mat-list-item class="event" [eventData]="event">
-		</app-eventdetails>
-	</mat-list>
-</cdk-virtual-scroll-viewport>
+<div class="header-items">
+  <div class="total-earnings">
+    <h4>Total Earnings</h4>
+    <h1 id="money-color">{{ earnings | currency }}</h1>
+  </div>
+</div>
+
+<div id="table-container">
+  <mat-form-field class="filter-input" appearance="fill">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" />
+  </mat-form-field>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" matSort>
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Time</th>
+      <td mat-cell *matCellDef="let request">
+        {{ request.modifiedOn | date: "shortTime" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <th
+        mat-header-cell
+        class="amount-cell-header"
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        Tip
+      </th>
+      <td mat-cell class="amount-cell" *matCellDef="let request">
+        {{ request.amount | currency }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="song">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Song</th>
+      <td mat-cell *matCellDef="let request">{{ request.song }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="artist">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Artist</th>
+      <td mat-cell *matCellDef="let request">{{ request.artist }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
+
+<div *ngIf="completedRequests.length === 0">
+  <h5>No requests were completed for this event.</h5>
+</div>

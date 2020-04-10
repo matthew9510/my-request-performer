@@ -1,3 +1,5 @@
+@import "../../../styles.scss";
+
 @media screen and (max-width: 400px) {
   #toolbar {
     flex-direction: column;
@@ -55,6 +57,24 @@ mat-expansion-panel {
 
 mat-form-field {
   margin: 2px;
+}
+
+.sort {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 700px;
+  padding: 5px 10px 5px 10px;
+  margin: 10px auto 0 auto;
+  background: $header-background;
+  border: 5px solid $header-background;
+  border-radius: 4px;
+  position: sticky;
+}
+
+.sort-item {
+  // font-size: small;
+  margin-right: 40px;
 }
 
 mat-list {

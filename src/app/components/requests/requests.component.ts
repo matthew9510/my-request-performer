@@ -51,7 +51,7 @@ export class RequestsComponent implements OnInit {
     this.eventId = this.actRoute.snapshot.params.id;
 
     // checks all pending requests from the backend every 20 seconds
-    interval(20000).subscribe((x) => {
+    interval(10000).subscribe((x) => {
       this.getPendingRequests();
       this.getAcceptedRequests();
       this.getNowPlayingRequests();

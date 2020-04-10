@@ -1,3 +1,5 @@
+@import "../../../../styles.scss";
+
 mat-divider {
   margin-top: 20px;
 }
@@ -132,4 +134,33 @@ table {
   mat-toolbar-row {
     justify-content: center;
   }
+}
+
+.sort {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 700px;
+  padding: 5px 10px 5px 10px;
+  margin: 10px auto 0 auto;
+  background: $header-background;
+  border: 5px solid $header-background;
+  border-radius: 4px;
+  position: sticky;
+}
+
+.sort-item {
+  // font-size: small;
+  margin-right: 20px;
+}
+
+@media screen and (min-width: 700px) {
+  .events {
+    width: 700px;
+    margin: 0 auto;
+  }
+}
+
+app-eventdetails {
+  cursor: pointer;
 }

@@ -1,12 +1,28 @@
 <mat-card class="mat-card-container mat-elevation-z0" color="accent">
   <!-- <img mat-card-image src="../assets/images/test-image.png" alt="" class="image"> -->
-  <div class="image"></div>
-  <span class="date">{{ event?.date | date: "MMM d" }}</span>
+  <!-- <div class="image"></div> -->
+  <div class="date-container">
+    <span class="date">{{ event?.date | date: "MMM d" }}</span>
+  </div>
   <mat-card-content class="info">
+    <span class="title">{{ event?.title }}</span>
+    <br />
     <span class="venue">{{ venue?.name }}</span>
     <br />
-    <span class="title">{{ event?.title }}</span>
+    <span class="venue">
+      {{ event?.date | date: "EEE, MMM d" }} at
+      {{ event?.startTime }}
+    </span>
   </mat-card-content>
+  <div class="amount-wrapper">
+    <span class="amount">{{ grossAmount | currency }}</span>
+  </div>
+  <div *ngIf="showStatus">
+    <span class="venue" *ngIf="event.status === 'created'">Upcoming</span>
+    <span class="venue" *ngIf="event.status === 'completed'">Ended</span>
+    <span class="venue" *ngIf="event.status === 'active'">Active</span>
+    <span class="venue" *ngIf="event.status === 'cancelled'">Cancelled</span>
+  </div>
 
   <!-- Need to add these menu items to transloco -->
 
@@ -24,7 +40,12 @@
     </button>
     <!-- <button mat-menu-item (click)="endEvent()">End Event</button> -->
   </mat-menu>
-  <button mat-icon-button [matMenuTriggerFor]="eventMenu">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="eventMenu"
+    class="edit-event-menu"
+    *ngIf="showEditMenu"
+  >
     <mat-icon>more_vert</mat-icon>
   </button>
 </mat-card>

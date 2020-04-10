@@ -1,63 +1,89 @@
 <ng-container *transloco="let t; read: 'manage events'">
+  <!-- Expansion panel for header of events page and inputs for search and filter -->
+  <mat-expansion-panel id="toolbar" class="mat-elevation-z0">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <!-- Shows which events are displaying based on filter -->
+        <h3>{{ eventsListTitle }}</h3>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
 
-    <!-- Expansion panel for header of events page and inputs for search and filter -->
-    <mat-expansion-panel id="toolbar" class="mat-elevation-z0">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <!-- Shows which events are displaying based on filter -->
-          <h3>{{ eventsListTitle }}</h3>
-        </mat-panel-title>
-      </mat-expansion-panel-header> 
+    <div id="expansion-panel-content">
+      <!-- Search input using filter pipe -->
+      <!-- filter pipe is not currently working -->
+      <mat-form-field appearance="outline">
+        <mat-label><mat-icon>search</mat-icon> {{ t("search") }}</mat-label>
+        <input
+          type="search"
+          matInput
+          id="searchInput"
+          [(ngModel)]="searchText"
+        />
+      </mat-form-field>
 
-      <div id="expansion-panel-content">
-        <!-- Search input using filter pipe -->
-        <!-- filter pipe is not currently working -->
-        <mat-form-field appearance="outline">
-          <mat-label><mat-icon>search</mat-icon> {{ t('search') }}</mat-label>
-          <input type="search" matInput id="searchInput" [(ngModel)]="searchText">
-        </mat-form-field>
+      <!-- dropdown that filters events by status -->
+      <mat-form-field appearance="outline">
+        <mat-label>Event Status</mat-label>
+        <mat-select [(value)]="eventsListTitle">
+          <mat-option value="All Events" (click)="getAllEvents()">
+            {{ t("menu item all events") }}
+          </mat-option>
 
-        <!-- dropdown that filters events by status -->
-        <mat-form-field appearance="outline">
-          <mat-label>Event Status</mat-label>
-          <mat-select [(value)]="eventsListTitle">
+          <mat-option
+            value="Active Events"
+            (click)="getEventsByStatus('active')"
+          >
+            Active Events
+          </mat-option>
 
-            <mat-option value="All Events" (click)="getAllEvents()">
-              {{ t('menu item all events') }}
-            </mat-option>
+          <mat-option
+            value="Scheduled Events"
+            (click)="getEventsByStatus('created')"
+          >
+            {{ t("menu item upcoming events") }}
+          </mat-option>
 
-            <mat-option value="Active Events" (click)="getEventsByStatus('active')">
-              Active Events
-            </mat-option>
-
-            <mat-option value="Scheduled Events" (click)="getEventsByStatus('created')">
-              {{ t('menu item upcoming events') }}
-            </mat-option>
-
-            <mat-option value="Past Events" (click)="getEventsByStatus('completed')">
-              {{ t('menu item past events') }}
-            </mat-option>
-
-          </mat-select>
-        </mat-form-field>
-
-      </div>
-    </mat-expansion-panel>
-
-    <!-- Displays events without infinite scroll -->
-      <mat-list class="events">
-        <app-eventdetails *ngFor="let event of events | filter : searchText" mat-list-item class="event" [eventData]="event">
-        </app-eventdetails>
-      </mat-list>
-
-    <div id="fab-button-wrapper">
-      <div id="fab-button">
-        <button mat-fab color="primary" (click)="routeToCreateEvent()" class="extended-fab-button">
-          <!-- Button message if event is active -->
-          <mat-icon>add</mat-icon>
-          <span class="fab-button-text"> Event</span>
-        </button>
-      </div>
+          <mat-option
+            value="Past Events"
+            (click)="getEventsByStatus('completed')"
+          >
+            {{ t("menu item past events") }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
+  </mat-expansion-panel>
 
+  <div class="sort" *ngIf="events">
+    <span class="sort-item">Event</span>
+    <span class="sort-item">Status</span>
+  </div>
+
+  <!-- Displays events without infinite scroll -->
+  <mat-list class="events">
+    <app-eventdetails
+      *ngFor="let event of events | filter: searchText"
+      mat-list-item
+      class="event"
+      [eventData]="event"
+      [showStatus]="true"
+      [showEditMenu]="true"
+    >
+    </app-eventdetails>
+  </mat-list>
+
+  <div id="fab-button-wrapper">
+    <div id="fab-button">
+      <button
+        mat-fab
+        color="primary"
+        (click)="routeToCreateEvent()"
+        class="extended-fab-button"
+      >
+        <!-- Button message if event is active -->
+        <mat-icon>add</mat-icon>
+        <span class="fab-button-text"> Event</span>
+      </button>
+    </div>
+  </div>
 </ng-container>
