@@ -1,15 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { EventService } from 'src/app/services/event.service';
-import { PerformerService } from '@services/performer.service';
-import { Router } from '@angular/router';
-import { ThrowStmt } from '@angular/compiler';
-import { VenueService } from '@services/venue.service'
+import { Component, OnInit } from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+} from "@angular/forms";
+import { EventService } from "src/app/services/event.service";
+import { PerformerService } from "@services/performer.service";
+import { Router } from "@angular/router";
+import { ThrowStmt } from "@angular/compiler";
+import { VenueService } from "@services/venue.service";
+import * as moment from "moment";
 
 @Component({
-  selector: 'app-create-event',
-  templateUrl: './create-event.component.html',
-  styleUrls: ['./create-event.component.scss']
+  selector: "app-create-event",
+  templateUrl: "./create-event.component.html",
+  styleUrls: ["./create-event.component.scss"],
 })
 export class CreateEventComponent implements OnInit {
   eventDetailForm: FormGroup;
@@ -23,43 +29,44 @@ export class CreateEventComponent implements OnInit {
   uploadImage = false; // hide uploading image for now
   venues: any[] = [];
   // for setting autofocus on inputs
-  private targetId = 'input0';
+  private targetId = "input0";
   // times for start and end time dropdowns
   times = [
-    '12:00 AM',
-    '1:00 AM',
-    '2:00 AM',
-    '3:00 AM',
-    '4:00 AM',
-    '5:00 AM',
-    '6:00 AM',
-    '7:00 AM',
-    '8:00 AM',
-    '9:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '1:00 PM',
-    '2:00 PM',
-    '3:00 PM',
-    '4:00 PM',
-    '5:00 PM',
-    '6:00 PM',
-    '7:00 PM',
-    '8:00 PM',
-    '9:00 PM',
-    '10:00 PM',
-    '11:00 PM'
-  ]
+    "12:00 AM",
+    "1:00 AM",
+    "2:00 AM",
+    "3:00 AM",
+    "4:00 AM",
+    "5:00 AM",
+    "6:00 AM",
+    "7:00 AM",
+    "8:00 AM",
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+    "6:00 PM",
+    "7:00 PM",
+    "8:00 PM",
+    "9:00 PM",
+    "10:00 PM",
+    "11:00 PM",
+  ];
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private eventService: EventService,
     private performerService: PerformerService,
     private router: Router,
     private venueService: VenueService
   ) {
     if (this.router.getCurrentNavigation().extras.state) {
-      this.editEvent = true
+      this.editEvent = true;
       this.eventToClone = this.router.getCurrentNavigation().extras.state.event;
       this.venueToClone = this.router.getCurrentNavigation().extras.state.venue;
     }
@@ -67,39 +74,75 @@ export class CreateEventComponent implements OnInit {
 
   ngOnInit() {
     this.eventDetailForm = this.fb.group({
-      title: [null,
-        [Validators.required]
-      ],
+      title: [null, [Validators.required]],
       description: [null],
       coverFee: [null],
       genre: [null],
       url: [null],
       status: ["created"],
-      performerId: [localStorage.getItem('performerSub')],
+      performerId: [localStorage.getItem("performerSub")],
       venueId: [null],
       // image: [null],
-    })
+    });
 
     this.eventTimeAndDateForm = this.fb.group({
-      date: [null,
-        [Validators.required]
-      ],
+      date: [null, [Validators.required]],
       startTime: [null, Validators.required],
       endTime: [null, Validators.required],
-    })
+    });
 
-    // when a start time is entered, the end time changes to one value greater than the start time
-    this.eventTimeAndDateForm.valueChanges.subscribe(x => {
-      if (this.eventTimeAndDateForm.value.endTime === null && this.eventTimeAndDateForm.value.startTime !== null) {
+    this.eventTimeAndDateForm.valueChanges.subscribe((x) => {
+      // when a start time is entered, the end time changes to one value greater than the start time
+      if (
+        this.eventTimeAndDateForm.value.endTime === null &&
+        this.eventTimeAndDateForm.value.startTime !== null
+      ) {
         let index = this.times.indexOf(x.startTime);
-        this.eventTimeAndDateForm.controls.endTime.setValue(this.times[index + 1]);
+        this.eventTimeAndDateForm.controls.endTime.setValue(
+          this.times[index + 1]
+        );
       }
-    })
+
+      /** Alter the time on the date object to the start time of the date object
+  make sure the date has been created before doing this logic **/
+      if (
+        this.eventTimeAndDateForm.value.startTime !== null &&
+        this.eventTimeAndDateForm.value.date !== null
+      ) {
+        if (this.editEvent === true) {
+          // Reshape the data coming back from database
+          if (!(this.eventTimeAndDateForm.value.date instanceof moment)) {
+            // Transform date
+            let tempDate = moment(this.eventTimeAndDateForm.value.date);
+            this.eventTimeAndDateForm.controls.date.setValue(tempDate);
+          }
+        }
+
+        // transformation of date to match start time
+        let isAm =
+          this.eventTimeAndDateForm.value.startTime.split(" ")[1] === "AM";
+        let parsedStartTime = this.eventTimeAndDateForm.value.startTime.split(
+          ":"
+        )[0];
+
+        // Convert to 24 hour time for the database
+        if (isAm === true && parsedStartTime === "12") {
+          this.eventTimeAndDateForm.value.date._d.setHours(0);
+        } else if (isAm === true) {
+          this.eventTimeAndDateForm.value.date._d.setHours(parsedStartTime);
+        } else if (isAm === false && parsedStartTime === "12") {
+          this.eventTimeAndDateForm.value.date._d.setHours(parsedStartTime);
+        } else {
+          let newHour = Number(parsedStartTime) + 12;
+          this.eventTimeAndDateForm.value.date._d.setHours(newHour);
+        }
+      }
+    });
 
     // Take away selecting previous venues for now
     this.venueForm = this.fb.group({
       id: [null, Validators.required],
-    })
+    });
 
     if (this.editEvent === true) {
       this.eventDetailForm.patchValue(this.eventToClone);
@@ -107,12 +150,12 @@ export class CreateEventComponent implements OnInit {
       this.venueForm.patchValue(this.eventToClone);
 
       // Set Date to correct format for mat-datepicker
-      this.eventTimeAndDateForm.controls.date.setValue(new Date(this.eventToClone.date));
-    }
-    else {
+      this.eventTimeAndDateForm.controls.date.setValue(
+        new Date(this.eventToClone.date)
+      );
+    } else {
       this.displayAddVenue();
     }
-
   }
 
   // these two methods set autofocus on the first input of each step of the stepper
@@ -143,73 +186,90 @@ export class CreateEventComponent implements OnInit {
       postalCode: [null],
       country: [null],
       url: [null],
-      performerId: [localStorage.getItem('performerSub')]
+      performerId: [localStorage.getItem("performerSub")],
     });
   }
 
   prepareEvent(venueId) {
-    if (!this.editEvent) { // if creating a new event
-      // concatenate all forms together 
+    if (!this.editEvent) {
+      // if creating a new event
+      // concatenate all forms together
       let newEvent = new Object();
-      Object.assign(newEvent, this.eventDetailForm.value, { venueId: venueId }, this.eventTimeAndDateForm.value);
+      Object.assign(
+        newEvent,
+        this.eventDetailForm.value,
+        { venueId: venueId },
+        this.eventTimeAndDateForm.value
+      );
+      return newEvent;
+    } else {
+      // if editing the event
+      // concatenate all forms together
+      let newEvent = this.eventToClone;
+      Object.assign(
+        newEvent,
+        this.eventDetailForm.value,
+        this.eventTimeAndDateForm.value
+      ); // Need to add venue changes later
+      // return concatenated object
       return newEvent;
     }
-    else { // if editing the event 
-      // concatenate all forms together 
-      let newEvent = this.eventToClone
-      Object.assign(newEvent, this.eventDetailForm.value, this.eventTimeAndDateForm.value) // Need to add venue changes later 
-      // return concatenated object 
-      return newEvent
-    }
   }
-
 
   // add upload image later
   createEvent() {
     if (this.addingVenue) {
       // Create entry in venue table
-      this.venueService.addVenue(this.venueForm.value).subscribe((res: any) => {
-        let venueId = res.record.id;
+      this.venueService.addVenue(this.venueForm.value).subscribe(
+        (res: any) => {
+          let venueId = res.record.id;
 
-        // create a event object
-        let event = this.prepareEvent(venueId)
+          // create a event object
+          let event = this.prepareEvent(venueId);
+          console.log("Payload to db to create new ", event);
 
-        // create entry in event table 
-        this.eventService.createEvent(event).subscribe((res) => {
-          // redirect to events
-          this.router.navigate(['/events'])
-        }, (err) => {
-          console.error("Couldn't create event", err)
-        })
-      }, (err) => {
-        console.error("Couldn't create venue", err)
-      })
-    }
-    else {
+          // create entry in event table
+          this.eventService.createEvent(event).subscribe(
+            (res) => {
+              // redirect to events
+              this.router.navigate(["/events"]);
+            },
+            (err) => {
+              console.error("Couldn't create event", err);
+            }
+          );
+        },
+        (err) => {
+          console.error("Couldn't create venue", err);
+        }
+      );
+    } else {
       // you don't have to addVenue, just append the venue_id
     }
   }
 
   updateEvent() {
     // create a event object
-    let event = this.prepareEvent(this.venueToClone.id)
+    let event = this.prepareEvent(this.venueToClone.id);
 
-    // edit entry in event table 
-    this.eventService.editEvent(event).subscribe((res) => {
-      // redirect to events
-      this.router.navigate(['/events'])
-    }, (err) => {
-      console.error("Couldn't create event", err)
-    })
+    // edit entry in event table
+    this.eventService.editEvent(event).subscribe(
+      (res) => {
+        // redirect to events
+        this.router.navigate(["/events"]);
+      },
+      (err) => {
+        console.error("Couldn't create event", err);
+      }
+    );
   }
 
   cancelUpdateEvent() {
-    this.router.navigate(['/events'])
+    this.router.navigate(["/events"]);
   }
 
   // imageUploaded(image) {
   //   console.log(image.target)
   //   console.log(image.target.files[0])
   // }
-
 }

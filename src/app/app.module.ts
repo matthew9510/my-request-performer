@@ -1,25 +1,27 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { EventdetailsComponent } from './components/event-detail/event-detail.component';
-import { ManageEventsComponent } from './components/manage-events/manage-events.component';
-import { RequestsComponent } from './components/requests/requests.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import 'hammerjs';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { PayoutComponent } from './components/dashboard/payout/payout.component';
-import { HistoryComponent } from './components/dashboard/history/history.component';
-import { ProfileComponent } from './components/dashboard/profile/profile.component';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './components/login/login.component';
-import { RequestDetailComponent } from './components/request-detail/request-detail.component';
-import { TranslocoRootModule } from './transloco-root.module';
-import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
-import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
-import { LayoutModule } from '@angular/cdk/layout';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { EventdetailsComponent } from "./components/event-detail/event-detail.component";
+import { ManageEventsComponent } from "./components/manage-events/manage-events.component";
+import { RequestsComponent } from "./components/requests/requests.component";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import "hammerjs";
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
+import { PayoutComponent } from "./components/dashboard/payout/payout.component";
+import { HistoryComponent } from "./components/dashboard/history/history.component";
+import { ProfileComponent } from "./components/dashboard/profile/profile.component";
+import { HttpClientModule } from "@angular/common/http";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { LoginComponent } from "./components/login/login.component";
+import { RequestDetailComponent } from "./components/request-detail/request-detail.component";
+import { TranslocoRootModule } from "./transloco-root.module";
+import { ConfirmDialogComponent } from "./components/confirm-dialog/confirm-dialog.component";
+import { BottomNavComponent } from "./components/bottom-nav/bottom-nav.component";
+import { LayoutModule } from "@angular/cdk/layout";
+import { MatMomentDateModule } from "@angular/material-moment-adapter";
+import * as moment from "moment";
+
 import {
   MatToolbarModule,
   MatIconModule,
@@ -41,29 +43,31 @@ import {
   MatExpansionModule,
   MatMenuModule,
   MatTableModule,
-  MatSortModule
-} from '@angular/material';
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { CreateEventComponent } from './components/create-event/create-event.component';
-import { HeaderComponent } from './components/header/header.component';
-import { AddVenueComponent } from './components/add-venue/add-venue.component';
-import { FilterPipe } from './pipes/filter.pipe';
-import { AuthService } from './services/auth.service';
-import { CurrencyPipe } from '@angular/common';
-import { RequestsService } from './services/requests.service';
-import { EventService } from './services/event.service';
-import { PayoutService } from './services/payout.service';
-import { VenueService } from './services/venue.service';
-import { OrderModule } from 'ngx-order-pipe';
+  MatSortModule,
+} from "@angular/material";
+import { ScrollingModule } from "@angular/cdk/scrolling";
+import { CreateEventComponent } from "./components/create-event/create-event.component";
+import { HeaderComponent } from "./components/header/header.component";
+import { AddVenueComponent } from "./components/add-venue/add-venue.component";
+import { FilterPipe } from "./pipes/filter.pipe";
+import { AuthService } from "./services/auth.service";
+import { CurrencyPipe } from "@angular/common";
+import { RequestsService } from "./services/requests.service";
+import { EventService } from "./services/event.service";
+import { PayoutService } from "./services/payout.service";
+import { VenueService } from "./services/venue.service";
+import { OrderModule } from "ngx-order-pipe";
 
 // Configuring the Amplify provider with specified Amplify JS modules
 // https://aws-amplify.github.io/docs/js/angular#option-2-configuring-the-amplify-provider-with-specified-amplify-js-modules
-import { AmplifyAngularModule, AmplifyService, AmplifyModules } from 'aws-amplify-angular';
-import Auth from '@aws-amplify/auth';
-import { AuthGuard } from './guards/auth.guard'
-import { NotAuthGuard } from './guards/not-auth.guard'
-
-
+import {
+  AmplifyAngularModule,
+  AmplifyService,
+  AmplifyModules,
+} from "aws-amplify-angular";
+import Auth from "@aws-amplify/auth";
+import { AuthGuard } from "./guards/auth.guard";
+import { NotAuthGuard } from "./guards/not-auth.guard";
 
 @NgModule({
   declarations: [
@@ -82,11 +86,9 @@ import { NotAuthGuard } from './guards/not-auth.guard'
     HeaderComponent,
     AddVenueComponent,
     FilterPipe,
-    LoginComponent
+    LoginComponent,
   ],
-  entryComponents: [
-    ConfirmDialogComponent,
-  ],
+  entryComponents: [ConfirmDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -120,7 +122,7 @@ import { NotAuthGuard } from './guards/not-auth.guard'
     MatMenuModule,
     OrderModule,
     MatTableModule,
-    MatSortModule
+    MatSortModule,
   ],
   providers: [
     FilterPipe,
@@ -128,9 +130,9 @@ import { NotAuthGuard } from './guards/not-auth.guard'
       provide: AmplifyService,
       useFactory: () => {
         return AmplifyModules({
-          Auth
+          Auth,
         });
-      }
+      },
     },
     CurrencyPipe,
     RequestsService,
@@ -139,8 +141,8 @@ import { NotAuthGuard } from './guards/not-auth.guard'
     AuthService,
     AuthGuard,
     NotAuthGuard,
-    VenueService
+    VenueService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
