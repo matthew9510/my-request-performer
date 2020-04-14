@@ -35,10 +35,21 @@
     >
       Edit Event
     </button>
-    <button mat-menu-item (click)="navigateToEvent(event?.id)">
+    <!-- Goes to requests for this event. Not visible for past & cancelled events -->
+    <button
+      mat-menu-item
+      (click)="navigateToEvent(event?.id)"
+      *ngIf="event.status !== 'completed' && event.status !== 'cancelled'"
+    >
       Go to Event
     </button>
-    <!-- <button mat-menu-item (click)="endEvent()">End Event</button> -->
+    <button
+      mat-menu-item
+      (click)="navigateToEventRecap(event?.id)"
+      *ngIf="event.status === 'completed' || event.status === 'cancelled'"
+    >
+      Go to Event Recap
+    </button>
   </mat-menu>
   <button
     mat-icon-button

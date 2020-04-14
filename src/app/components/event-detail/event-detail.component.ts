@@ -37,9 +37,13 @@ export class EventdetailsComponent implements OnInit {
     });
   }
 
-  navigateToEvent(eventId: any) {
+  navigateToEvent(eventId: string) {
     this.eventService.currentEvent = this.event;
     this.eventService.currentEvent.id = eventId;
     this.router.navigate([`/event/${this.event.id}`]);
+  }
+
+  navigateToEventRecap(eventId: string) {
+    this.router.navigate([`/history/${eventId}`]);
   }
 }

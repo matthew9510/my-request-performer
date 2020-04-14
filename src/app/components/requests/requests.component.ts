@@ -6,7 +6,7 @@ import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.compone
 import { BreakpointObserver } from "@angular/cdk/layout";
 import { translate } from "@ngneat/transloco";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Requests } from "../../interfaces/requests";
 import { interval } from "rxjs";
 import { OrderPipe } from "ngx-order-pipe";
@@ -45,6 +45,7 @@ export class RequestsComponent implements OnInit {
     public dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
     private _snackBar: MatSnackBar,
+    private router: Router,
     private actRoute: ActivatedRoute,
     private orderPipe: OrderPipe
   ) {
@@ -334,6 +335,7 @@ export class RequestsComponent implements OnInit {
         );
       }
     }
+    this.router.navigate([`/history/${this.eventId}`]);
   }
 
   pauseEvent() {

@@ -183,3 +183,9 @@ table {
 app-eventdetails {
   cursor: pointer;
 }
+
+.nav-buttons {
+  display: flex;
+  justify-content: flex-start;
+  margin: 5px;
+}

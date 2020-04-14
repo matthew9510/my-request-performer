@@ -1,57 +1,67 @@
+<div class="nav-buttons">
+  <a routerLink="/payout">
+    <button mat-button color="primary">
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+  </a>
+</div>
+
 <div class="personal-info-container">
-	<h2>Personal Information</h2>
-	<mat-form-field appearance="fill">
-		<mat-label>First Name</mat-label>
-		<input matInput>
-    </mat-form-field>
-		<br>
-		<mat-form-field appearance="fill">
-			<mat-label>Last Name</mat-label>
-			<input matInput>
-    </mat-form-field>
-			<br>
-			<mat-form-field appearance="fill">
-				<mat-label>Username</mat-label>
-				<input matInput>
-    </mat-form-field>
-				<br>
-				<mat-form-field appearance="fill">
-					<mat-label>Instrument of Choice</mat-label>
-					<mat-select>
-						<mat-option value="option">Piano</mat-option>
-						<mat-option value="option">Bass</mat-option>
-						<mat-option value="option">Guitar</mat-option>
-						<mat-option value="option">Drums</mat-option>
-						<mat-option value="option">Harmonica</mat-option>
-						<mat-option value="option">Fiddle</mat-option>
-						<mat-option value="option">Keytar</mat-option>
-					</mat-select>
-				</mat-form-field>
-				<br>
-				<mat-form-field appearance="fill">
-					<mat-label>Bio</mat-label>
-					<textarea
-          matInput
-          placeholder="Ex. During his humble genesis..."></textarea>
-				</mat-form-field>
-				<h2>Contact Information</h2>
-				<mat-form-field appearance="fill">
-					<mat-label>Email</mat-label>
-					<input matInput>
-    </mat-form-field>
-					<br>
-					<mat-form-field appearance="fill">
-						<mat-label>Phone</mat-label>
-						<input matInput>
-    </mat-form-field>
+  <h2>Personal Information</h2>
+  <mat-form-field appearance="fill">
+    <mat-label>First Name</mat-label>
+    <input matInput />
+  </mat-form-field>
+  <br />
+  <mat-form-field appearance="fill">
+    <mat-label>Last Name</mat-label>
+    <input matInput />
+  </mat-form-field>
+  <br />
+  <mat-form-field appearance="fill">
+    <mat-label>Username</mat-label>
+    <input matInput />
+  </mat-form-field>
+  <br />
+  <mat-form-field appearance="fill">
+    <mat-label>Instrument of Choice</mat-label>
+    <mat-select>
+      <mat-option value="option">Piano</mat-option>
+      <mat-option value="option">Bass</mat-option>
+      <mat-option value="option">Guitar</mat-option>
+      <mat-option value="option">Drums</mat-option>
+      <mat-option value="option">Harmonica</mat-option>
+      <mat-option value="option">Fiddle</mat-option>
+      <mat-option value="option">Keytar</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br />
+  <mat-form-field appearance="fill">
+    <mat-label>Bio</mat-label>
+    <textarea
+      matInput
+      placeholder="Ex. During his humble genesis..."
+    ></textarea>
+  </mat-form-field>
+  <h2>Contact Information</h2>
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput />
+  </mat-form-field>
+  <br />
+  <mat-form-field appearance="fill">
+    <mat-label>Phone</mat-label>
+    <input matInput />
+  </mat-form-field>
 
   <button mat-button (click)="logout()">Logout</button>
-  <br>
-						<!-- commented out below code as these properties are not planned
+  <br />
+  <!-- commented out below code as these properties are not planned
 to be implemented at this time
  -->
 
-						<!-- <mat-form-field appearance="fill">
+  <!-- <mat-form-field appearance="fill">
         <mat-label>Social Media Platform</mat-label>
         <mat-select>
             <mat-option value="option">Twitter</mat-option>

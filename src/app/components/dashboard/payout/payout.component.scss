@@ -76,8 +76,9 @@ mat-list {
   flex-direction: column;
 }
 
-#money-color {
+#earnings-total {
   color: green;
+  margin-bottom: -5px;
 }
 
 .sub-header-items {
@@ -163,4 +164,19 @@ table {
 
 app-eventdetails {
   cursor: pointer;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px;
+}
+
+.warning {
+  font-size: small;
+  background-color: #faf7cf;
+  border: solid 1px #d6d4b2;
+  padding: 3px;
+  opacity: 0.7;
+  margin-top: 10px;
 }

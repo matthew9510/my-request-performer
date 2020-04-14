@@ -1,16 +1,34 @@
 <ng-container *transloco="let t">
-	<mat-toolbar color="primary" role="navigation" aria-label="Bottom">
-		<a routerLink="event/{{ eventService.currentEvent.id }}" routerLinkActive="active-link" mat-icon-button disableRipple=true *ngIf="eventService.currentEvent">
-			<mat-icon>home</mat-icon>
-			<span>{{t("requests.title")}}</span>
-		</a>
-		<a routerLink="dashboard" routerLinkActive="active-link" mat-icon-button disableRipple=true>
-			<mat-icon>person</mat-icon>
-			<span>{{t("dashboard")}}</span>
-		</a>
-		<a routerLink="login" routerLinkActive="active-link" mat-icon-button disableRipple=true (click)="logout()" *ngIf="this.authService.signedIn">
-			<mat-icon>exit_to_app</mat-icon>
-			<span>Logout</span>
-		</a>
-	</mat-toolbar>
+  <mat-toolbar color="primary" role="navigation" aria-label="Bottom">
+    <a
+      routerLink="event/{{ eventService.currentEvent.id }}"
+      routerLinkActive="active-link"
+      mat-icon-button
+      disableRipple="true"
+      *ngIf="eventService.currentEvent"
+    >
+      <mat-icon>queue_music</mat-icon>
+      <span>{{ t("requests.title") }}</span>
+    </a>
+    <a
+      routerLink="dashboard"
+      routerLinkActive="active-link"
+      mat-icon-button
+      disableRipple="true"
+    >
+      <mat-icon>person</mat-icon>
+      <span>{{ t("dashboard") }}</span>
+    </a>
+    <a
+      routerLink="login"
+      routerLinkActive="active-link"
+      mat-icon-button
+      disableRipple="true"
+      (click)="logout()"
+      *ngIf="this.authService.signedIn"
+    >
+      <mat-icon>exit_to_app</mat-icon>
+      <span>Logout</span>
+    </a>
+  </mat-toolbar>
 </ng-container>
