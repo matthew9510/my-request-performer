@@ -14,6 +14,7 @@ provider:
   # profile: ${self:org}
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-table
+    DYNAMODB_REQUESTS_TABLE: my-request-requests-table
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -34,21 +35,20 @@ functions:
           path: /{proxy+}
           method: ANY
     layers:
-      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
+      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
+    role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
 
 resources:
   Resources:
     myDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1

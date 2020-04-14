@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 /*
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
@@ -6,10 +6,10 @@ Licensed under the Apache License, Version 2.0 (the "License"). You may not use 
 or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 */
-const uuid = require('uuid');
-const express = require('express');
-const bodyParser = require('body-parser');
-const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
+const uuid = require("uuid");
+const express = require("express");
+const bodyParser = require("body-parser");
+const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 
 // declare a new express app
 const app = express();
@@ -19,9 +19,12 @@ app.use(awsServerlessExpressMiddleware.eventContext());
 // Enable CORS for all methods
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT");
-  next()
+  next();
 });
 
 /**********************
@@ -36,9 +39,9 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * GET method *
  **********************/
 
-app.get('/requester', function (req, res) {
+app.get("/requester", function (req, res) {
   // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true")
+  const debug = Boolean(req.query.debug == "true");
 
   if (debug) console.log("GET REQUEST...", req);
 
@@ -54,7 +57,10 @@ app.get('/requester', function (req, res) {
   dynamoDb.get(params, (error, result) => {
     // handle potential errors
     if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+      console.error(
+        "Unable to find item. Error JSON:",
+        JSON.stringify(error, null, 2)
+      );
     } else {
       if ("Item" in result && "id" in result.Item) {
         // create a response
@@ -63,14 +69,122 @@ app.get('/requester', function (req, res) {
           body: result.Item,
         };
         res.json({
-          success: 'Successfully found item ' + params.Key.id + ' in the requester table!',
-          response: response.body
-        })
+          success:
+            "Successfully found item " +
+            params.Key.id +
+            " in the requester table!",
+          response: response.body,
+        });
       } else {
         res.json({
-          message: 'Unable to find record, please check id was entered correctly... ',
-          invalid_id: params.Key.id
-        })
+          message:
+            "Unable to find record, please check id was entered correctly... ",
+          invalid_id: params.Key.id,
+        });
+      }
+    }
+  });
+});
+
+/**********************
+ * GET requests by requester id possibly with a specific status
+ **********************/
+app.get("/requester/:id/requests", function (req, res, next) {
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true");
+  const requesterId = req.params.id;
+  const requestStatus = req.query.status;
+  let params;
+
+  if (debug) console.log("GET: /requester/:id/requests request object", req);
+
+  // Set up query //
+  if (requestStatus) {
+    if (debug) console.log("RequesterId:", requesterId);
+    if (debug) console.log("Status:", requestStatus);
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: "requesterId-createdOn-index",
+      KeyConditionExpression: "requesterId = :requesterId",
+      FilterExpression: "#status = :requestStatus",
+      ExpressionAttributeValues: {
+        ":requesterId": requesterId,
+        ":requestStatus": requestStatus,
+      },
+      ExpressionAttributeNames: {
+        "#status": "status",
+      },
+    };
+  } else {
+    if (debug) console.log("RequesterId:", requesterId);
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: "requesterId-createdOn-index",
+      KeyConditionExpression: "requesterId = :requesterId",
+      ExpressionAttributeValues: {
+        ":requesterId": requesterId,
+      },
+    };
+  }
+
+  // Print constructed params //
+  if (debug) console.log("Params:\n", params);
+
+  // fetch requests from the database
+  dynamoDb.query(params, (error, result) => {
+    // handle potential Dynamo db server errors
+    if (error) {
+      console.error(
+        "Unable to find item(s). Error JSON:",
+        JSON.stringify(error, null, 2)
+      );
+      next("error in requester/:id/requests", error);
+    } else {
+      // Print the result
+      if (debug) console.log("Result:\n", result);
+
+      // First up response of now-playing being empty for an event
+      const response = {
+        statusCode: 200,
+        body: result.Items,
+      };
+
+      if (response.body.length >= 1) {
+        if (requestStatus) {
+          res.json({
+            success:
+              "Found all " +
+              requestStatus +
+              " requests for requester id: " +
+              requesterId,
+            response: response,
+          });
+        } else {
+          res.json({
+            success: "Found all requests for requester id: " + requesterId,
+            response: response,
+          });
+        }
+      } else {
+        if (requestStatus) {
+          res.json({
+            success:
+              "Found no " +
+              requestStatus +
+              " requests for requester id: " +
+              requesterId,
+            response: response,
+          });
+        } else {
+          res.json({
+            success: "Found no requests for requester id: " + requesterId,
+            response: response,
+          });
+        }
       }
     }
   });
@@ -80,11 +194,10 @@ app.get('/requester', function (req, res) {
  * PUT method *
  ****************************/
 
-app.put('/requester', function (req, res) {
-
+app.put("/requester", function (req, res) {
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
-    Item: req.body
+    Item: req.body,
   };
 
   // Generate uuid & date record
@@ -93,16 +206,19 @@ app.put('/requester', function (req, res) {
 
   dynamoDb.put(params, function (err, result) {
     if (err) {
-      console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+      console.error(
+        "Unable to add item. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
     } else {
       const response = {
         statusCode: 200,
         body: params.Item,
       };
       res.json({
-        success: 'Successfully added item to the requester table!',
-        record: response.body
-      })
+        success: "Successfully added item to the requester table!",
+        record: response.body,
+      });
     }
   });
 });
@@ -111,9 +227,9 @@ app.put('/requester', function (req, res) {
  * DELETE method *
  ****************************/
 
-app.delete('/requester', function (req, res) {
+app.delete("/requester", function (req, res) {
   // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true")
+  const debug = Boolean(req.query.debug == "true");
 
   if (debug) console.log("DELETE requester REQUEST...", req.body);
 
@@ -127,15 +243,18 @@ app.delete('/requester', function (req, res) {
 
   dynamoDb.delete(params, function (err, result) {
     if (err) {
-      console.error("Unable to DELETE item. Error JSON:", JSON.stringify(err, null, 2));
+      console.error(
+        "Unable to DELETE item. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
     } else {
       const response = {
         statusCode: 200,
         body: req.body,
       };
       res.json({
-        success: 'delete call for requester table succeeded!',
-        response: response
+        success: "delete call for requester table succeeded!",
+        response: response,
       });
     }
   });
@@ -145,10 +264,9 @@ app.delete('/requester', function (req, res) {
  * PATCH method *
  ****************************/
 
-app.patch('/requester', function (req, res) {
-
+app.patch("/requester", function (req, res) {
   // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true")
+  const debug = Boolean(req.query.debug == "true");
 
   if (debug) console.log("UPDATE requester REQUEST...", req);
 
@@ -160,32 +278,38 @@ app.patch('/requester', function (req, res) {
     },
     UpdateExpression: "set #n = :val1",
     ExpressionAttributeValues: {
-      ":val1": req.query.name
+      ":val1": req.query.name,
     },
     ExpressionAttributeNames: {
-      "#n": "name"
+      "#n": "name",
     },
-    ReturnValues: "UPDATED_NEW"
+    ReturnValues: "UPDATED_NEW",
   };
 
   dynamoDb.update(params, function (err, result) {
     if (err) {
-      console.error("Unable to Update item. Error JSON:", JSON.stringify(err, null, 2));
+      console.error(
+        "Unable to Update item. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
     } else {
       const response = {
         statusCode: 200,
         body: result,
       };
       res.json({
-        success: 'UPDATE for record ' + req.query.id + ' on requester table succeeded!',
-        response: response.body
+        success:
+          "UPDATE for record " +
+          req.query.id +
+          " on requester table succeeded!",
+        response: response.body,
       });
     }
   });
 });
 
 app.listen(3000, function () {
-  console.log("My Request API...")
+  console.log("My Request API...");
 });
 
 // Export the app object. When executing the application local this does nothing. However,
