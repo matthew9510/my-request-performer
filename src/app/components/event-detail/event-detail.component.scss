@@ -5,6 +5,7 @@ mat-card {
   min-height: 80px;
   padding: 5px 10px;
   margin: 5px 0px;
+  cursor: pointer;
 
   mat-card-content {
     align-self: center;
@@ -54,6 +55,7 @@ mat-card {
   text-align: left;
   opacity: 0.8;
   line-height: 1.5;
+  margin-right: 20px;
 }
 
 .title {

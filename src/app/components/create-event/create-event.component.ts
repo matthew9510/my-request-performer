@@ -16,6 +16,7 @@ import { PerformerService } from "@services/performer.service";
 import { Router } from "@angular/router";
 import { ThrowStmt } from "@angular/compiler";
 import { VenueService } from "@services/venue.service";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-create-event",
@@ -74,7 +75,8 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     private eventService: EventService,
     private performerService: PerformerService,
     private router: Router,
-    private venueService: VenueService
+    private venueService: VenueService,
+    private location: Location
   ) {
     if (this.router.getCurrentNavigation().extras.state) {
       this.editEvent = true;
@@ -252,7 +254,8 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   }
 
   cancelUpdateEvent() {
-    this.router.navigate(["/events"]);
+    this.location.back();
+    console.log(this.location);
   }
 
   // imageUploaded(image) {

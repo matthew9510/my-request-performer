@@ -72,4 +72,8 @@ export class ManageEventsComponent implements OnInit {
   routeToCreateEvent() {
     this.router.navigate(["/create-event"]);
   }
+
+  navigateToEventOverview(eventId: string) {
+    this.router.navigate([`/event-overview/${eventId}`]);
+  }
 }

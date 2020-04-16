@@ -68,6 +68,7 @@
       [eventData]="event"
       [showStatus]="true"
       [showEditMenu]="true"
+      (click)="navigateToEventOverview(event.id)"
     >
     </app-eventdetails>
   </mat-list>

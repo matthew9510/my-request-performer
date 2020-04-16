@@ -1,3 +1,11 @@
 <mat-toolbar class="header-toolbar">
-  <h3 class="header-nav">{{pageTitle}}</h3>
+  <button mat-icon-button color="primary" class="hidden">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <h3 class="header-nav">{{ pageTitle }}</h3>
+  <a routerLink="/profile">
+    <button mat-icon-button color="primary">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+  </a>
 </mat-toolbar>

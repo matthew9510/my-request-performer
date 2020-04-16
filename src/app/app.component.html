@@ -3,4 +3,4 @@
   <router-outlet></router-outlet>
 </main>
 
-<app-bottom-nav class="footer"></app-bottom-nav>
+<app-bottom-nav class="footer" *ngIf="authService.signedIn"></app-bottom-nav>

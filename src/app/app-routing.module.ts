@@ -8,6 +8,7 @@ import { ProfileComponent } from "./components/dashboard/profile/profile.compone
 import { ManageEventsComponent } from "./components/manage-events/manage-events.component";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
 import { LoginComponent } from "./components/login/login.component";
+import { EventOverviewComponent } from "./components/event-overview/event-overview.component";
 import { AuthGuard } from "./guards/auth.guard";
 import { NotAuthGuard } from "./guards/not-auth.guard";
 
@@ -41,6 +42,12 @@ const routes: Routes = [
     path: "event/:id",
     component: RequestsComponent,
     data: { title: "Requests" },
+    canActivate: [NotAuthGuard],
+  },
+  {
+    path: "event-overview/:id",
+    component: EventOverviewComponent,
+    data: { title: "Event Details" },
     canActivate: [NotAuthGuard],
   },
   {

@@ -4,6 +4,7 @@ import { EventService } from "src/app/services/event.service";
 import { VenueService } from "src/app/services/venue.service";
 import { MatSort, MatTableDataSource } from "@angular/material";
 import { Router, ActivatedRoute } from "@angular/router";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-history",
@@ -25,7 +26,8 @@ export class HistoryComponent implements OnInit {
     private eventService: EventService,
     private venueService: VenueService,
     private router: Router,
-    private actRoute: ActivatedRoute
+    private actRoute: ActivatedRoute,
+    private location: Location
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
   }
@@ -67,5 +69,10 @@ export class HistoryComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  backClicked() {
+    this.location.back();
+    console.log(this.location);
   }
 }

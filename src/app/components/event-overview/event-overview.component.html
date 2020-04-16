@@ -1,0 +1,147 @@
+<div class="nav-buttons">
+  <button mat-button color="primary" (click)="backClicked()">
+    <mat-icon>arrow_back</mat-icon>
+    Back
+  </button>
+</div>
+
+<div class="main-container">
+  <mat-card class="event-info-card">
+    <h1 class="event-title">{{ event?.title }}</h1>
+    <div class="info-wrapper" *ngIf="event?.date">
+      <div class="icon">
+        <mat-icon>calendar_today</mat-icon>
+      </div>
+      <div class="info">
+        <span class="subheader" *ngIf="event?.date">{{
+          event?.date | date: "fullDate"
+        }}</span>
+        <br />
+        <span class="time" *ngIf="event?.startTime">
+          {{ event?.startTime }}
+          <span *ngIf="event?.endTime"> to {{ event?.endTime }}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="info-wrapper">
+      <div class="icon" *ngIf="venue">
+        <mat-icon>location_on</mat-icon>
+      </div>
+      <div class="info" *ngIf="venue">
+        <span class="venue-name" *ngIf="venue?.name">{{ venue?.name }}</span>
+        <span *ngIf="venue?.url">
+          - <a href="{{ venue?.url }}" target="_new">website</a>
+          <br />
+        </span>
+        <span class="venue-address">
+          <span *ngIf="venue?.streetAddress">{{ venue?.streetAddress }}</span>
+          <span *ngIf="venue?.city">
+            {{ venue?.city }}, {{ venue?.state }} {{ venue?.postalCode }}
+          </span>
+        </span>
+        <span *ngIf="venue?.streetAddress || venue?.city || venue?.postalCode">
+          <br />
+          <a
+            href="https://www.google.com/maps/place/
+              {{ venue?.streetAddress }}+
+              {{ venue?.city }}+
+              {{ venue?.postalCode }}"
+            target="_new"
+            >Get Directions
+          </a>
+        </span>
+      </div>
+    </div>
+
+    <div class="info-wrapper" *ngIf="event?.coverFee">
+      <div class="icon">
+        <mat-icon>attach_money</mat-icon>
+      </div>
+      <div class="info">
+        <span class="subheader">Cover Fee</span>
+        <br />
+        <span
+          class="description"
+          *ngIf="event?.coverFee && typeOfCoverFee === 'number'"
+        >
+          {{ event?.coverFee | currency }}
+        </span>
+        <span
+          class="description"
+          *ngIf="event?.coverFee && typeOfCoverFee === 'string'"
+        >
+          {{ event?.coverFee }}
+        </span>
+      </div>
+    </div>
+
+    <div class="info-wrapper" *ngIf="event?.description">
+      <div class="icon">
+        <mat-icon>description</mat-icon>
+      </div>
+      <div class="info">
+        <span class="subheader">About</span>
+        <br />
+        <span class="description genre" *ngIf="event?.genre">
+          <b>Genre: </b>{{ event?.genre }}
+          <br />
+        </span>
+        <span class="description">{{ event?.description }}</span>
+      </div>
+    </div>
+
+    <div class="info-wrapper" *ngIf="performer">
+      <div class="icon">
+        <mat-icon>person</mat-icon>
+      </div>
+      <div class="info">
+        <span class="subheader" *ngIf="performer?.username">Performer</span>
+        <br />
+        <span class="description performer-name">
+          {{ performer?.username }}
+        </span>
+        <span class="description" *ngIf="performer?.instrumentOfChoice">
+          ({{ performer?.instrumentOfChoice }})
+        </span>
+        <br />
+        <span class="description" *ngIf="performer?.bio">
+          <b>Bio:</b> {{ performer?.bio }}
+        </span>
+      </div>
+    </div>
+
+    <div class="info-wrapper">
+      <div class="icon">
+        <mat-icon>link</mat-icon>
+      </div>
+      <div class="info">
+        <span class="subheader">Your Event URL</span>
+        <br />
+        <span class="event-url">
+          {{ baseUrl }}event-overview/{{ event?.id }}
+        </span>
+        <!-- <br />
+        <button mat-flat-button color="primary">Copy URL</button> -->
+      </div>
+    </div>
+    <mat-card-actions align="end">
+      <button
+        mat-stroked-button
+        color="accent"
+        [disabled]="this.event?.status === 'completed'"
+        (click)="editEvent()"
+      >
+        Edit event
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="this.event?.status === 'completed'"
+        (click)="navigateToRequests(event?.id)"
+      >
+        Start event
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

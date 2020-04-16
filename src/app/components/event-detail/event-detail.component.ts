@@ -31,19 +31,31 @@ export class EventdetailsComponent implements OnInit {
     });
   }
 
+  navigateToEventOverview() {
+    this.router.navigate([`/event-overview/${this.event.id}`]);
+  }
+
   editEvent() {
     this.router.navigate([`/event/${this.event.id}/clone`], {
       state: { event: this.event, venue: this.venue },
     });
   }
 
-  navigateToEvent(eventId: string) {
+  navigateToRequests(eventId: string) {
     this.eventService.currentEvent = this.event;
     this.eventService.currentEvent.id = eventId;
     this.router.navigate([`/event/${this.event.id}`]);
   }
 
-  navigateToEventRecap(eventId: string) {
-    this.router.navigate([`/history/${eventId}`]);
+  navigateToEventRecap() {
+    this.router.navigate([`/history/${this.event.id}`]);
+  }
+
+  navigateToEvent() {
+    if (this.event.status === "completed") {
+      this.navigateToEventRecap();
+    } else {
+      this.navigateToEventOverview();
+    }
   }
 }

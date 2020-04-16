@@ -21,7 +21,6 @@ import { BottomNavComponent } from "./components/bottom-nav/bottom-nav.component
 import { LayoutModule } from "@angular/cdk/layout";
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import * as moment from "moment";
-
 import {
   MatToolbarModule,
   MatIconModule,
@@ -47,6 +46,7 @@ import {
 } from "@angular/material";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
+import { EventOverviewComponent } from "./components/event-overview/event-overview.component";
 import { HeaderComponent } from "./components/header/header.component";
 import { AddVenueComponent } from "./components/add-venue/add-venue.component";
 import { FilterPipe } from "./pipes/filter.pipe";
@@ -87,6 +87,7 @@ import { NotAuthGuard } from "./guards/not-auth.guard";
     AddVenueComponent,
     FilterPipe,
     LoginComponent,
+    EventOverviewComponent,
   ],
   entryComponents: [ConfirmDialogComponent],
   imports: [

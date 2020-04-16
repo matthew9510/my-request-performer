@@ -27,7 +27,7 @@
   <!-- Need to add these menu items to transloco -->
 
   <!-- Change event status menu -->
-  <mat-menu #eventMenu="matMenu" xPosition="before">
+  <!-- <mat-menu #eventMenu="matMenu" xPosition="before">
     <button
       mat-menu-item
       (click)="editEvent()"
@@ -35,10 +35,10 @@
     >
       Edit Event
     </button>
-    <!-- Goes to requests for this event. Not visible for past & cancelled events -->
+    Goes to requests for this event. Not visible for past & cancelled events
     <button
       mat-menu-item
-      (click)="navigateToEvent(event?.id)"
+      (click)="navigateToRequests(event?.id)"
       *ngIf="event.status !== 'completed' && event.status !== 'cancelled'"
     >
       Go to Event
@@ -58,5 +58,5 @@
     *ngIf="showEditMenu"
   >
     <mat-icon>more_vert</mat-icon>
-  </button>
+  </button> -->
 </mat-card>

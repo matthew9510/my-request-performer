@@ -1,10 +1,8 @@
 <div class="nav-buttons">
-  <a routerLink="/payout">
-    <button mat-button color="primary">
-      <mat-icon>arrow_back</mat-icon>
-      Back
-    </button>
-  </a>
+  <button mat-button color="primary" (click)="backClicked()">
+    <mat-icon>arrow_back</mat-icon>
+    Back
+  </button>
 </div>
 
 <h1>{{ event?.title }}</h1>
@@ -54,7 +52,9 @@
         Tip
       </th>
       <td mat-cell class="amount-cell" *matCellDef="let request">
-        {{ request.amount | currency }}
+        <span *ngIf="request.amount !== null && request.amount !== 0">
+          {{ request.amount | currency }}
+        </span>
       </td>
     </ng-container>
 
