@@ -205,6 +205,191 @@ app.patch("/requester", function (req, res) {
   });
 });
 
+/**********************
+ * GET requests by requester id possibly with a specific status
+ **********************/
+app.get("/requester/:id/requests", function (req, res, next) {
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true");
+  const requesterId = req.params.id;
+  const requestStatus = req.query.status;
+  const eventId = req.query.eventId;
+  let params;
+
+  if (debug) console.log("GET: /requesters/:id/requests request object", req);
+
+  // Set up query //
+  if (eventId && requestStatus) {
+    if (debug) console.log("requesterId:", requesterId);
+    if (debug) console.log("eventId:", eventId);
+    if (debug) console.log("Status:", requestStatus);
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: "requesterId-createdOn-index",
+      KeyConditionExpression: "requesterId = :requesterId",
+      FilterExpression: "eventId = :eventId and #status = :requestStatus",
+      ExpressionAttributeValues: {
+        ":requesterId": requesterId,
+        ":eventId": eventId,
+        ":requestStatus": requestStatus,
+      },
+      ExpressionAttributeNames: {
+        "#status": "status",
+      },
+    };
+  } else if (requestStatus) {
+    if (debug) console.log("requesterId:", requesterId);
+    if (debug) console.log("Status:", requestStatus);
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: "requesterId-createdOn-index",
+      KeyConditionExpression: "requesterId = :requesterId",
+      FilterExpression: "#status = :requestStatus",
+      ExpressionAttributeValues: {
+        ":requesterId": requesterId,
+        ":requestStatus": requestStatus,
+      },
+      ExpressionAttributeNames: {
+        "#status": "status",
+      },
+    };
+  } else if (eventId) {
+    if (debug) console.log("requesterId:", requesterId);
+    if (debug) console.log("eventId:", eventId);
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: "requesterId-createdOn-index",
+      KeyConditionExpression: "requesterId = :requesterId",
+      FilterExpression: "eventId = :eventId",
+      ExpressionAttributeValues: {
+        ":requesterId": requesterId,
+        ":eventId": eventId,
+      },
+    };
+  } else {
+    if (debug) console.log("requesterId:", requesterId);
+
+    // create params
+    params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      IndexName: "requesterId-createdOn-index",
+      KeyConditionExpression: "requesterId = :requesterId",
+      ExpressionAttributeValues: {
+        ":requesterId": requesterId,
+      },
+    };
+  }
+
+  // Print constructed params //
+  if (debug) console.log("Params:\n", params);
+
+  // fetch requests from the database
+  dynamoDb.query(params, (error, result) => {
+    // handle potential Dynamo db server errors
+    if (error) {
+      console.error(
+        "Unable to find item(s). Error JSON:",
+        JSON.stringify(error, null, 2)
+      );
+      next("error in requester/:id/requests", error);
+    } else {
+      // Print the result
+      if (debug) console.log("Result:\n", result);
+
+      console.log("Result:\n", result);
+      if (result.Items.length >= 1) {
+        // setup a successful response
+        const successfulResponse = {
+          statusCode: 200,
+          body: result.Items,
+        };
+        if (requestStatus && eventId) {
+          res.json({
+            success:
+              "Found all " +
+              requestStatus +
+              " requests for requester id: " +
+              requesterId +
+              " with the event id of " +
+              eventId,
+            response: successfulResponse,
+          });
+        } else if (requestStatus) {
+          res.json({
+            success:
+              "Found all " +
+              requestStatus +
+              " requests for requester id: " +
+              requesterId,
+            response: successfulResponse,
+          });
+        } else if (eventId) {
+          res.json({
+            success:
+              "Found all requests for requester id: " +
+              requesterId +
+              " with the event id of" +
+              eventId,
+            response: successfulResponse,
+          });
+        } else {
+          res.json({
+            success: "Found all requests for requester id: " + requesterId,
+            response: successfulResponse,
+          });
+        }
+      } else {
+        // set up an unsuccessful response
+        const unsuccessfulResponse = {
+          statusCode: 204,
+          body: result.Items,
+        };
+        if (requestStatus && eventId) {
+          res.json({
+            error:
+              "Found no " +
+              requestStatus +
+              " requests for requester id: " +
+              requesterId +
+              "with the event id of " +
+              eventId,
+            response: unsuccessfulResponse,
+          });
+        } else if (requestStatus) {
+          res.json({
+            error:
+              "Found no " +
+              requestStatus +
+              " requests for requester id: " +
+              requesterId,
+            response: unsuccessfulResponse,
+          });
+        } else if (eventId) {
+          res.json({
+            error:
+              "Found no requests for requester id: " +
+              requesterId +
+              "with the event id of " +
+              eventId,
+            response: unsuccessfulResponse,
+          });
+        } else {
+          res.json({
+            error: "Found no requests for requester id: " + requesterId,
+            response: unsuccessfulResponse,
+          });
+        }
+      }
+    }
+  });
+});
+
 app.listen(3000, function () {
   console.log("My Request API...");
 });
