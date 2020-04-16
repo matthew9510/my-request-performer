@@ -98,13 +98,12 @@ app.get("/performers/:id/events", function (req, res, next) {
       // Print the result
       if (debug) console.log("Result:\n", result);
 
-      // First up response of now-playing being empty for an event
-      const response = {
-        statusCode: 200,
-        body: result.Items,
-      };
-
-      if (response.body.length >= 1) {
+      if (result.Items.length >= 1) {
+        // setup a successful response
+        const successfulResponse = {
+          statusCode: 200,
+          body: result.Items,
+        };
         if (eventStatus) {
           res.json({
             success:
@@ -112,15 +111,20 @@ app.get("/performers/:id/events", function (req, res, next) {
               eventStatus +
               " events for performer id: " +
               performerId,
-            response: response,
+            response: successfulResponse,
           });
         } else {
           res.json({
             success: "Found all events for performer id: " + performerId,
-            response: response,
+            response: successfulResponse,
           });
         }
       } else {
+        // setup a successful response
+        const unsuccessfulResponse = {
+          statusCode: 204,
+          body: result.Items,
+        };
         if (eventStatus) {
           res.json({
             success:
@@ -128,12 +132,12 @@ app.get("/performers/:id/events", function (req, res, next) {
               eventStatus +
               " events for performer id: " +
               performerId,
-            response: response,
+            response: unsuccessfulResponse,
           });
         } else {
           res.json({
             success: "Found no events for performer id: " + performerId,
-            response: response,
+            response: unsuccessfulResponse,
           });
         }
       }
@@ -174,21 +178,25 @@ app.get("/performers/:id/venues", function (req, res, next) {
       // Print the result
       if (debug) console.log("Result:\n", result);
 
-      // First up response of now-playing being empty for an event
-      const response = {
-        statusCode: 200,
-        body: result.Items,
-      };
-
-      if (response.body.length >= 1) {
+      if (result.Items.length >= 1) {
+        // setup a successful response
+        const successfulResponse = {
+          statusCode: 200,
+          body: result.Items,
+        };
         res.json({
           success: "Found all venues for performer id: " + performerId,
-          response: response,
+          response: successfulResponse,
         });
       } else {
+        // setup an unsuccessful response
+        const unsuccessfulResponse = {
+          statusCode: 204,
+          body: result.Items,
+        };
         res.json({
           success: "Found no venues for performer id: " + performerId,
-          response: response,
+          response: unsuccessfulResponse,
         });
       }
     }
@@ -256,13 +264,12 @@ app.get("/performers/:id/requests", function (req, res, next) {
       // Print the result
       if (debug) console.log("Result:\n", result);
 
-      // First up response of now-playing being empty for an event
-      const response = {
-        statusCode: 200,
-        body: result.Items,
-      };
-
-      if (response.body.length >= 1) {
+      if (result.Items.length >= 1) {
+        // setup a successful response
+        const successfulResponse = {
+          statusCode: 200,
+          body: result.Items,
+        };
         if (requestStatus) {
           res.json({
             success:
@@ -270,15 +277,20 @@ app.get("/performers/:id/requests", function (req, res, next) {
               requestStatus +
               " requests for performer id: " +
               performerId,
-            response: response,
+            response: successfulResponse,
           });
         } else {
           res.json({
             success: "Found all requests for performer id: " + performerId,
-            response: response,
+            response: successfulResponse,
           });
         }
       } else {
+        // setup an unsuccessful response
+        const unsuccessfulResponse = {
+          statusCode: 204,
+          body: result.Items,
+        };
         if (requestStatus) {
           res.json({
             success:
@@ -286,239 +298,15 @@ app.get("/performers/:id/requests", function (req, res, next) {
               requestStatus +
               " requests for performer id: " +
               performerId,
-            response: response,
+            response: unsuccessfulResponse,
           });
         } else {
           res.json({
             success: "Found no requests for performer id: " + performerId,
-            response: response,
+            response: unsuccessfulResponse,
           });
         }
       }
-    }
-  });
-});
-
-/**********************
- * GET all method *
- **********************/
-app.get("/performers", function (req, res) {
-  // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true");
-
-  if (debug) console.log("GET all performers request:\n", req);
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-  };
-  if (debug) console.log("Params:\n", params);
-
-  // fetch event from the database
-  dynamoDb.scan(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error(
-        "Unable to find items. Error JSON:",
-        JSON.stringify(error, null, 2)
-      );
-    } else {
-      // create a response
-      const response = {
-        statusCode: 200,
-        body: result,
-      };
-      if (debug) console.log("Response:\n", response);
-
-      res.json({
-        success: "Successfully found records from the performers table!",
-        response: response,
-      });
-    }
-  });
-});
-
-/**********************
- * GET by id method; Note the key is the sub key generated by AWS Cognito *
- **********************/
-app.get("/performers/:id", function (req, res) {
-  // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true");
-  const performerId = req.params.id;
-
-  if (debug) console.log("GET performers by id request:\n", req);
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Key: {
-      id: performerId,
-    },
-  };
-  if (debug) console.log("Params:\n", params);
-
-  // fetch event from the database
-  dynamoDb.get(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error(
-        "Unable to find item. Error JSON:",
-        JSON.stringify(error, null, 2)
-      );
-    } else {
-      if (debug) console.log("Result:\n", result);
-      if ("Item" in result && "id" in result.Item) {
-        // create a response
-        const response = {
-          statusCode: 200,
-          body: result,
-        };
-        if (debug) console.log("Response:\n", response);
-
-        res.json({
-          success:
-            "Successfully found record with id: " +
-            performerId +
-            " in the performers table!",
-          response: response,
-        });
-      } else {
-        if (debug) console.log("result of an non existent performer", result); // response will be empty
-        res.json({
-          message:
-            "Unable to find record, please check performers id " +
-            performerId +
-            " was entered correctly... ",
-          invalid_id: performerId,
-        });
-      }
-    }
-  });
-});
-
-/****************************
- * POSt method *
- ****************************/
-
-app.post("/performers", function (req, res) {
-  // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true");
-
-  if (debug) console.log("POST performers request:\n", req);
-
-  let params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Item: req.body,
-  };
-
-  // Note that req.body has an id property already
-  if (debug) console.log("Params:\n", params);
-
-  // Date the record
-  params.Item.createdOn = new Date().toJSON();
-
-  // Note if table item is being inserted for the first time, the result will be empty
-  dynamoDb.put(params, function (err, result) {
-    if (err) {
-      console.error(
-        "Unable to add item. Error JSON:",
-        JSON.stringify(err, null, 2)
-      );
-    } else {
-      const response = {
-        statusCode: 200,
-        body: params.Item,
-      };
-      if (debug) console.log("Response:\n", response);
-
-      res.json({
-        success: "Successfully added item to the performers table!",
-        record: response.body,
-      });
-    }
-  });
-});
-
-/****************************
- * PATCH method *
- ****************************/
-// requires the body to be the item to update
-app.put("/performers/:id", function (req, res) {
-  // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true");
-
-  if (debug) console.log("UPDATE performer request...", req);
-
-  // update item with modified date
-  let item = req.body;
-  item.modifiedOn = new Date().toJSON();
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Item: item,
-  };
-  if (debug) console.log("Params:\n", params);
-
-  // Note if table item is being updated then the result will be the new item
-  dynamoDb.put(params, function (err, result) {
-    if (debug) console.log("Result:", result);
-    if (err) {
-      console.error(
-        "Unable to Update item. Error JSON:",
-        JSON.stringify(err, null, 2)
-      );
-    } else {
-      const response = {
-        statusCode: 200,
-        body: params.Item,
-      };
-      if (debug) console.log("Response:\n", response);
-
-      res.json({
-        success: "UPDATE for record on performers table succeeded!",
-        response: response.body,
-      });
-    }
-  });
-});
-
-/****************************
- * DELETE method *
- ****************************/
-app.delete("/performers/:id", function (req, res) {
-  // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true");
-
-  if (debug) console.log("DELETE event request\n", req);
-
-  const performerId = req.params.id;
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Key: {
-      id: performerId,
-    },
-  };
-  if (debug) console.log("Params:\n", params);
-
-  dynamoDb.delete(params, function (err, result) {
-    if (err) {
-      console.error(
-        "Unable to DELETE item. Error JSON:",
-        JSON.stringify(err, null, 2)
-      );
-    } else {
-      const response = {
-        statusCode: 200,
-        body: req.body,
-      };
-      if (debug) console.log("Response:\n", response);
-
-      res.json({
-        success: "Delete call for performer table succeeded!",
-        response: response,
-      });
     }
   });
 });
