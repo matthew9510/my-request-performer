@@ -25,6 +25,11 @@ h1.event-title {
   margin-bottom: 40px;
 }
 
+p.event-status-message {
+  margin-top: -20px;
+  margin-bottom: 30px;
+}
+
 .info-wrapper {
   display: flex;
 }
@@ -75,6 +80,7 @@ h1.event-title {
 a:visited {
   color: $primary;
   opacity: 0.8;
+  cursor: pointer;
 }
 
 .info {
@@ -83,13 +89,10 @@ a:visited {
     text-decoration: none;
     opacity: 0.6;
     color: $primary;
+    cursor: pointer;
   }
 }
 
 .event-url {
   opacity: 0.6;
-}
-
-mat-card-actions > button {
-  margin-left: 10px;
 }

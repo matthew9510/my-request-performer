@@ -50,7 +50,6 @@ export class EventService {
   }
 
   addVenue(venue: any) {
-    // console.log(JSON.stringify(venue))
     return this.http.put(environment.venuesUrl, venue);
   }
 
@@ -78,8 +77,14 @@ export class EventService {
     );
   }
 
+  cancelEvent(eventId: string, event: any) {
+    this.updateEvent(eventId, event).subscribe(
+      (res) => res,
+      (err) => console.log(err)
+    );
+  }
+
   endEvent() {
-    this.currentEvent.status = "completed";
     this.updateEvent(this.currentEvent.id, this.currentEvent).subscribe(
       (res) => res,
       (err) => console.log(err)

@@ -41,6 +41,10 @@ export class ManageEventsComponent implements OnInit {
         this.eventsListTitle = "Past Events";
         this.getEventsByStatus(this.eventService.lastSearchStatus);
         break;
+      case "cancelled":
+        this.eventsListTitle = "Cancelled Events";
+        this.getEventsByStatus(this.eventService.lastSearchStatus);
+        break;
     }
   }
 

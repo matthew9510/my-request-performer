@@ -49,6 +49,13 @@
           >
             {{ t("menu item past events") }}
           </mat-option>
+
+          <mat-option
+            value="Cancelled Events"
+            (click)="getEventsByStatus('cancelled')"
+          >
+            Cancelled Events
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>

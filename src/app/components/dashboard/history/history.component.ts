@@ -73,6 +73,5 @@ export class HistoryComponent implements OnInit {
 
   backClicked() {
     this.location.back();
-    console.log(this.location);
   }
 }

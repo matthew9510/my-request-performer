@@ -3,9 +3,23 @@
     <mat-icon>arrow_back</mat-icon>
   </button>
   <h3 class="header-nav">{{ pageTitle }}</h3>
-  <a routerLink="/profile">
-    <button mat-icon-button color="primary">
-      <mat-icon>account_circle</mat-icon>
+  <!-- <a routerLink="/profile"> -->
+  <button
+    mat-icon-button
+    color="primary"
+    [matMenuTriggerFor]="menu"
+    aria-label="Account menu"
+    *ngIf="authService.signedIn"
+  >
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <!-- </a> -->
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="navToProfile()">
+      <span>Profile</span>
     </button>
-  </a>
+    <button mat-menu-item (click)="logout()">
+      <span>Log out</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>

@@ -11,7 +11,7 @@
     "inactive event message": "You must start your event to allow requests. Start your event by clicking the button below.",
     "end song button": "End song"
   },
-  "confirm dialog cancel": "Cancel",
+  "confirm dialog cancel": "Go back",
   "request confirm dialog title": "Reject Request?",
   "request confirm dialog message": "Are you sure you want to reject this request? This action cannot be undone.",
   "event confirm dialog title": "End Event?",

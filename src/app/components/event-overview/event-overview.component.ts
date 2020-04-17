@@ -4,6 +4,9 @@ import { VenueService } from "src/app/services/venue.service";
 import { PerformerService } from "src/app/services/performer.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
+import { MatDialog } from "@angular/material/dialog";
+import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { environment } from "@ENV";
 
 @Component({
   selector: "app-event-overview",
@@ -16,7 +19,7 @@ export class EventOverviewComponent implements OnInit {
   venue: any;
   performer: any;
   typeOfCoverFee: string;
-  baseUrl: string = "http://localhost:4200/";
+  baseUrl: string = environment.baseUrl;
 
   constructor(
     private eventService: EventService,
@@ -24,7 +27,8 @@ export class EventOverviewComponent implements OnInit {
     private performerService: PerformerService,
     private router: Router,
     private actRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    public dialog: MatDialog
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
   }
@@ -62,5 +66,32 @@ export class EventOverviewComponent implements OnInit {
     this.eventService.currentEvent = this.event;
     this.eventService.currentEvent.id = eventId;
     this.router.navigate([`/event/${this.event.id}`]);
+  }
+
+  cancelEvent() {
+    this.openConfirmCancel();
+  }
+
+  navigateToEventRecap(eventId: string) {
+    this.router.navigate([`/history/${eventId}`]);
+  }
+
+  openConfirmCancel(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: "300px",
+      data: {
+        title: "Cancel Event?",
+        message:
+          "Do you wish to cancel this event? This action cannot be undone.",
+        action: "Yes, Cancel Event",
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.event.status = "cancelled";
+        this.eventService.cancelEvent(this.eventId, this.event);
+      }
+    });
   }
 }

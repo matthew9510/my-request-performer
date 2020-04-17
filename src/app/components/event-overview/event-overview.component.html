@@ -8,6 +8,24 @@
 <div class="main-container">
   <mat-card class="event-info-card">
     <h1 class="event-title">{{ event?.title }}</h1>
+    <!-- Message if event is active -->
+    <p *ngIf="event?.status === 'active'" class="info event-status-message">
+      This event has started.
+      <a (click)="navigateToRequests(event?.id)">
+        Start accepting requests now!
+      </a>
+    </p>
+    <!-- Message if event has ended -->
+    <p *ngIf="event?.status === 'completed'" class="info event-status-message">
+      This event has ended.
+      <a (click)="navigateToEventRecap(event?.id)">
+        View Event Recap
+      </a>
+    </p>
+    <!-- Message if event is cancelled -->
+    <p *ngIf="event?.status === 'cancelled'" class="info event-status-message">
+      This event is cancelled.
+    </p>
     <div class="info-wrapper" *ngIf="event?.date">
       <div class="icon">
         <mat-icon>calendar_today</mat-icon>
@@ -96,8 +114,10 @@
         <mat-icon>person</mat-icon>
       </div>
       <div class="info">
-        <span class="subheader" *ngIf="performer?.username">Performer</span>
-        <br />
+        <span class="subheader" *ngIf="performer">
+          Performer
+          <br />
+        </span>
         <span class="description performer-name">
           {{ performer?.username }}
         </span>
@@ -116,10 +136,10 @@
         <mat-icon>link</mat-icon>
       </div>
       <div class="info">
-        <span class="subheader">Your Event URL</span>
+        <span class="subheader">Share Your Event</span>
         <br />
         <span class="event-url">
-          {{ baseUrl }}event-overview/{{ event?.id }}
+          {{ baseUrl }}/event-overview/{{ event?.id }}
         </span>
         <!-- <br />
         <button mat-flat-button color="primary">Copy URL</button> -->
@@ -127,9 +147,23 @@
     </div>
     <mat-card-actions align="end">
       <button
+        mat-button
+        color="warn"
+        [disabled]="
+          this.event?.status === 'completed' ||
+          this.event?.status === 'cancelled'
+        "
+        (click)="cancelEvent()"
+      >
+        Cancel event
+      </button>
+      <button
         mat-stroked-button
         color="accent"
-        [disabled]="this.event?.status === 'completed'"
+        [disabled]="
+          this.event?.status === 'completed' ||
+          this.event?.status === 'cancelled'
+        "
         (click)="editEvent()"
       >
         Edit event
@@ -137,10 +171,13 @@
       <button
         mat-flat-button
         color="primary"
-        [disabled]="this.event?.status === 'completed'"
+        [disabled]="
+          this.event?.status === 'completed' ||
+          this.event?.status === 'cancelled'
+        "
         (click)="navigateToRequests(event?.id)"
       >
-        Start event
+        Go to event
       </button>
     </mat-card-actions>
   </mat-card>
