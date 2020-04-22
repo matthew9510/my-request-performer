@@ -128,10 +128,10 @@ export class RequestsComponent implements OnInit {
       .getRequestsByEventId(this.eventId, "pending")
       .subscribe(
         (res: any) => {
-          if (res.response.body.length > 0) {
-            this.pendingRequests = res.response.body;
-          } else {
+          if (res.response.statusCode === 204) {
             this.pendingRequests = null;
+          } else {
+            this.pendingRequests = res.response.body;
           }
           this.setTabLabels();
         },
@@ -146,7 +146,9 @@ export class RequestsComponent implements OnInit {
       .getRequestsByEventId(this.eventId, "accepted")
       .subscribe(
         (res: any) => {
-          if (res.response.body.length > 0) {
+          if (res.response.statusCode === 204) {
+            this.acceptedRequests = null;
+          } else {
             // Method to remove duplicates and combine amounts of original requests and top ups
             // Note: res.response.body will have original requests before top-ups due to sorting by createdOn date
             this.acceptedRequests = res.response.body.reduce(
@@ -170,8 +172,6 @@ export class RequestsComponent implements OnInit {
               },
               []
             );
-          } else {
-            this.acceptedRequests = null;
           }
           // console.log("accepted Requests", this.acceptedRequests);
           this.setTabLabels();
@@ -187,7 +187,17 @@ export class RequestsComponent implements OnInit {
       .getRequestsByEventId(this.eventId, "now playing")
       .subscribe(
         (res: any) => {
-          if (res.response.body.length > 0) {
+          if (res.response.statusCode === 204) {
+            this.currentlyPlaying = false;
+            this.nowPlayingRequest = {
+              song: null,
+              artist: null,
+              amount: null,
+              memo: null,
+              status: null,
+              id: null,
+            };
+          } else {
             this.nowPlayingRequest = res.response.body.reduce(
               (acc: any[], curr: any, currIndex: any, array: any) => {
                 // if request is an original
@@ -211,16 +221,6 @@ export class RequestsComponent implements OnInit {
             )[0];
             this.currentlyPlaying = true;
             // console.log("nowplaying request", this.nowPlayingRequest);
-          } else {
-            this.currentlyPlaying = false;
-            this.nowPlayingRequest = {
-              song: null,
-              artist: null,
-              amount: null,
-              memo: null,
-              status: null,
-              id: null,
-            };
           }
         },
         (err) => {

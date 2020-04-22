@@ -85,9 +85,12 @@ export class EventService {
   }
 
   endEvent() {
+    this.currentEvent.status = "completed";
     this.updateEvent(this.currentEvent.id, this.currentEvent).subscribe(
       (res) => res,
-      (err) => console.log(err)
+      (err) => {
+        console.log(err);
+      }
     );
   }
 }

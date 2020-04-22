@@ -47,7 +47,10 @@
         <mat-icon>location_on</mat-icon>
       </div>
       <div class="info" *ngIf="venue">
-        <span class="venue-name" *ngIf="venue?.name">{{ venue?.name }}</span>
+        <span class="venue-name" *ngIf="venue?.name">
+          {{ venue?.name }}
+          <br />
+        </span>
         <span *ngIf="venue?.url">
           - <a href="{{ venue?.url }}" target="_new">website</a>
           <br />

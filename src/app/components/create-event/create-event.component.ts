@@ -255,7 +255,6 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
 
   cancelUpdateEvent() {
     this.location.back();
-    console.log(this.location);
   }
 
   // imageUploaded(image) {

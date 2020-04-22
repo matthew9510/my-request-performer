@@ -15,7 +15,7 @@
     </p>
     <p class="body-text" *ngIf="eventStatus === 'created'">
       <button mat-flat-button color="primary" (click)="startEvent()">
-        <span> {{ t("start event fab") }}</span>
+        <span>{{ t("start event fab") }}</span>
       </button>
     </p>
   </div>
@@ -42,13 +42,28 @@
 
             <!-- Change event status menu -->
             <mat-menu #eventMenu="matMenu" xPosition="before">
-              <button mat-menu-item (click)="startEvent()">
-                Start Event
+              <button
+                mat-menu-item
+                (click)="startEvent()"
+                [disabled]="event.status === 'active'"
+              >
+                <span *ngIf="event.status !== 'paused'">Start Event</span>
+                <span *ngIf="event.status === 'paused'">Resume Event</span>
               </button>
-              <button mat-menu-item (click)="pauseEvent()">
+              <button
+                mat-menu-item
+                (click)="pauseEvent()"
+                [disabled]="event.status === 'paused'"
+              >
                 Pause Event
               </button>
-              <button mat-menu-item (click)="openEndEventDialog()">
+              <button
+                mat-menu-item
+                (click)="openEndEventDialog()"
+                [disabled]="
+                  event.status === 'completed' || event.status === 'created'
+                "
+              >
                 End Event
               </button>
             </mat-menu>

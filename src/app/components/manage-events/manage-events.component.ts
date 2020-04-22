@@ -58,12 +58,23 @@ export class ManageEventsComponent implements OnInit {
 
   getEventsByStatus(status: string) {
     this.eventService.lastSearchStatus = status;
-    this.eventService.getEvents().subscribe((res: any) => {
-      this.events = null;
-      this.events = res.response.body.filter(
-        (el: { status: string }) => el.status === status
-      );
-    });
+    // search for active events must include paused events as well
+    if (status === "active") {
+      this.eventService.getEvents().subscribe((res: any) => {
+        this.events = null;
+        this.events = res.response.body.filter(
+          (el: { status: string }) =>
+            el.status === "active" || el.status === "paused"
+        );
+      });
+    } else {
+      this.eventService.getEvents().subscribe((res: any) => {
+        this.events = null;
+        this.events = res.response.body.filter(
+          (el: { status: string }) => el.status === status
+        );
+      });
+    }
   }
 
   getAllEvents() {
