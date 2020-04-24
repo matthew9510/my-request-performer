@@ -57,6 +57,37 @@
     "menu item upcoming events": "Upcoming Events",
     "menu item past events": "Past Events",
     "menu item new event": "Create a New Event",
-    "search": "Search"
+    "search": "Search",
+    "makeAnEvent": "Create your first event!"
+  },
+  "profile": {
+    "personalInformation": "Personal Information",
+    "personalInformationMessage": "Please provide the following information",
+    "firstName": "First Name",
+    "firstNameRequiredMessage": "Must enter first name",
+    "lastName": "Last Name",
+    "lastNameRequiredMessage": "Must enter last name",
+    "instrumentOfChoice": "Instrument of Choice",
+    "piano": "Piano",
+    "bass": "Bass",
+    "guitar": "Guitar",
+    "drums": "Drums",
+    "harmonica": "Harmonica",
+    "fiddle": "Fiddle",
+    "keytar": "Keytar",
+    "other": "Other",
+    "bio": "Bio",
+    "bioPlaceholder": "During his humble genesis...",
+    "personalMessage": "Personal End Of Event Message",
+    "personalMessagePlaceholder": "Thank you for coming out!",
+    "tooltipMessage": "This is the message that will be presented to the requesters after an ended event",
+    "ariaLabel": "A form field that displays a tooltip when focused or hovered over",
+    "contactInformation": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "requiredFormFieldsMessage": " Please enter the required fields to submit",
+    "submit": "Submit",
+    "update": "Update Information",
+    "updateSuccessful": "Information Updated!"
   }
 }

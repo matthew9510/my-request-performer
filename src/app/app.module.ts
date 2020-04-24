@@ -43,6 +43,7 @@ import {
   MatMenuModule,
   MatTableModule,
   MatSortModule,
+  MatTooltipModule,
 } from "@angular/material";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
@@ -124,6 +125,7 @@ import { NotAuthGuard } from "./guards/not-auth.guard";
     OrderModule,
     MatTableModule,
     MatSortModule,
+    MatTooltipModule,
   ],
   providers: [
     FilterPipe,

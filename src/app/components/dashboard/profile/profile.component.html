@@ -1,65 +1,122 @@
-<div class="nav-buttons">
-  <button mat-button color="primary" (click)="backClicked()">
-    <mat-icon>arrow_back</mat-icon>
-    Back
-  </button>
-</div>
+<ng-container *transloco="let t; read: 'profile'">
+  <div class="nav-buttons">
+    <button mat-button color="primary" (click)="backClicked()">
+      <mat-icon>arrow_back</mat-icon>
+      Back
+    </button>
+  </div>
+  <div class="personal-info-container">
+    <h4 *ngIf="performerService.isSignedUp === false">
+      {{ t("personalInformationMessage") }}
+    </h4>
+    <form [formGroup]="profileForm">
+      <div class="centered-flex-box">
+        <h2>{{ t("personalInformation") }}</h2>
+        <button
+          *ngIf="performerService.isSignedUp"
+          mat-icon-button
+          color="primary"
+          (click)="makeEditable()"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
 
-<div class="personal-info-container">
-  <h2>Personal Information</h2>
-  <mat-form-field appearance="fill">
-    <mat-label>First Name</mat-label>
-    <input matInput />
-  </mat-form-field>
-  <br />
-  <mat-form-field appearance="fill">
-    <mat-label>Last Name</mat-label>
-    <input matInput />
-  </mat-form-field>
-  <br />
-  <mat-form-field appearance="fill">
-    <mat-label>Username</mat-label>
-    <input matInput />
-  </mat-form-field>
-  <br />
-  <mat-form-field appearance="fill">
-    <mat-label>Instrument of Choice</mat-label>
-    <mat-select>
-      <mat-option value="option">Piano</mat-option>
-      <mat-option value="option">Bass</mat-option>
-      <mat-option value="option">Guitar</mat-option>
-      <mat-option value="option">Drums</mat-option>
-      <mat-option value="option">Harmonica</mat-option>
-      <mat-option value="option">Fiddle</mat-option>
-      <mat-option value="option">Keytar</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <br />
-  <mat-form-field appearance="fill">
-    <mat-label>Bio</mat-label>
-    <textarea
-      matInput
-      placeholder="Ex. During his humble genesis..."
-    ></textarea>
-  </mat-form-field>
-  <h2>Contact Information</h2>
-  <mat-form-field appearance="fill">
-    <mat-label>Email</mat-label>
-    <input matInput />
-  </mat-form-field>
-  <br />
-  <mat-form-field appearance="fill">
-    <mat-label>Phone</mat-label>
-    <input matInput />
-  </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>{{ t("firstName") }}</mat-label>
+        <input matInput formControlName="firstName" required />
+        <mat-error>{{ t("firstNameRequiredMessage") }}</mat-error>
+      </mat-form-field>
 
-  <button mat-button (click)="logout()">Logout</button>
-  <br />
-  <!-- commented out below code as these properties are not planned
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>{{ t("lastName") }}</mat-label>
+        <input matInput formControlName="lastName" required />
+        <mat-error>{{ t("lastNameRequiredMessage") }}</mat-error>
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>{{ t("instrumentOfChoice") }}</mat-label>
+        <mat-select formControlName="instrumentOfChoice">
+          <mat-option value="piano">{{ t("piano") }}</mat-option>
+          <mat-option value="bass">{{ t("bass") }}</mat-option>
+          <mat-option value="guitar">{{ t("guitar") }}</mat-option>
+          <mat-option value="drums">{{ t("drums") }}</mat-option>
+          <mat-option value="harmonica">{{ t("harmonica") }}</mat-option>
+          <mat-option value="fiddle">{{ t("fiddle") }}</mat-option>
+          <mat-option value="keytar">{{ t("keytar") }}</mat-option>
+          <mat-option value="other">{{ t("other") }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>{{ t("bio") }}</mat-label>
+        <textarea
+          matInput
+          placeholder="{{ t('bioPlaceholder') }}"
+          formControlName="bio"
+        ></textarea>
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>{{ t("personalMessage") }}</mat-label>
+        <textarea
+          matInput
+          placeholder="{{ t('personalMessagePlaceholder') }}"
+          formControlName="endEventMessage"
+          matTooltip="{{ t('tooltipMessage') }}"
+          matTooltipPosition="below"
+          matTooltipClass="custom-tooltip"
+          aria-label="A form field that displays a tooltip when focused or hovered over"
+        ></textarea>
+      </mat-form-field>
+
+      <h2>{{ t("contactInformation") }}</h2>
+
+      <mat-form-field appearance="fill">
+        <mat-label>{{ t("email") }}</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
+      <br />
+      <mat-form-field appearance="fill">
+        <mat-label>{{ t("phone") }}</mat-label>
+        <input matInput formControlName="phone" />
+      </mat-form-field>
+
+      <p *ngIf="profileForm.invalid" class="error-message">
+        {{ t("requiredFormFieldsMessage") }}
+      </p>
+      <div id="fab-button-wrapper">
+        <button
+          *ngIf="editProfile === true"
+          mat-fab
+          color="primary"
+          (click)="updatePerformer()"
+          [disabled]="profileForm.invalid || !isEdited()"
+          type="submit"
+          class="extended-fab-button"
+        >
+          <span class="fab-button-text">{{ t("update") }}</span>
+        </button>
+
+        <button
+          *ngIf="!performerService.isSignedUp"
+          mat-fab
+          color="primary"
+          (click)="submit()"
+          [disabled]="profileForm.invalid"
+          type="submit"
+          class="extended-fab-button"
+        >
+          <span class="fab-button-text">{{ t("submit") }}</span>
+        </button>
+      </div>
+
+      <!-- commented out below code as these properties are not planned
 to be implemented at this time
  -->
 
-  <!-- <mat-form-field appearance="fill">
+      <!-- <mat-form-field appearance="fill">
         <mat-label>Social Media Platform</mat-label>
         <mat-select>
             <mat-option value="option">Twitter</mat-option>
@@ -74,5 +131,7 @@ to be implemented at this time
     <mat-form-field appearance="fill">
         <mat-label>Social Media Handle</mat-label>
         <input matInput placeholder="Ex. @PianoManPeter">
-    </mat-form-field> -->
-</div>
+		</mat-form-field> -->
+    </form>
+  </div>
+</ng-container>

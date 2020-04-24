@@ -2,6 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { EventService } from "../../services/event.service";
 import { Router } from "@angular/router";
 import { OrderPipe } from "ngx-order-pipe";
+import { PerformerService } from "@services/performer.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { translate } from "@ngneat/transloco";
 
 @Component({
   selector: "app-manage-events",
@@ -19,7 +22,9 @@ export class ManageEventsComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private router: Router,
-    private orderPipe: OrderPipe
+    private orderPipe: OrderPipe,
+    private performerService: PerformerService,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -45,6 +50,22 @@ export class ManageEventsComponent implements OnInit {
         this.eventsListTitle = "Cancelled Events";
         this.getEventsByStatus(this.eventService.lastSearchStatus);
         break;
+    }
+
+    if (this.performerService.showEventsSnackBar == true) {
+      let message = translate("manage events.makeAnEvent");
+      let snackBarRef = this._snackBar.open(
+        "Create your first event!",
+        "Dismiss",
+        {
+          duration: 3000,
+          verticalPosition: "top",
+        }
+      );
+
+      snackBarRef.afterDismissed().subscribe(() => {
+        this.performerService.showEventsSnackBar = false;
+      });
     }
   }
 
