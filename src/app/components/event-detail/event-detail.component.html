@@ -1,4 +1,8 @@
-<mat-card class="mat-card-container mat-elevation-z0" color="accent">
+<mat-card
+  class="mat-card-container mat-elevation-z0"
+  color="accent"
+  *ngIf="loading === false"
+>
   <!-- <img mat-card-image src="../assets/images/test-image.png" alt="" class="image"> -->
   <!-- <div class="image"></div> -->
   <div class="date-container">
@@ -7,11 +11,11 @@
   <mat-card-content class="info">
     <span class="title">{{ event?.title }}</span>
     <br />
-    <span class="venue">{{ venue?.name }}</span>
+    <span class="venue">{{ event?.venue?.name }}</span>
     <br />
     <span class="venue">
-      {{ event?.date | date: "EEE, MMM d" }} at
-      {{ event?.startTime }}
+      {{ event?.date | date: "EEE, MMM d" }}
+      <span *ngIf="event?.startTime"> at {{ event?.startTime }} </span>
     </span>
   </mat-card-content>
   <div class="amount-wrapper">
@@ -24,40 +28,4 @@
     <span class="venue" *ngIf="event.status === 'cancelled'">Cancelled</span>
     <span class="venue" *ngIf="event.status === 'paused'">Paused</span>
   </div>
-
-  <!-- Need to add these menu items to transloco -->
-
-  <!-- Change event status menu -->
-  <!-- <mat-menu #eventMenu="matMenu" xPosition="before">
-    <button
-      mat-menu-item
-      (click)="editEvent()"
-      *ngIf="event.status !== 'completed' && event.status !== 'cancelled'"
-    >
-      Edit Event
-    </button>
-    Goes to requests for this event. Not visible for past & cancelled events
-    <button
-      mat-menu-item
-      (click)="navigateToRequests(event?.id)"
-      *ngIf="event.status !== 'completed' && event.status !== 'cancelled'"
-    >
-      Go to Event
-    </button>
-    <button
-      mat-menu-item
-      (click)="navigateToEventRecap(event?.id)"
-      *ngIf="event.status === 'completed' || event.status === 'cancelled'"
-    >
-      Go to Event Recap
-    </button>
-  </mat-menu>
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="eventMenu"
-    class="edit-event-menu"
-    *ngIf="showEditMenu"
-  >
-    <mat-icon>more_vert</mat-icon>
-  </button> -->
 </mat-card>

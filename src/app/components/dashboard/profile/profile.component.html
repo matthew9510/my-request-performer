@@ -1,10 +1,4 @@
 <ng-container *transloco="let t; read: 'profile'">
-  <div class="nav-buttons">
-    <button mat-button color="primary" (click)="backClicked()">
-      <mat-icon>arrow_back</mat-icon>
-      Back
-    </button>
-  </div>
   <div class="personal-info-container">
     <h4 *ngIf="performerService.isSignedUp === false">
       {{ t("personalInformationMessage") }}

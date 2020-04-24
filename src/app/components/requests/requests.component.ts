@@ -65,6 +65,10 @@ export class RequestsComponent implements OnInit {
     this.onGetRequestsByEventId();
   }
 
+  navigateToErrorPage() {
+    this.router.navigate(["/error"]);
+  }
+
   // dynamically changes the count for accepted and pending requests on the tabs
   setTabLabels() {
     if (this.pendingRequests && this.pendingRequests.length > 0) {
@@ -111,9 +115,11 @@ export class RequestsComponent implements OnInit {
               this.eventMenuStatus = "Ended";
               break;
           }
+        } else if (res.statusCode === 204) {
+          this.navigateToErrorPage();
         }
       },
-      (err) => console.log(err)
+      (err) => this.navigateToErrorPage()
     );
   }
 

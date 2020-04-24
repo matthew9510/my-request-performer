@@ -1,6 +1,7 @@
 @import "../../../styles.scss";
 
 .main-container {
+  animation: fadeIn ease-in 300ms;
   display: flex;
   align-items: center;
   justify-items: center;
@@ -21,13 +22,17 @@
 }
 
 h1.event-title {
-  margin-top: 40px;
+  margin-top: 10px;
   margin-bottom: 40px;
 }
 
 p.event-status-message {
   margin-top: -20px;
   margin-bottom: 30px;
+  background-color: rgba(0, 0, 0, 0.055);
+  border: 1px solid rgba(0, 0, 0, 0.356);
+  border-radius: 4px;
+  padding: 10px;
 }
 
 .info-wrapper {
@@ -73,7 +78,7 @@ p.event-status-message {
 }
 
 .performer-name {
-  color: $primary;
+  font-weight: 500;
 }
 
 .info > a,
@@ -95,4 +100,23 @@ a:visited {
 
 .event-url {
   opacity: 0.6;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.nav-buttons > button {
+  margin: -10px;
 }

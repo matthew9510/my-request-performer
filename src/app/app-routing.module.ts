@@ -11,6 +11,7 @@ import { LoginComponent } from "./components/login/login.component";
 import { EventOverviewComponent } from "./components/event-overview/event-overview.component";
 import { AuthGuard } from "./guards/auth.guard";
 import { NotAuthGuard } from "./guards/not-auth.guard";
+import { ErrorPageComponent } from "./components/error-page/error-page.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -73,6 +74,20 @@ const routes: Routes = [
     component: LoginComponent,
     data: { title: "Log in" },
     canActivate: [AuthGuard],
+  },
+  {
+    path: "error",
+    component: ErrorPageComponent,
+    data: { title: "404 Error: Page Not Found" },
+    canActivate: [NotAuthGuard],
+  },
+  {
+    path: "**",
+    component: DashboardComponent,
+  },
+  {
+    path: "**",
+    component: ErrorPageComponent,
   },
 ];
 

@@ -10,7 +10,6 @@
 
     <div id="expansion-panel-content">
       <!-- Search input using filter pipe -->
-      <!-- filter pipe is not currently working -->
       <mat-form-field appearance="outline">
         <mat-label><mat-icon>search</mat-icon> {{ t("search") }}</mat-label>
         <input
@@ -74,7 +73,6 @@
       class="event"
       [eventData]="event"
       [showStatus]="true"
-      [showEditMenu]="true"
       (click)="navigateToEventOverview(event.id)"
     >
     </app-eventdetails>

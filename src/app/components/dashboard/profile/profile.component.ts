@@ -64,10 +64,6 @@ export class ProfileComponent implements OnInit {
     return this.breakpointObserver.isMatched("(min-width: 700px)");
   }
 
-  backClicked() {
-    this.location.back();
-  }
-
   submit() {
     // Create a performer db entry where the primary key (id) is AWS sub
     let performer = {};

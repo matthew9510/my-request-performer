@@ -1,8 +1,13 @@
 <ng-container *transloco="let t; read: 'requests'">
-  <div id="event-title-banner" *ngIf="event" class="mat-app-background">
-    <span class="event-title">{{ event.title }}</span
-    ><br />
+  <!-- <div id="event-title-banner" *ngIf="event" class="mat-app-background">
+    <span class="event-title">{{ event.title }}</span>
+    <br />
     <span class="venue-name">{{ event.venue }}</span>
+  </div> -->
+  <div id="event-title-banner" *ngIf="event" class="mat-app-background">
+    <span class="event-title">Queue</span>
+    <!-- <br />
+    <span class="venue-name">{{ event.venue }}</span> -->
   </div>
 
   <!--Appears when the event is not started yet, or if event is ended -->

@@ -17,6 +17,7 @@ import { LoginComponent } from "./components/login/login.component";
 import { RequestDetailComponent } from "./components/request-detail/request-detail.component";
 import { TranslocoRootModule } from "./transloco-root.module";
 import { ConfirmDialogComponent } from "./components/confirm-dialog/confirm-dialog.component";
+import { ErrorPageComponent } from "./components/error-page/error-page.component";
 import { BottomNavComponent } from "./components/bottom-nav/bottom-nav.component";
 import { LayoutModule } from "@angular/cdk/layout";
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
@@ -43,6 +44,7 @@ import {
   MatMenuModule,
   MatTableModule,
   MatSortModule,
+  MatProgressSpinnerModule,
   MatTooltipModule,
 } from "@angular/material";
 import { ScrollingModule } from "@angular/cdk/scrolling";
@@ -89,6 +91,7 @@ import { NotAuthGuard } from "./guards/not-auth.guard";
     FilterPipe,
     LoginComponent,
     EventOverviewComponent,
+    ErrorPageComponent,
   ],
   entryComponents: [ConfirmDialogComponent],
   imports: [
@@ -125,6 +128,7 @@ import { NotAuthGuard } from "./guards/not-auth.guard";
     OrderModule,
     MatTableModule,
     MatSortModule,
+    MatProgressSpinnerModule,
     MatTooltipModule,
   ],
   providers: [

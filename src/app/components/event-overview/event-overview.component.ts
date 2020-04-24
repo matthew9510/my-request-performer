@@ -20,6 +20,7 @@ export class EventOverviewComponent implements OnInit {
   performer: any;
   typeOfCoverFee: string;
   baseUrl: string = environment.baseUrl;
+  loading: boolean = true;
 
   constructor(
     private eventService: EventService,
@@ -37,23 +38,35 @@ export class EventOverviewComponent implements OnInit {
     this.onGetEventById();
   }
 
-  onGetEventById() {
-    this.eventService.getEvent(this.eventId).subscribe((res: any) => {
-      this.event = res.response.body.Item;
-      this.typeOfCoverFee = typeof this.event.coverFee;
-      this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
-        this.venue = res.response.body.Item;
-      });
-      this.performerService
-        .getPerformerInfoById(this.event.performerId)
-        .subscribe((res: any) => {
-          this.performer = res.response.body.Item;
-        });
-    });
+  navigateToErrorPage() {
+    this.router.navigate(["/error"]);
   }
 
+  onGetEventById() {
+    this.eventService.getEvent(this.eventId).subscribe((res: any) => {
+      if (res.statusCode === 204) {
+        this.navigateToErrorPage();
+      } else {
+        this.event = res.response.body.Item;
+        this.typeOfCoverFee = typeof this.event.coverFee;
+        this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
+          this.venue = res.response.body.Item;
+          this.performerService
+            .getPerformerInfoById(this.event.performerId)
+            .subscribe((res: any) => {
+              this.performer = res.response.body.Item;
+              this.loading = false;
+            });
+        });
+      }
+    }),
+      (err: any) => this.navigateToErrorPage();
+  }
+
+  // hard coding this to navigate back to events until back nav feature is set up
   backClicked() {
-    this.location.back();
+    // this.location.back();
+    this.router.navigate(["/events"]);
   }
 
   editEvent() {

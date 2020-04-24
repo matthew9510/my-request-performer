@@ -5,6 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { EventService } from "../../services/event.service";
 import { AuthService } from "../../services/auth.service";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-header",
@@ -12,25 +13,33 @@ import { AuthService } from "../../services/auth.service";
   styleUrls: ["./header.component.scss"],
 })
 export class HeaderComponent implements OnInit {
+  hideBackButton: boolean = true;
+  isRoot: boolean;
   public pageTitle: string;
+  displayEventTitle: boolean = false;
 
   constructor(
     private router: Router,
     private activeRoute: ActivatedRoute,
     public dialog: MatDialog,
     private eventService: EventService,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   ) {}
 
   ngOnInit() {
     this.subscribeToRouteChangeEvents();
   }
 
-  private setTitleFromRouteData(routeData) {
-    if (routeData && routeData["title"]) {
-      this.pageTitle = routeData["title"];
+  backClicked() {
+    this.location.back();
+  }
+
+  private setTitleFromRouteData(routeData: any) {
+    if (routeData && routeData.title) {
+      this.pageTitle = routeData.title;
     } else {
-      this.pageTitle = "No title";
+      this.pageTitle = "My Request";
     }
   }
 
@@ -55,8 +64,13 @@ export class HeaderComponent implements OnInit {
         filter((route) => route.outlet === "primary"),
         mergeMap((route) => route.data)
       )
-      .subscribe((event) => {
-        this.setTitleFromRouteData(event);
+      .subscribe((event: any) => {
+        // Sets the page title to the name of the event, but doesn't work if the currentEvent is not populated yet
+        if (event.title === "Requests" && this.eventService.currentEvent) {
+          this.pageTitle = this.eventService.currentEvent.title;
+        } else {
+          this.setTitleFromRouteData(event);
+        }
       });
   }
 

@@ -18,8 +18,9 @@ export class HistoryComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   eventId: string;
-  event;
-  venue;
+  event: any;
+  venue: any;
+  loading: boolean = true;
 
   constructor(
     private requestsService: RequestsService,
@@ -37,13 +38,23 @@ export class HistoryComponent implements OnInit {
     this.onGetEventById();
   }
 
+  navigateToErrorPage() {
+    this.router.navigate(["/error"]);
+  }
+
   onGetEventById() {
     this.eventService.getEvent(this.eventId).subscribe((res: any) => {
-      this.event = res.response.body.Item;
-      this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
-        this.venue = res.response.body.Item;
-      });
-    });
+      if (res.statusCode === 204) {
+        this.navigateToErrorPage();
+      } else {
+        this.event = res.response.body.Item;
+        this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
+          this.venue = res.response.body.Item;
+          this.loading = false;
+        });
+      }
+    }),
+      (err: any) => this.navigateToErrorPage();
   }
 
   onFetchRequests(eventId: string) {
@@ -72,6 +83,7 @@ export class HistoryComponent implements OnInit {
   }
 
   backClicked() {
-    this.location.back();
+    this.router.navigate(["/dashboard"]);
+    // this.location.back();
   }
 }

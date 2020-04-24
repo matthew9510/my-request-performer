@@ -10,13 +10,18 @@ import { EventService } from "@services/event.service";
 })
 export class EventdetailsComponent implements OnInit {
   event: any;
-  venue: any;
-  @Input() grossAmount;
+  loading: boolean = true;
+  @Input() grossAmount: any;
   @Input() showStatus: boolean;
   @Input() showEditMenu: boolean;
   @Input()
   set eventData(eventData: any) {
-    this.event = eventData;
+    this.event = null;
+    this.venueService.getVenue(eventData.venueId).subscribe((res: any) => {
+      this.event = eventData;
+      this.event.venue = res.response.body.Item;
+      this.loading = false;
+    });
   }
 
   constructor(
@@ -25,11 +30,7 @@ export class EventdetailsComponent implements OnInit {
     private eventService: EventService
   ) {}
 
-  ngOnInit() {
-    this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
-      this.venue = res.response.body.Item;
-    });
-  }
+  ngOnInit() {}
 
   navigateToEventOverview() {
     this.router.navigate([`/event-overview/${this.event.id}`]);
@@ -37,7 +38,7 @@ export class EventdetailsComponent implements OnInit {
 
   editEvent() {
     this.router.navigate([`/event/${this.event.id}/clone`], {
-      state: { event: this.event, venue: this.venue },
+      state: { event: this.event, venue: this.event.venue },
     });
   }
 

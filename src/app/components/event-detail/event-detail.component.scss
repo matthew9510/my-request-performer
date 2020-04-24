@@ -1,6 +1,7 @@
 @import "src/styles.scss";
 
 mat-card {
+  animation: fadeIn ease-in 300ms;
   width: 100%;
   min-height: 80px;
   padding: 5px 10px;
@@ -89,4 +90,14 @@ mat-card {
 
 .amount-wrapper {
   text-align: right;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
