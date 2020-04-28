@@ -17,6 +17,8 @@ export class HeaderComponent implements OnInit {
   isRoot: boolean;
   public pageTitle: string;
   displayEventTitle: boolean = false;
+  eventTitle: string;
+  eventId: string;
 
   constructor(
     private router: Router,
@@ -33,6 +35,15 @@ export class HeaderComponent implements OnInit {
 
   backClicked() {
     this.location.back();
+  }
+
+  getEventTitle() {
+    this.eventService
+      .getEvent(this.activeRoute.snapshot["_routerState"]["url"].slice(7))
+      .subscribe((res: any) => {
+        this.eventTitle = res.response.body.Item.title;
+        this.displayEventTitle = true;
+      });
   }
 
   private setTitleFromRouteData(routeData: any) {
@@ -65,11 +76,15 @@ export class HeaderComponent implements OnInit {
         mergeMap((route) => route.data)
       )
       .subscribe((event: any) => {
-        // Sets the page title to the name of the event, but doesn't work if the currentEvent is not populated yet
+        // Sets page title for the app
         if (event.title === "Requests" && this.eventService.currentEvent) {
-          this.pageTitle = this.eventService.currentEvent.title;
+          this.eventTitle = this.eventService.currentEvent.title;
+          this.displayEventTitle = true;
+        } else if (event.title === "Requests") {
+          this.getEventTitle();
         } else {
           this.setTitleFromRouteData(event);
+          this.displayEventTitle = false;
         }
       });
   }

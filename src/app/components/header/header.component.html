@@ -8,7 +8,12 @@
     <mat-icon>arrow_back</mat-icon>
   </button>
 
-  <h3 class="header-nav">{{ pageTitle }}</h3>
+  <h3 class="header-nav" *ngIf="displayEventTitle; else showPageTitle">
+    {{ eventTitle }}
+  </h3>
+  <ng-template #showPageTitle>
+    <h3 class="header-nav">{{ pageTitle }}</h3>
+  </ng-template>
 
   <button
     mat-icon-button
