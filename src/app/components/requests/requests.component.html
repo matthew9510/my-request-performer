@@ -1,13 +1,6 @@
 <ng-container *transloco="let t; read: 'requests'">
-  <!-- <div id="event-title-banner" *ngIf="event" class="mat-app-background">
-    <span class="event-title">{{ event.title }}</span>
-    <br />
-    <span class="venue-name">{{ event.venue }}</span>
-  </div> -->
   <div id="event-title-banner" *ngIf="event" class="mat-app-background">
     <span class="event-title">Queue</span>
-    <!-- <br />
-    <span class="venue-name">{{ event.venue }}</span> -->
   </div>
 
   <!--Appears when the event is not started yet, or if event is ended -->
@@ -120,6 +113,39 @@
           >
             {{ t("up next") }}
           </h3>
+          <!-- Sorting for accepted requests -->
+          <div class="sort" *ngIf="acceptedRequests">
+            <div
+              class="sort-item"
+              [class.active]="order === 'createdOn'"
+              (click)="setOrder('createdOn')"
+            >
+              Newest
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div>
+            <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
+
+            <!-- <div class="sort-item" [class.active]="order === 'song'" (click)="setOrder('song')">
+              Song title 
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div>
+            <div class="sort-item" [class.active]="order === 'artist'" (click)="setOrder('artist')">
+              Artist 
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div> -->
+            <div
+              class="sort-item"
+              [class.active]="order === 'amount'"
+              (click)="setOrder('amount')"
+            >
+              Tip Amount
+              <span [hidden]="reverse">▼</span>
+              <span [hidden]="!reverse">▲</span>
+            </div>
+          </div>
           <mat-list [class.large-screen-child]="isLargeScreen">
             <app-request-detail
               mat-list-item
@@ -128,7 +154,11 @@
               [amount]="request.amount"
               [status]="request.status"
               [amountOfTopUps]="request.topUps.length"
-              *ngFor="let request of acceptedRequests; index as i"
+              *ngFor="
+                let request of acceptedRequests
+                  | orderBy: order:!reverse:'case-insensitive';
+                index as i
+              "
             >
               <button
                 rejectButton
