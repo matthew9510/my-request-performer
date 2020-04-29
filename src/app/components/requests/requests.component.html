@@ -117,8 +117,8 @@
           <div class="sort" *ngIf="acceptedRequests">
             <div
               class="sort-item"
-              [class.active]="order === 'createdOn'"
-              (click)="setOrder('createdOn')"
+              [class.active]="order === 'modifiedOn'"
+              (click)="setOrder('modifiedOn')"
             >
               Newest
               <span [hidden]="reverse">▼</span>
@@ -211,8 +211,8 @@
           <div class="sort" *ngIf="pendingRequests">
             <div
               class="sort-item"
-              [class.active]="order === 'createdOn'"
-              (click)="setOrder('createdOn')"
+              [class.active]="order === 'modifiedOn'"
+              (click)="setOrder('modifiedOn')"
             >
               Newest
               <span [hidden]="reverse">▼</span>

@@ -32,7 +32,7 @@ export class RequestsComponent implements OnInit {
   event: any;
   eventStatusMenuIcon: string = "fiber_manual_record";
   eventMenuStatus: string = "Inactive";
-  order: string = "createdOn";
+  order: string = "modifiedOn";
   reverse: boolean = false;
   tempAcceptedRequests: any;
   tempNowPlayingRequest: any;

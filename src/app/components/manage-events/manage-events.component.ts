@@ -5,6 +5,7 @@ import { OrderPipe } from "ngx-order-pipe";
 import { PerformerService } from "@services/performer.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { translate } from "@ngneat/transloco";
+import * as moment from "moment";
 
 @Component({
   selector: "app-manage-events",
@@ -59,7 +60,7 @@ export class ManageEventsComponent implements OnInit {
         "Dismiss",
         {
           duration: 3000,
-          verticalPosition: "top",
+          verticalPosition: "bottom",
         }
       );
 
@@ -78,19 +79,43 @@ export class ManageEventsComponent implements OnInit {
   }
 
   getEventsByStatus(status: string) {
+    let now = moment().format();
     this.eventService.lastSearchStatus = status;
-    // search for active events must include paused events as well
+    this.events = null;
+
+    // display active events
+    // displays events with status === 'active' or 'paused' and with a date in the future
     if (status === "active") {
       this.eventService.getEvents().subscribe((res: any) => {
-        this.events = null;
         this.events = res.response.body.filter(
-          (el: { status: string }) =>
-            el.status === "active" || el.status === "paused"
+          (el: { status: string; date: string }) =>
+            (el.status === "active" || el.status === "paused") &&
+            moment(el.date).isSameOrAfter(now)
         );
       });
+      // display upcoming events
+      // displays events with status === 'created' with a date in the future
+    } else if (status === "created") {
+      this.eventService.getEvents().subscribe((res: any) => {
+        this.events = res.response.body.filter(
+          (el: { status: string; date: string }) =>
+            el.status === status && moment(el.date).isSameOrAfter(now)
+        );
+      });
+      // display past events
+      // displays events with status === 'completed' or with a date in the future
+    } else if (status === "completed") {
+      this.eventService.getEvents().subscribe((res: any) => {
+        this.events = res.response.body.filter(
+          (el: { status: string; date: string }) =>
+            (el.status === status || moment(el.date).isBefore(now)) &&
+            el.status !== "cancelled"
+        );
+      });
+      // display cancelled events
+      // displays events with status === 'cancelled'
     } else {
       this.eventService.getEvents().subscribe((res: any) => {
-        this.events = null;
         this.events = res.response.body.filter(
           (el: { status: string }) => el.status === status
         );
@@ -100,6 +125,7 @@ export class ManageEventsComponent implements OnInit {
 
   getAllEvents() {
     this.eventService.lastSearchStatus = "all";
+    this.events = null;
     this.eventService.getEvents().subscribe((res: any) => {
       this.events = res.response.body;
     });
