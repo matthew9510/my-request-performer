@@ -81,7 +81,6 @@
 .mat-tooltip {
   // opposed to using ::ngdeep
   background-color: mat-color($app-accent);
-
   &.custom-tooltip {
     // to modify the tooltip create a class like this
     background-color: mat-color($app-accent);
