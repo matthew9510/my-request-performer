@@ -10,5 +10,9 @@ import { EventService } from "../../services/event.service";
 export class BottomNavComponent implements OnInit {
   constructor(private eventService: EventService, private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (localStorage.getItem("currentEventId")) {
+      this.eventService.currentEventId = localStorage.getItem("currentEventId");
+    }
+  }
 }

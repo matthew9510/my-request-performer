@@ -8,6 +8,7 @@ import { AuthService } from "../services/auth.service";
 })
 export class EventService {
   currentEvent = null;
+  currentEventId: string;
   // remembers the last filter applied to manage events drop down menu
   lastSearchStatus: string = "created";
 

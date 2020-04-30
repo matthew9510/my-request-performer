@@ -50,8 +50,10 @@ export class RequestsComponent implements OnInit {
     private orderPipe: OrderPipe
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
+    // storing the current event id so the user can easily navigate back to the event if they close the tab or refresh the page
+    localStorage.setItem("currentEventId", this.eventId);
 
-    // checks all pending requests from the backend every 20 seconds
+    // checks all pending requests from the backend every 10 seconds
     interval(10000).subscribe((x) => {
       this.getPendingRequests();
       this.getAcceptedRequests();
@@ -97,8 +99,9 @@ export class RequestsComponent implements OnInit {
       (res: any) => {
         if (res.response !== undefined) {
           this.event = res.response.body.Item;
-          this.eventStatus = this.event["status"];
+          this.eventStatus = this.event.status;
           this.eventService.currentEvent = this.event;
+          this.eventService.currentEventId = this.event.id;
 
           // updates status menu appearance
           switch (this.eventStatus) {

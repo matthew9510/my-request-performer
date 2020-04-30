@@ -77,7 +77,7 @@ export class EventOverviewComponent implements OnInit {
 
   navigateToRequests(eventId: string) {
     this.eventService.currentEvent = this.event;
-    this.eventService.currentEvent.id = eventId;
+    this.eventService.currentEventId = eventId;
     this.router.navigate([`/event/${this.event.id}`]);
   }
 
