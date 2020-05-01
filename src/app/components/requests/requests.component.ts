@@ -271,11 +271,17 @@ export class RequestsComponent implements OnInit {
 
   startEvent() {
     // changes on backend
-    this.eventService.startEvent();
-    // changes on front end
-    this.eventStatus = "active";
-    this.eventStatusMenuIcon = "play_circle_filled";
-    this.eventMenuStatus = "Active";
+    this.eventService.startEvent().subscribe(
+      (res) => {
+        // changes on front end
+        this.eventStatus = "active";
+        this.eventStatusMenuIcon = "play_circle_filled";
+        this.eventMenuStatus = "Active";
+        this.eventService.currentEvent.status = "active";
+        return res;
+      },
+      (err) => console.log(err)
+    );
   }
 
   endEvent() {

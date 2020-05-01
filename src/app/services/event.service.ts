@@ -63,11 +63,7 @@ export class EventService {
   }
 
   startEvent() {
-    this.currentEvent.status = "active";
-    this.updateEvent(this.currentEvent.id, this.currentEvent).subscribe(
-      (res) => res,
-      (err) => console.log(err)
-    );
+    return this.updateEvent(this.currentEvent.id, this.currentEvent);
   }
 
   pauseEvent() {
