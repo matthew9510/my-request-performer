@@ -8,8 +8,9 @@ import { translate } from "@ngneat/transloco";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Requests } from "../../interfaces/requests";
-import { interval } from "rxjs";
+import { interval, Subscription } from "rxjs";
 import { OrderPipe } from "ngx-order-pipe";
+import { HostListener } from "@angular/core";
 
 @Component({
   selector: "app-requests",
@@ -38,6 +39,9 @@ export class RequestsComponent implements OnInit {
   tempNowPlayingRequest: any;
   acceptedTabLabel: string = "Accepted";
   pendingTabLabel: string = "Pending";
+  pollingSubscription: Subscription;
+  hidden: string;
+  visibilityChange: string;
 
   constructor(
     public requestsService: RequestsService,
@@ -50,21 +54,44 @@ export class RequestsComponent implements OnInit {
     private orderPipe: OrderPipe
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
-    // storing the current event id so the user can easily navigate back to the event if they close the tab or refresh the page
-    localStorage.setItem("currentEventId", this.eventId);
-
-    // checks all pending requests from the backend every 10 seconds
-    interval(10000).subscribe((x) => {
-      this.getPendingRequests();
-      this.getAcceptedRequests();
-      this.getNowPlayingRequests();
-      this.setTabLabels();
-    });
   }
 
   ngOnInit() {
     this.onGetEventById();
     this.onGetRequestsByEventId();
+    // checks browser so when browser is hidden/minimized it will stop polling the db for requests and enable polling when app is visible to the user
+    if (typeof document.hidden !== "undefined") {
+      // Opera 12.10 and Firefox 18 and later support
+      this.hidden = "hidden";
+      this.visibilityChange = "visibilitychange";
+    } else if (typeof document["msHidden"] !== "undefined") {
+      this.hidden = "msHidden";
+      this.visibilityChange = "msvisibilitychange";
+    } else if (typeof document["webkitHidden"] !== "undefined") {
+      this.hidden = "webkitHidden";
+      this.visibilityChange = "webkitvisibilitychange";
+    }
+    this.checkHiddenDocument();
+  }
+
+  // checks for changes in visibility
+  @HostListener(`document:visibilitychange`, ["$event"])
+  visibilitychange() {
+    this.checkHiddenDocument();
+  }
+
+  // if document is hidden, polling will stop. when document is visible, polling will start again
+  checkHiddenDocument() {
+    if (document[this.hidden]) {
+      if (this.pollingSubscription) {
+        this.pollingSubscription.unsubscribe();
+      }
+    } else {
+      this.pollingSubscription = interval(10000).subscribe((x) => {
+        this.onGetRequestsByEventId();
+        this.setTabLabels();
+      });
+    }
   }
 
   navigateToErrorPage() {

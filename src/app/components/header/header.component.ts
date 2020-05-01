@@ -39,6 +39,8 @@ export class HeaderComponent implements OnInit {
 
   getEventTitle() {
     this.eventService
+      // activeRoute.snapshot["_routerState"]["url"].slice(7) === event id
+      // this grabs the current route URL and transforms it into the event id only
       .getEvent(this.activeRoute.snapshot["_routerState"]["url"].slice(7))
       .subscribe((res: any) => {
         this.eventTitle = res.response.body.Item.title;
