@@ -225,7 +225,8 @@
             color="accent"
             [disabled]="venueForm.invalid"
             type="submit"
-            (click)="createEvent()"
+            appDebounceClick
+            (debounceClick)="createEvent()"
           >
             {{ t("createEvent") }}
           </button>
@@ -235,7 +236,8 @@
             color="accent"
             [disabled]="venueForm.invalid"
             type="submit"
-            (click)="updateEvent()"
+            appDebounceClick
+            (debounceClick)="updateEvent()"
           >
             {{ t("editEvent") }}
           </button>

@@ -165,7 +165,10 @@
                 mat-button
                 class="request-button"
                 color="warn"
-                (click)="openRejectRequestDialog(request, 'acceptedRequests')"
+                appDebounceClick
+                (debounceClick)="
+                  openRejectRequestDialog(request, 'acceptedRequests')
+                "
               >
                 {{ t("reject") }}
               </button>
@@ -174,7 +177,8 @@
                 mat-flat-button
                 class="request-button"
                 color="primary"
-                (click)="playNext(request)"
+                appDebounceClick
+                (debounceClick)="playNext(request)"
               >
                 {{ t("play next") }}
               </button>
@@ -259,7 +263,8 @@
                 acceptButton
                 mat-icon-button
                 class="request-button"
-                (click)="acceptRequest(request)"
+                appDebounceClick
+                (debounceClick)="acceptRequest(request)"
               >
                 <mat-icon color="primary" class="request-button-icon"
                   >done</mat-icon
@@ -270,7 +275,10 @@
                 rejectButton
                 mat-icon-button
                 class="request-button"
-                (click)="openRejectRequestDialog(request, 'pendingRequests')"
+                appDebounceClick
+                (debounceClick)="
+                  openRejectRequestDialog(request, 'pendingRequests')
+                "
               >
                 <mat-icon color="warn" class="request-button-icon"
                   >clear</mat-icon

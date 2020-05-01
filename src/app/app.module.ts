@@ -71,6 +71,7 @@ import {
 import Auth from "@aws-amplify/auth";
 import { AuthGuard } from "./guards/auth.guard";
 import { NotAuthGuard } from "./guards/not-auth.guard";
+import { DebounceClickDirective } from './directives/debounce-click.directive';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import { NotAuthGuard } from "./guards/not-auth.guard";
     LoginComponent,
     EventOverviewComponent,
     ErrorPageComponent,
+    DebounceClickDirective,
   ],
   entryComponents: [ConfirmDialogComponent],
   imports: [

@@ -452,6 +452,7 @@ export class RequestsComponent implements OnInit {
 
   rejectRequest(request: any, requestType: string) {
     if (requestType === "acceptedRequests") {
+      // This is done because of top-ups (top-up requests)
       let acceptedRequestToReject = this.acceptedRequests.filter(
         (req) => req.originalRequestId === request.originalRequestId
       )[0];
