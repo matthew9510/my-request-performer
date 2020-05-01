@@ -63,6 +63,7 @@ export class EventService {
   }
 
   startEvent() {
+    this.currentEvent.status = "active";
     return this.updateEvent(this.currentEvent.id, this.currentEvent);
   }
 
