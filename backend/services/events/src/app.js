@@ -167,6 +167,10 @@ app.get("/events/:id/requests", function (req, res, next) {
         "#status": "status",
       },
     };
+
+    // alters the sort of the payload
+    if (requestStatus === "accepted")
+      params.IndexName = "eventId-modifiedOn-index";
   } else {
     if (debug) console.log("EventId:", eventId);
 

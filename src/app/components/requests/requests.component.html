@@ -117,12 +117,12 @@
           <div class="sort" *ngIf="acceptedRequests">
             <div
               class="sort-item"
-              [class.active]="order === 'modifiedOn'"
-              (click)="setOrder('modifiedOn')"
+              [class.active]="acceptedOrder === 'modifiedOn'"
+              (click)="setAcceptedOrder('modifiedOn')"
             >
               Newest
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="acceptedReverse">▼</span>
+              <span [hidden]="!acceptedReverse">▲</span>
             </div>
             <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
 
@@ -138,12 +138,12 @@
             </div> -->
             <div
               class="sort-item"
-              [class.active]="order === 'amount'"
-              (click)="setOrder('amount')"
+              [class.active]="acceptedOrder === 'amount'"
+              (click)="setAcceptedOrder('amount')"
             >
               Tip Amount
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="acceptedReverse">▼</span>
+              <span [hidden]="!acceptedReverse">▲</span>
             </div>
           </div>
           <mat-list [class.large-screen-child]="isLargeScreen">
@@ -156,7 +156,7 @@
               [amountOfTopUps]="request.topUps.length"
               *ngFor="
                 let request of acceptedRequests
-                  | orderBy: order:!reverse:'case-insensitive';
+                  | orderBy: order:acceptedReverse:'case-insensitive';
                 index as i
               "
             >
@@ -215,12 +215,12 @@
           <div class="sort" *ngIf="pendingRequests">
             <div
               class="sort-item"
-              [class.active]="order === 'modifiedOn'"
-              (click)="setOrder('modifiedOn')"
+              [class.active]="pendingOrder === 'modifiedOn'"
+              (click)="setPendingOrder('modifiedOn')"
             >
               Newest
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="pendingReverse">▼</span>
+              <span [hidden]="!pendingReverse">▲</span>
             </div>
             <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
 
@@ -236,12 +236,12 @@
             </div> -->
             <div
               class="sort-item"
-              [class.active]="order === 'amount'"
-              (click)="setOrder('amount')"
+              [class.active]="pendingOrder === 'amount'"
+              (click)="setPendingOrder('amount')"
             >
               Tip Amount
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="pendingReverse">▼</span>
+              <span [hidden]="!pendingReverse">▲</span>
             </div>
           </div>
 
@@ -255,7 +255,7 @@
               [status]="request.status"
               *ngFor="
                 let request of pendingRequests
-                  | orderBy: order:!reverse:'case-insensitive';
+                  | orderBy: order:pendingReverse:'case-insensitive';
                 index as i
               "
             >

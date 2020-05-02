@@ -33,8 +33,10 @@ export class RequestsComponent implements OnInit {
   event: any;
   eventStatusMenuIcon: string = "fiber_manual_record";
   eventMenuStatus: string = "Inactive";
-  order: string = "modifiedOn";
-  reverse: boolean = false;
+  pendingOrder: string = "modifiedOn";
+  acceptedOrder: string = "modifiedOn";
+  pendingReverse: boolean = false;
+  acceptedReverse: boolean = false;
   tempAcceptedRequests: any;
   tempNowPlayingRequest: any;
   acceptedTabLabel: string = "Accepted";
@@ -112,12 +114,18 @@ export class RequestsComponent implements OnInit {
     }
   }
 
-  // sets order for pending requests
-  setOrder(value: string) {
-    if (this.order === value) {
-      this.reverse = !this.reverse;
+  setPendingOrder(value: string) {
+    if (this.pendingOrder === value) {
+      this.pendingReverse = !this.pendingReverse;
     }
-    this.order = value;
+    this.pendingOrder = value;
+  }
+
+  setAcceptedOrder(value: string) {
+    if (this.acceptedOrder === value) {
+      this.acceptedReverse = !this.acceptedReverse;
+    }
+    this.acceptedOrder = value;
   }
 
   // checks the event id in url to check status
