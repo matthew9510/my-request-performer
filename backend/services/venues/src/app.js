@@ -138,6 +138,17 @@ app.post("/venues", function (req, res) {
     Item: req.body,
   };
 
+  // Convert empty strings to null for dynamoDB
+  params.Item.name = params.Item.name === "" ? null : params.Item.name;
+  params.Item.streetAddress =
+    params.Item.streetAddress === "" ? null : params.Item.streetAddress;
+  params.Item.city = params.Item.city === "" ? null : params.Item.city;
+  params.Item.state = params.Item.state === "" ? null : params.Item.state;
+  params.Item.postalCode =
+    params.Item.postalCode === "" ? null : params.Item.postalCode;
+  params.Item.country = params.Item.country === "" ? null : params.Item.country;
+  params.Item.url = params.Item.url === "" ? null : params.Item.url;
+
   // Generate uuid & date record
   params.Item.id = uuid.v1();
   params.Item.createdOn = new Date().toJSON();
@@ -179,6 +190,19 @@ app.put("/venues", function (req, res) {
     TableName: process.env.DYNAMODB_TABLE,
     Item: item,
   };
+  if (debug) console.log("Params:\n", params);
+
+  // Convert empty strings to null for dynamoDB
+  params.Item.name = params.Item.name === "" ? null : params.Item.name;
+  params.Item.streetAddress =
+    params.Item.streetAddress === "" ? null : params.Item.streetAddress;
+  params.Item.city = params.Item.city === "" ? null : params.Item.city;
+  params.Item.state = params.Item.state === "" ? null : params.Item.state;
+  params.Item.postalCode =
+    params.Item.postalCode === "" ? null : params.Item.postalCode;
+  params.Item.country = params.Item.country === "" ? null : params.Item.country;
+  params.Item.url = params.Item.url === "" ? null : params.Item.url;
+
   if (debug) console.log("Params:\n", params);
 
   dynamoDb.put(params, function (err, result) {
