@@ -37,13 +37,13 @@ export class RequestsComponent implements OnInit {
   acceptedOrder: string = "modifiedOn";
   pendingReverse: boolean = false;
   acceptedReverse: boolean = false;
-  tempAcceptedRequests: any;
-  tempNowPlayingRequest: any;
   acceptedTabLabel: string = "Accepted";
   pendingTabLabel: string = "Pending";
   pollingSubscription: Subscription;
   hidden: string;
   visibilityChange: string;
+  sortedAcceptedRequests: any;
+  sortedPendingRequests: any;
 
   constructor(
     public requestsService: RequestsService,
@@ -89,6 +89,8 @@ export class RequestsComponent implements OnInit {
         this.pollingSubscription.unsubscribe();
       }
     } else {
+      this.onGetRequestsByEventId();
+      this.setTabLabels();
       this.pollingSubscription = interval(10000).subscribe((x) => {
         this.onGetRequestsByEventId();
         this.setTabLabels();
@@ -119,6 +121,10 @@ export class RequestsComponent implements OnInit {
       this.pendingReverse = !this.pendingReverse;
     }
     this.pendingOrder = value;
+    this.sortedPendingRequests = this.orderPipe.transform(
+      this.pendingRequests,
+      this.pendingOrder
+    );
   }
 
   setAcceptedOrder(value: string) {
@@ -126,6 +132,10 @@ export class RequestsComponent implements OnInit {
       this.acceptedReverse = !this.acceptedReverse;
     }
     this.acceptedOrder = value;
+    this.sortedAcceptedRequests = this.orderPipe.transform(
+      this.acceptedRequests,
+      value
+    );
   }
 
   // checks the event id in url to check status
@@ -177,6 +187,10 @@ export class RequestsComponent implements OnInit {
           } else {
             this.pendingRequests = res.response.body;
           }
+          this.sortedPendingRequests = this.orderPipe.transform(
+            this.pendingRequests,
+            this.pendingOrder
+          );
           this.setTabLabels();
         },
         (err) => {
@@ -218,6 +232,10 @@ export class RequestsComponent implements OnInit {
             );
           }
           // console.log("accepted Requests", this.acceptedRequests);
+          this.sortedAcceptedRequests = this.orderPipe.transform(
+            this.acceptedRequests,
+            this.acceptedOrder
+          );
           this.setTabLabels();
         },
         (err) => {
@@ -294,11 +312,12 @@ export class RequestsComponent implements OnInit {
 
   endEvent() {
     // changes on backend
-    this.eventService.endEvent();
-    // changes on front end
-    this.eventStatus = "completed";
-    this.eventStatusMenuIcon = "remove_circle";
-    this.eventMenuStatus = "Ended";
+    this.eventService.endEvent().subscribe((res: any) => {
+      // changes on front end
+      this.eventStatus = "completed";
+      this.eventStatusMenuIcon = "remove_circle";
+      this.eventMenuStatus = "Ended";
+    });
 
     if (this.currentlyPlaying == true) {
       // if current song has top-ups alter the top-up statuses in db
@@ -390,11 +409,12 @@ export class RequestsComponent implements OnInit {
 
   pauseEvent() {
     // changes on backend
-    this.eventService.pauseEvent();
-    // changes on front end
-    this.eventStatus = "paused";
-    this.eventStatusMenuIcon = "pause_circle_filled";
-    this.eventMenuStatus = "Paused";
+    this.eventService.pauseEvent().subscribe((res: any) => {
+      // changes on front end
+      this.eventStatus = "paused";
+      this.eventStatusMenuIcon = "pause_circle_filled";
+      this.eventMenuStatus = "Paused";
+    });
   }
 
   openSnackBar(message: string) {
@@ -501,8 +521,6 @@ export class RequestsComponent implements OnInit {
   }
 
   endCurrentSong() {
-    // let temp = this.tempNowPlayingRequest;
-    // console.log(temp)
     if (this.currentlyPlaying) {
       // if current song has top-ups alter the top-up statuses in db
       if (this.nowPlayingRequest.topUps.length > 0) {

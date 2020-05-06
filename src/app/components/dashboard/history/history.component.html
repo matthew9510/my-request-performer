@@ -5,11 +5,11 @@
   </button>
 </div>
 
-<div *ngIf="loading; else showEventDetails" class="spinner">
+<div *ngIf="loading; else showEventInfo" class="spinner">
   <mat-spinner color="accent"></mat-spinner>
 </div>
 
-<ng-template #showEventDetails>
+<ng-template #showEventInfo>
   <h1>{{ event?.title }}</h1>
   <div class="venue-info">
     {{ venue?.name }}
@@ -32,53 +32,53 @@
       <h1 id="money-color">{{ earnings | currency }}</h1>
     </div>
   </div>
-
-  <div id="table-container">
-    <mat-form-field class="filter-input" appearance="fill">
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" />
-    </mat-form-field>
-
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" matSort>
-      <ng-container matColumnDef="modifiedOn">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Time</th>
-        <td mat-cell *matCellDef="let request">
-          {{ request.modifiedOn | date: "shortTime" }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="amount">
-        <th
-          mat-header-cell
-          class="amount-cell-header"
-          *matHeaderCellDef
-          mat-sort-header
-        >
-          Tip
-        </th>
-        <td mat-cell class="amount-cell" *matCellDef="let request">
-          <span *ngIf="request.amount !== null && request.amount !== 0">
-            {{ request.amount | currency }}
-          </span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="song">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Song</th>
-        <td mat-cell *matCellDef="let request">{{ request.song }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="artist">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Artist</th>
-        <td mat-cell *matCellDef="let request">{{ request.artist }}</td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  </div>
-
-  <div *ngIf="completedRequests?.length === 0">
-    <h5>No requests were completed for this event.</h5>
-  </div>
 </ng-template>
+
+<div id="table-container">
+  <mat-form-field class="filter-input" appearance="fill">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" />
+  </mat-form-field>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0" matSort>
+    <ng-container matColumnDef="modifiedOn">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Time</th>
+      <td mat-cell *matCellDef="let request">
+        {{ request.modifiedOn | date: "shortTime" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <th
+        mat-header-cell
+        class="amount-cell-header"
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        Tip
+      </th>
+      <td mat-cell class="amount-cell" *matCellDef="let request">
+        <span *ngIf="request.amount !== null && request.amount !== 0">
+          {{ request.amount | currency }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="song">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Song</th>
+      <td mat-cell *matCellDef="let request">{{ request.song }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="artist">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Artist</th>
+      <td mat-cell *matCellDef="let request">{{ request.artist }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
+
+<div *ngIf="completedRequests?.length === 0">
+  <h5>No requests were completed for this event.</h5>
+</div>

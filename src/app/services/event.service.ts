@@ -30,7 +30,7 @@ export class EventService {
   }
 
   createEvent(event: Object) {
-    return this.http.post(environment.eventsUrl, event);
+    return this.http.post(`${environment.eventsUrl}`, event);
   }
 
   editEvent(event: any) {
@@ -46,7 +46,7 @@ export class EventService {
     );
   }
 
-  getVenues(event_id) {
+  getVenues(event_id: any) {
     return this.http.get(environment.venuesUrl, event_id);
   }
 
@@ -69,10 +69,7 @@ export class EventService {
 
   pauseEvent() {
     this.currentEvent.status = "paused";
-    this.updateEvent(this.currentEvent.id, this.currentEvent).subscribe(
-      (res) => res,
-      (err) => console.log(err)
-    );
+    return this.updateEvent(this.currentEvent.id, this.currentEvent);
   }
 
   cancelEvent(eventId: string, event: any) {
@@ -84,11 +81,6 @@ export class EventService {
 
   endEvent() {
     this.currentEvent.status = "completed";
-    this.updateEvent(this.currentEvent.id, this.currentEvent).subscribe(
-      (res) => res,
-      (err) => {
-        console.log(err);
-      }
-    );
+    return this.updateEvent(this.currentEvent.id, this.currentEvent);
   }
 }

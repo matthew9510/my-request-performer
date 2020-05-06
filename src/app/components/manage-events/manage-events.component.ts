@@ -53,21 +53,21 @@ export class ManageEventsComponent implements OnInit {
         break;
     }
 
-    if (this.performerService.showEventsSnackBar == true) {
-      let message = translate("manage events.makeAnEvent");
-      let snackBarRef = this._snackBar.open(
-        "Create your first event!",
-        "Dismiss",
-        {
-          duration: 3000,
-          verticalPosition: "bottom",
-        }
-      );
+    // if (this.performerService.showEventsSnackBar == true) {
+    //   let message = translate("manage events.makeAnEvent");
+    //   let snackBarRef = this._snackBar.open(
+    //     "Create your first event!",
+    //     "Dismiss",
+    //     {
+    //       duration: 3000,
+    //       verticalPosition: "bottom",
+    //     }
+    //   );
 
-      snackBarRef.afterDismissed().subscribe(() => {
-        this.performerService.showEventsSnackBar = false;
-      });
-    }
+    //   snackBarRef.afterDismissed().subscribe(() => {
+    //     this.performerService.showEventsSnackBar = false;
+    //   });
+    // }
   }
 
   // sets order for pending requests

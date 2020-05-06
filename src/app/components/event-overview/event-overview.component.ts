@@ -7,6 +7,7 @@ import { Location } from "@angular/common";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { environment } from "@ENV";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-event-overview",
@@ -29,13 +30,26 @@ export class EventOverviewComponent implements OnInit {
     private router: Router,
     private actRoute: ActivatedRoute,
     private location: Location,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
   }
 
   ngOnInit() {
     this.onGetEventById();
+    // snackbar pops up when redirecting from create event or edit event showing it was successful
+    if (this.performerService.eventCreatedSnackbar === true) {
+      let message = this.performerService.eventCreatedMessage;
+      let snackBarRef = this.snackBar.open(message, "Dismiss", {
+        duration: 3000,
+        verticalPosition: "top",
+      });
+
+      snackBarRef.afterDismissed().subscribe(() => {
+        this.performerService.eventCreatedSnackbar = false;
+      });
+    }
   }
 
   navigateToErrorPage() {

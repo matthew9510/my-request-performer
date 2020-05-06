@@ -11,6 +11,11 @@ export class PerformerService {
   performer: any;
   isSignedUp: boolean = false;
   showEventsSnackBar: boolean = true;
+  // changed to true when event is created or edited successfully
+  eventCreatedSnackbar: boolean = false;
+  // success message that is different depending on if its a new event that was created or an existing one that has been edited
+  eventCreatedMessage: string;
+  // eventEditedMessage: string = "Success! Your event was changed.";
 
   constructor(private http: HttpClient, private router: Router) {}
 

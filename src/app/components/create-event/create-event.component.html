@@ -4,7 +4,6 @@
     labelPosition="bottom"
     class="stepper-div mat-app-background"
     (animationDone)="setFocus()"
-    (selectionChange)="setTargetId($event)"
   >
     <mat-step [stepControl]="eventDetailForm">
       <form [formGroup]="eventDetailForm" class="createEventForm">
@@ -83,6 +82,7 @@
             matInput
             [matDatepicker]="myDatepicker"
             formControlName="date"
+            [min]="today"
             (focus)="myDatepicker.open()"
             [value]="eventTimeAndDateForm.value.date"
             id="input1"
@@ -138,77 +138,41 @@
       <form [formGroup]="venueForm" class="createEventForm">
         <ng-template matStepLabel>{{ t("venue") }}</ng-template>
 
-        <mat-form-field *ngIf="!addingVenue">
-          <mat-label>{{ t("venue") }}</mat-label>
-          <input
-            *ngIf="!editEvent"
-            matInput
-            formControlName="id"
-            [matAutocomplete]="auto"
-            autocomplete="zalsdjflsadfkjfl"
-            id="input2"
-            #input2
-          />
-          <input
-            *ngIf="editEvent"
-            matInput
-            [value]="venueToClone.name"
-            [matAutocomplete]="auto"
-            autocomplete="zalsdjflsadfkjfl"
-          />
-
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let venue of venues" [value]="venue.id">{{
-              venue.name
-            }}</mat-option>
-            <mat-option class="add-venue-option">
-              <button
-                class="venue-button"
-                mat-raised-button
-                (click)="displayAddVenue()"
-              >
-                <mat-icon>add</mat-icon>{{ t("addVenue") }}
-              </button>
-            </mat-option>
-          </mat-autocomplete>
+        <mat-form-field>
+          <mat-label>{{ t("name") }}</mat-label>
+          <input matInput formControlName="name" id="input2" #input2 required />
+          <mat-error>Venue name is required</mat-error>
         </mat-form-field>
 
-        <div class="venue-form" *ngIf="addingVenue">
-          <mat-form-field>
-            <mat-label>{{ t("name") }}</mat-label>
-            <input matInput formControlName="name" id="input2" #input2 />
-          </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t("address") }}</mat-label>
+          <input matInput formControlName="streetAddress" />
+        </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>{{ t("address") }}</mat-label>
-            <input matInput formControlName="streetAddress" />
-          </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t("city") }}</mat-label>
+          <input matInput formControlName="city" />
+        </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>{{ t("city") }}</mat-label>
-            <input matInput formControlName="city" />
-          </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t("state") }}</mat-label>
+          <input matInput formControlName="state" />
+        </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>{{ t("state") }}</mat-label>
-            <input matInput formControlName="state" />
-          </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t("postal") }}</mat-label>
+          <input matInput formControlName="postalCode" />
+        </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>{{ t("postal") }}</mat-label>
-            <input matInput formControlName="postalCode" />
-          </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ t("country") }}</mat-label>
+          <input matInput formControlName="country" />
+        </mat-form-field>
 
-          <mat-form-field>
-            <mat-label>{{ t("country") }}</mat-label>
-            <input matInput formControlName="country" />
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>{{ t("website") }}</mat-label>
-            <input matInput formControlName="url" />
-          </mat-form-field>
-        </div>
+        <mat-form-field>
+          <mat-label>{{ t("website") }}</mat-label>
+          <input matInput formControlName="url" />
+        </mat-form-field>
 
         <div class="stepper-nav-buttons">
           <button

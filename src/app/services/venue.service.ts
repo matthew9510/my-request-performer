@@ -1,26 +1,28 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { environment } from '@ENV';
-
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { environment } from "@ENV";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class VenueService {
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  getVenue(venueId) {
+  getVenue(venueId: any) {
     const headers = {
       headers: new HttpHeaders({
-        Authorization: localStorage.getItem('performerJwt'),
-      })
+        Authorization: localStorage.getItem("performerJwt"),
+      }),
     };
-    return this.http.get(`${environment.venuesUrl}/${venueId}`, headers)
+    return this.http.get(`${environment.venuesUrl}/${venueId}`);
   }
 
-  addVenue(venue) {
+  addVenue(venue: any) {
     // console.log(JSON.stringify(venue))
-    return this.http.put(environment.venuesUrl, venue)
+    return this.http.post(environment.venuesUrl, venue);
+  }
+
+  updateVenue(venue: any) {
+    return this.http.put(environment.venuesUrl, venue);
   }
 }

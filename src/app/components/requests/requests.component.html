@@ -81,10 +81,10 @@
           >
             <app-request-detail
               [song]="nowPlayingRequest.song"
-              [artist]="nowPlayingRequest.artist"
-              [status]="nowPlayingRequest.status"
-              [amount]="nowPlayingRequest.amount"
-              [memo]="nowPlayingRequest.memo"
+              [artist]="nowPlayingRequest?.artist"
+              [status]="nowPlayingRequest?.status"
+              [amount]="nowPlayingRequest?.amount"
+              [memo]="nowPlayingRequest?.memo"
             >
               <button
                 endSongButton
@@ -121,20 +121,20 @@
               (click)="setAcceptedOrder('modifiedOn')"
             >
               Newest
-              <span [hidden]="acceptedReverse">▼</span>
-              <span [hidden]="!acceptedReverse">▲</span>
+              <span [hidden]="!acceptedReverse">▼</span>
+              <span [hidden]="acceptedReverse">▲</span>
             </div>
             <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
 
-            <!-- <div class="sort-item" [class.active]="order === 'song'" (click)="setOrder('song')">
+            <!-- <div class="sort-item" [class.active]="acceptedOrder === 'song'" (click)="setOrder('song')">
               Song title 
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="acceptedReverse">▼</span>
+              <span [hidden]="!acceptedReverse">▲</span>
             </div>
-            <div class="sort-item" [class.active]="order === 'artist'" (click)="setOrder('artist')">
+            <div class="sort-item" [class.active]="acceptedOrder === 'artist'" (click)="setOrder('artist')">
               Artist 
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="acceptedReverse">▼</span>
+              <span [hidden]="!acceptedReverse">▲</span>
             </div> -->
             <div
               class="sort-item"
@@ -142,8 +142,8 @@
               (click)="setAcceptedOrder('amount')"
             >
               Tip Amount
-              <span [hidden]="acceptedReverse">▼</span>
-              <span [hidden]="!acceptedReverse">▲</span>
+              <span [hidden]="!acceptedReverse">▼</span>
+              <span [hidden]="acceptedReverse">▲</span>
             </div>
           </div>
           <mat-list [class.large-screen-child]="isLargeScreen">
@@ -155,7 +155,7 @@
               [status]="request.status"
               [amountOfTopUps]="request.topUps.length"
               *ngFor="
-                let request of acceptedRequests
+                let request of sortedAcceptedRequests
                   | orderBy: order:acceptedReverse:'case-insensitive';
                 index as i
               "
@@ -219,20 +219,20 @@
               (click)="setPendingOrder('modifiedOn')"
             >
               Newest
-              <span [hidden]="pendingReverse">▼</span>
-              <span [hidden]="!pendingReverse">▲</span>
+              <span [hidden]="!pendingReverse">▼</span>
+              <span [hidden]="pendingReverse">▲</span>
             </div>
             <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
 
-            <!-- <div class="sort-item" [class.active]="order === 'song'" (click)="setOrder('song')">
+            <!-- <div class="sort-item" [class.active]="pendingOrder === 'song'" (click)="setOrder('song')">
               Song title 
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="pendingReverse">▼</span>
+              <span [hidden]="!pendingReverse">▲</span>
             </div>
-            <div class="sort-item" [class.active]="order === 'artist'" (click)="setOrder('artist')">
+            <div class="sort-item" [class.active]="pendingOrder === 'artist'" (click)="setOrder('artist')">
               Artist 
-              <span [hidden]="reverse">▼</span>
-              <span [hidden]="!reverse">▲</span>
+              <span [hidden]="pendingReverse">▼</span>
+              <span [hidden]="!pendingReverse">▲</span>
             </div> -->
             <div
               class="sort-item"
@@ -240,8 +240,8 @@
               (click)="setPendingOrder('amount')"
             >
               Tip Amount
-              <span [hidden]="pendingReverse">▼</span>
-              <span [hidden]="!pendingReverse">▲</span>
+              <span [hidden]="!pendingReverse">▼</span>
+              <span [hidden]="pendingReverse">▲</span>
             </div>
           </div>
 
@@ -254,7 +254,7 @@
               [amount]="request.amount"
               [status]="request.status"
               *ngFor="
-                let request of pendingRequests
+                let request of sortedPendingRequests
                   | orderBy: order:pendingReverse:'case-insensitive';
                 index as i
               "
@@ -266,9 +266,9 @@
                 appDebounceClick
                 (debounceClick)="acceptRequest(request)"
               >
-                <mat-icon color="primary" class="request-button-icon"
-                  >done</mat-icon
-                >
+                <mat-icon color="primary" class="request-button-icon">
+                  done
+                </mat-icon>
               </button>
 
               <button
@@ -280,9 +280,9 @@
                   openRejectRequestDialog(request, 'pendingRequests')
                 "
               >
-                <mat-icon color="warn" class="request-button-icon"
-                  >clear</mat-icon
-                >
+                <mat-icon color="warn" class="request-button-icon">
+                  clear
+                </mat-icon>
               </button>
             </app-request-detail>
           </mat-list>

@@ -4,6 +4,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  Input,
 } from "@angular/core";
 import {
   FormBuilder,
@@ -29,13 +30,14 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   venueForm: FormGroup;
   eventForm: FormGroup;
   eventTimeAndDateForm: FormGroup;
-  addingVenue = false;
   editEvent = false;
   eventToClone;
   venueToClone;
   uploadImage = false; // hide uploading image for now
   venues: any[] = [];
-
+  // applies property to disable past dates on datepicker
+  today: Date;
+  startTime: any;
   // times for start and end time dropdowns
   times = [
     "12:00 AM",
@@ -68,8 +70,8 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   private targetId = "input0";
   private autoFocusElements: any;
   @ViewChild("input0", { static: false }) input0: ElementRef;
-  @ViewChild("input1", { static: false }) input1: ElementRef;
-  @ViewChild("input2", { static: false }) input2: ElementRef;
+  // @ViewChild("input1", { static: false }) input1: ElementRef;
+  // @ViewChild("input2", { static: false }) input2: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -84,13 +86,15 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       this.eventToClone = this.router.getCurrentNavigation().extras.state.event;
       this.venueToClone = this.router.getCurrentNavigation().extras.state.venue;
     }
+    this.today = new Date();
   }
+
   ngAfterViewInit(): void {
     // initialize to assist setting autofocus on inputs
     this.autoFocusElements = {
       input0: this.input0,
-      input1: this.input1,
-      input2: this.input2,
+      // input1: this.input1,
+      // input2: this.input2,
     };
   }
 
@@ -109,8 +113,8 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
 
     this.eventTimeAndDateForm = this.fb.group({
       date: [null, [Validators.required]],
-      startTime: [null, Validators.required],
-      endTime: [null, Validators.required],
+      startTime: [null],
+      endTime: [null],
     });
 
     this.eventTimeAndDateForm.valueChanges.subscribe((x) => {
@@ -162,49 +166,6 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       }
     });
 
-    // Take away selecting previous venues for now
-    this.venueForm = this.fb.group({
-      id: [null, Validators.required],
-    });
-
-    if (this.editEvent === true) {
-      this.eventDetailForm.patchValue(this.eventToClone);
-      this.eventTimeAndDateForm.patchValue(this.eventToClone);
-      this.venueForm.patchValue(this.eventToClone);
-
-      // Set Date to correct format for mat-datepicker
-      this.eventTimeAndDateForm.controls.date.setValue(
-        new Date(this.eventToClone.date)
-      );
-    } else {
-      this.displayAddVenue();
-    }
-  }
-
-  /* These two methods below set autofocus on the first input of each step of the stepper */
-  setFocus() {
-    // assign the target element accordingly
-    let targetElem = this.autoFocusElements[this.targetId]; // target appropriate viewchild using targetId
-
-    // set focus on the element
-    targetElem.nativeElement.focus();
-  }
-
-  // Subscription to mat-vertical-stepper when it switches steps
-  setTargetId(event: any) {
-    this.targetId = `input${event.selectedIndex}`;
-  }
-
-  // make sure a person auto-completes with one of their venues
-  // venueValidator(control: AbstractControl): { [key: string]: boolean } | null {
-  //   if (control.touched) {
-  //     return { 'venueError': true }
-  //   }
-  //   return null
-  // }
-
-  displayAddVenue() {
-    this.addingVenue = true;
     this.venueForm = this.fb.group({
       name: [null, Validators.required],
       streetAddress: [null],
@@ -215,9 +176,31 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       url: [null],
       performerId: [localStorage.getItem("performerSub")],
     });
+
+    if (this.editEvent === true) {
+      this.eventDetailForm.patchValue(this.eventToClone);
+      this.eventTimeAndDateForm.patchValue(this.eventToClone);
+      this.venueForm.patchValue(this.venueToClone);
+
+      // Set Date to correct format for mat-datepicker
+      this.eventTimeAndDateForm.controls.date.setValue(
+        new Date(this.eventToClone.date)
+      );
+    }
   }
 
-  prepareEvent(venueId) {
+  /* These two methods below set autofocus on the first input of each step of the stepper */
+  setFocus() {
+    // assign the target element accordingly
+    if (this.targetId === "input0") {
+      // target appropriate viewchild using targetId
+      let targetElem = this.autoFocusElements[this.targetId];
+      // set focus on the element
+      targetElem.nativeElement.focus();
+    }
+  }
+
+  prepareEvent(venueId: any) {
     if (!this.editEvent) {
       // if creating a new event
       // concatenate all forms together
@@ -245,49 +228,94 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
 
   // add upload image later
   createEvent() {
-    if (this.addingVenue) {
-      // Create entry in venue table
-      this.venueService.addVenue(this.venueForm.value).subscribe(
-        (res: any) => {
-          let venueId = res.record.id;
+    // Create entry in venue table
+    this.venueService.addVenue(this.venueForm.value).subscribe(
+      (res: any) => {
+        console.log(res);
 
+        let venueId = res.record.id;
+
+        // create a event object
+        let event = this.prepareEvent(venueId);
+
+        // create entry in event table
+        this.eventService.createEvent(event).subscribe(
+          (res: any) => {
+            console.log(res);
+            this.performerService.eventCreatedSnackbar = true;
+            this.performerService.eventCreatedMessage =
+              "Success! Your event was created.";
+            // redirect to event overview for the new event
+            this.router.navigate([`/event-overview/${res.record.id}`]);
+          },
+          (err) => {
+            console.error("Couldn't create event", err);
+          }
+        );
+      },
+      (err) => {
+        console.error("Couldn't create venue", err);
+      }
+    );
+  }
+
+  updateEvent() {
+    // need to resubmit the venue
+    // only do this if edited
+    let venueId = this.eventToClone.venueId;
+    if (this.isEdited()) {
+      this.venueForm.value.id = venueId;
+      this.venueService
+        .updateVenue(this.venueForm.value)
+        .subscribe((res: any) => {
           // create a event object
           let event = this.prepareEvent(venueId);
-
-          // create entry in event table
-          this.eventService.createEvent(event).subscribe(
-            (res) => {
-              // redirect to events
-              this.router.navigate(["/events"]);
+          // edit entry in event table
+          this.eventService.editEvent(event).subscribe(
+            (res: any) => {
+              this.performerService.eventCreatedSnackbar = true;
+              this.performerService.eventCreatedMessage =
+                "Success! Your event was changed.";
+              // redirect to event overview for the new event
+              this.router.navigate([`/event-overview/${res.response.id}`]);
             },
             (err) => {
               console.error("Couldn't create event", err);
             }
           );
+        });
+    } else {
+      // create a event object
+      let event = this.prepareEvent(venueId);
+      // edit entry in event table
+      this.eventService.editEvent(event).subscribe(
+        (res: any) => {
+          console.log(res);
+          this.performerService.eventCreatedSnackbar = true;
+          this.performerService.eventCreatedMessage =
+            "Success! Your event was changed.";
+          // redirect to event overview for the new event
+          this.router.navigate([`/event-overview/${res.response.id}`]);
         },
-        (err) => {
-          console.error("Couldn't create venue", err);
+        (err: any) => {
+          console.error("Couldn't create event", err);
         }
       );
-    } else {
-      // you don't have to addVenue, just append the venue_id
     }
   }
 
-  updateEvent() {
-    // create a event object
-    let event = this.prepareEvent(this.venueToClone.id);
+  // Helper function to see if venue is updated
+  isEdited() {
+    // returns true if the form has been altered
+    let isAltered = false;
+    let venueFieldNames = Object.keys(this.venueForm.value);
 
-    // edit entry in event table
-    this.eventService.editEvent(event).subscribe(
-      (res) => {
-        // redirect to events
-        this.router.navigate(["/events"]);
-      },
-      (err) => {
-        console.error("Couldn't create event", err);
-      }
-    );
+    for (let key of venueFieldNames) {
+      if (this.venueForm.value[key] !== this.venueToClone[key])
+        isAltered = true;
+    }
+
+    return isAltered;
   }
 
   cancelUpdateEvent() {
