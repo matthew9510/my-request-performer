@@ -249,7 +249,7 @@ app.get("/events/:id/requests", function (req, res, next) {
 });
 
 /****************************
- * PUT method *
+ * POST method *
  ****************************/
 
 app.post("/events", function (req, res) {
@@ -262,6 +262,17 @@ app.post("/events", function (req, res) {
     TableName: process.env.DYNAMODB_TABLE,
     Item: req.body,
   };
+
+  // Convert empty strings to null for dynamoDB
+  params.Item.title = params.Item.title === "" ? null : params.Item.title;
+  params.Item.description =
+    params.Item.description === "" ? null : params.Item.description;
+  params.Item.coverFee =
+    params.Item.coverFee === "" ? null : params.Item.coverFee;
+  params.Item.genre = params.Item.genre === "" ? null : params.Item.genre;
+  params.Item.url = params.Item.url === "" ? null : params.Item.url;
+  params.Item.venueId = params.Item.venueId === "" ? null : params.Item.venueId;
+
   if (debug) console.log("Params:\n", params);
 
   // Generate uuid & date record
@@ -310,6 +321,17 @@ app.put("/events/:id", function (req, res) {
     TableName: process.env.DYNAMODB_TABLE,
     Item: item,
   };
+
+  // Convert empty strings to null for dynamoDB
+  params.Item.title = params.Item.title === "" ? null : params.Item.title;
+  params.Item.description =
+    params.Item.description === "" ? null : params.Item.description;
+  params.Item.coverFee =
+    params.Item.coverFee === "" ? null : params.Item.coverFee;
+  params.Item.genre = params.Item.genre === "" ? null : params.Item.genre;
+  params.Item.url = params.Item.url === "" ? null : params.Item.url;
+  params.Item.venueId = params.Item.venueId === "" ? null : params.Item.venueId;
+
   if (debug) console.log("Params:\n", params);
 
   // Note if table item is being updated then the result will be the new item
