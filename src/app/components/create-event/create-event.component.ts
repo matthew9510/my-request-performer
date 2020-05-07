@@ -118,51 +118,20 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     });
 
     this.eventTimeAndDateForm.valueChanges.subscribe((x) => {
+      let form = this.eventTimeAndDateForm;
+      let formValue = form.value;
+
       /** when a start time is entered, the end time changes to one value
           greater than the start time**/
-      if (
-        this.eventTimeAndDateForm.value.endTime === null &&
-        this.eventTimeAndDateForm.value.startTime !== null
-      ) {
+      if (formValue.endTime === null && formValue.startTime !== null) {
         let index = this.times.indexOf(x.startTime);
-        this.eventTimeAndDateForm.controls.endTime.setValue(
-          this.times[index + 1]
-        );
+        form.controls.endTime.setValue(this.times[index + 1]);
       }
 
-      /** Alter the time on the date object to the start time of the date object
-          make sure the date has been created before doing this logic **/
-      if (
-        this.eventTimeAndDateForm.value.startTime !== null &&
-        this.eventTimeAndDateForm.value.date !== null
-      ) {
-        if (this.editEvent === true) {
-          // Reshape the data coming back from database
-          if (!(this.eventTimeAndDateForm.value.date instanceof moment)) {
-            // Transform date
-            let tempDate = moment(this.eventTimeAndDateForm.value.date);
-            this.eventTimeAndDateForm.controls.date.setValue(tempDate);
-          }
-        }
-
-        // transformation of date to match start time
-        let isAm =
-          this.eventTimeAndDateForm.value.startTime.split(" ")[1] === "AM";
-        let parsedStartTime = this.eventTimeAndDateForm.value.startTime.split(
-          ":"
-        )[0];
-
-        // Convert to 24 hour time for the database
-        if (isAm === true && parsedStartTime === "12") {
-          this.eventTimeAndDateForm.value.date._d.setHours(0);
-        } else if (isAm === true) {
-          this.eventTimeAndDateForm.value.date._d.setHours(parsedStartTime);
-        } else if (isAm === false && parsedStartTime === "12") {
-          this.eventTimeAndDateForm.value.date._d.setHours(parsedStartTime);
-        } else {
-          let newHour = Number(parsedStartTime) + 12;
-          this.eventTimeAndDateForm.value.date._d.setHours(newHour);
-        }
+      // Alter the time on the date object to the start time of the event
+      // make sure the date has been created before doing this logic
+      if (formValue.startTime !== null && formValue.date !== null) {
+        this.updateDate(form);
       }
     });
 
@@ -223,6 +192,38 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       ); // Need to add venue changes later
       // return concatenated object
       return newEvent;
+    }
+  }
+
+  // for making sure the date object being sent to db has event startTime attached
+  updateDate(form: any) {
+    let formValue = form.value;
+
+    if (this.editEvent === true) {
+      // Reshape the data coming back from database
+      if (!(formValue.date instanceof moment)) {
+        // Transform date
+        let tempDate = moment(formValue.date);
+        form.controls.date.setValue(tempDate);
+        // update the formValue reference, since we updated the control
+        formValue = form.value;
+      }
+    }
+
+    // transformation of date to match start time
+    let isAm = formValue.startTime.split(" ")[1] === "AM";
+    let parsedStartTime = formValue.startTime.split(":")[0];
+
+    // Convert to 24 hour time for the database
+    if (isAm === true && parsedStartTime === "12") {
+      formValue.date._d.setHours(0);
+    } else if (isAm === true) {
+      formValue.date._d.setHours(parsedStartTime);
+    } else if (isAm === false && parsedStartTime === "12") {
+      formValue.date._d.setHours(parsedStartTime);
+    } else {
+      let newHour = Number(parsedStartTime) + 12;
+      formValue.date._d.setHours(newHour);
     }
   }
 
