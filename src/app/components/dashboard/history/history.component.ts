@@ -61,13 +61,11 @@ export class HistoryComponent implements OnInit {
     this.requestsService
       .getRequestsByEventId(eventId, "completed")
       .subscribe((requests: any) => {
-        // console.log(requests.response.body);
         this.completedRequests = requests.response.body;
         this.calculateTotalEarnings(requests.response.body);
         // populates the data table and enables sort
         this.dataSource = new MatTableDataSource(this.completedRequests);
         this.dataSource.sort = this.sort;
-        // console.log(this.sort);
       });
   }
 

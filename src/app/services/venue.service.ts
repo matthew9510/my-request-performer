@@ -18,7 +18,6 @@ export class VenueService {
   }
 
   addVenue(venue: any) {
-    // console.log(JSON.stringify(venue))
     return this.http.post(environment.venuesUrl, venue);
   }
 

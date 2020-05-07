@@ -75,7 +75,7 @@ export class EventService {
   cancelEvent(eventId: string, event: any) {
     this.updateEvent(eventId, event).subscribe(
       (res) => res,
-      (err) => console.log(err)
+      (err) => err
     );
   }
 

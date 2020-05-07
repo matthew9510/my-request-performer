@@ -55,7 +55,9 @@ export class AuthService {
 
     // save amplify's creds
     this.performerAuthState = authState;
-    localStorage.setItem("performerAuthState", JSON.stringify(authState)); // profile component expects this to be only the user attribute
+
+    // commented out since we're not using it and it was caused an error because it was too big of an object to store in localstorage
+    // localStorage.setItem("performerAuthState", JSON.stringify(authState)); // profile component expects this to be only the user attribute
 
     // create a temporary variable for easier access below
     let awsUser = authState.user;
@@ -98,7 +100,7 @@ export class AuthService {
         this.router.navigate(["login"]);
         return data;
       })
-      .catch((err) => console.log(err));
+      .catch((err) => err);
 
     // // By doing this, you are revoking all the auth tokens(id token, access token and refresh token)
     // // which means the user is signed out from all the devices
@@ -122,7 +124,6 @@ export class AuthService {
       "Authorization",
       localStorage.getItem("performerJwt")
     );
-    // console.log(headers);
     return headers;
   }
 }

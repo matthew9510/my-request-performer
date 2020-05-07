@@ -231,8 +231,6 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     // Create entry in venue table
     this.venueService.addVenue(this.venueForm.value).subscribe(
       (res: any) => {
-        console.log(res);
-
         let venueId = res.record.id;
 
         // create a event object
@@ -241,7 +239,6 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
         // create entry in event table
         this.eventService.createEvent(event).subscribe(
           (res: any) => {
-            console.log(res);
             this.performerService.eventCreatedSnackbar = true;
             this.performerService.eventCreatedMessage =
               "Success! Your event was created.";
@@ -290,7 +287,6 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       // edit entry in event table
       this.eventService.editEvent(event).subscribe(
         (res: any) => {
-          console.log(res);
           this.performerService.eventCreatedSnackbar = true;
           this.performerService.eventCreatedMessage =
             "Success! Your event was changed.";

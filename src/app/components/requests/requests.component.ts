@@ -76,6 +76,10 @@ export class RequestsComponent implements OnInit {
     this.checkHiddenDocument();
   }
 
+  ngOnDestroy() {
+    this.pollingSubscription.unsubscribe();
+  }
+
   // checks for changes in visibility
   @HostListener(`document:visibilitychange`, ["$event"])
   visibilitychange() {
@@ -194,7 +198,7 @@ export class RequestsComponent implements OnInit {
           this.setTabLabels();
         },
         (err) => {
-          console.log(err);
+          err;
         }
       );
   }
@@ -231,7 +235,6 @@ export class RequestsComponent implements OnInit {
               []
             );
           }
-          // console.log("accepted Requests", this.acceptedRequests);
           this.sortedAcceptedRequests = this.orderPipe.transform(
             this.acceptedRequests,
             this.acceptedOrder
@@ -239,7 +242,7 @@ export class RequestsComponent implements OnInit {
           this.setTabLabels();
         },
         (err) => {
-          console.log(err);
+          err;
         }
       );
   }
@@ -282,12 +285,9 @@ export class RequestsComponent implements OnInit {
               []
             )[0];
             this.currentlyPlaying = true;
-            // console.log("nowplaying request", this.nowPlayingRequest);
           }
         },
-        (err) => {
-          console.log(err);
-        }
+        (err) => err
       );
   }
 
@@ -306,7 +306,7 @@ export class RequestsComponent implements OnInit {
         this.eventService.currentEvent.status = "active";
         return res;
       },
-      (err) => console.log(err)
+      (err) => err
     );
   }
 
@@ -595,8 +595,6 @@ export class RequestsComponent implements OnInit {
 
     this.onChangeRequestStatus(alteredRequestToPlay, requestToPlay.id);
 
-    // this.onChangeRequestStatus(request, request.id);
-    // console.log(request.id)
     this.nowPlayingRequest = {
       song: request.song,
       artist: request.artist,
@@ -616,6 +614,6 @@ export class RequestsComponent implements OnInit {
       .subscribe((res) => {
         this.onGetRequestsByEventId();
       }),
-      (err: any) => console.log(err);
+      (err: any) => err;
   }
 }

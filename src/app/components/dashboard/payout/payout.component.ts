@@ -62,7 +62,6 @@ export class PayoutComponent implements OnInit {
         "completed"
       )
       .subscribe((requests: any) => {
-        // console.log(requests.response.body)
         this.completedRequests = requests.response.body;
         this.calculateTotalEarnings(requests.response.body);
         // populates the data table and enables sort
