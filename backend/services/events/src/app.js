@@ -50,7 +50,6 @@ app.get("/events", function (req, res) {
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
-    IndexName: "id-date-index",
   };
   if (debug) console.log("Params:\n", params);
 
