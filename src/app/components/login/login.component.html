@@ -1,10 +1,59 @@
-<div class="angular-amplify">
-  <amplify-authenticator [usernameAttributes]="usernameAttributes"></amplify-authenticator>
+<div class="center">
+  <div class="flex-column">
+    <img src="../../../assets/images/my-request-logo.png" />
+    <h2>Welcome to My Request</h2>
+    <h3>Sign in to your account</h3>
+    <form [formGroup]="signInForm">
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          required
+        />
+        <mat-hint *ngIf="!emailInput.value">Enter your email address</mat-hint>
+        <mat-error *ngIf="!emailInput.valid">
+          {{ getEmailInputError() }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Password"
+          [type]="hide ? 'password' : 'text'"
+          formControlName="password"
+          required
+        />
+        <mat-icon matSuffix (click)="hide = !hide">{{
+          hide ? "visibility_off" : "visibility"
+        }}</mat-icon>
+        <mat-hint *ngIf="!passwordInput.value">Enter your password</mat-hint>
+        <mat-error *ngIf="!passwordInput.valid">
+          {{ getPasswordInputError() }}
+        </mat-error>
+      </mat-form-field>
+      <h5 *ngIf="isInvalidCredentials" class="invalid-creds">
+        Invalid Credentials
+      </h5>
+      <button
+        mat-raised-button
+        color="primary"
+        appDebounceClick
+        (debounceClick)="signIn()"
+        [disabled]="!signInForm.valid"
+      >
+        Sign In
+      </button>
+    </form>
+    <h4><a routerLink="/forgotPassword">Forgot Password</a></h4>
+    <h4>
+      <a
+        href="mailto: jeffpuszykowski@mac.com?subject=My Request Beta Access"
+        id="beta-access"
+        >Send email to be part of the My Request Beta</a
+      >
+    </h4>
+  </div>
 </div>
-
-<!--It appears that if a user creates an account, but then leaves before being confirmed. And then later tries to:
-  1. Sign up&#45;&#45;it says the account already exists
-  2. Sign in &#45;&#45;it says the user is not confirmed.
-  So we do indeed need a way to know if the user is registered but not confirmed. In that case, when they try to sign in, they could sign in but then have to verify before proceeding.
-  https://github.com/aws-amplify/amplify-js/issues/3679
-  -->

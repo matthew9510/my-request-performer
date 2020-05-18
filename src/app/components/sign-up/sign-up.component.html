@@ -1,0 +1,69 @@
+<div class="center">
+  <form [formGroup]="signupForm">
+    <h2>Create a My Request performer beta account</h2>
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Email"
+        type="email"
+        formControlName="email"
+        required
+      />
+      <mat-hint *ngIf="!emailInput.value">Enter their email address</mat-hint>
+      <mat-hint *ngIf="emailTakenMessage" class="error">
+        {{ emailTakenMessage }}</mat-hint
+      >
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        type="tel"
+        matInput
+        placeholder="Telephone"
+        formControlName="phone"
+      />
+      <mat-hint *ngIf="!phoneInput.value">Enter their phone number</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="First Name"
+        type="text"
+        formControlName="fname"
+        required
+      />
+      <mat-hint *ngIf="!fnameInput.value">Enter their first name</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Last Name"
+        type="text"
+        formControlName="lname"
+        required
+      />
+      <mat-hint *ngIf="!lnameInput.value">Enter their last name</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        placeholder="Password"
+        [type]="hide ? 'password' : 'text'"
+        formControlName="tempPassword"
+        required
+      />
+      <mat-icon matSuffix class="cursor-pointer" (click)="hide = !hide">{{
+        hide ? "visibility_off" : "visibility"
+      }}</mat-icon>
+      <mat-hint *ngIf="!passwordInput.value">Enter their password</mat-hint>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      appDebounceClick
+      (debounceClick)="signUp()"
+      [disabled]="shouldEnableSubmit()"
+    >
+      Sign them up
+    </button>
+  </form>
+</div>

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Auth } from "aws-amplify";
+import { CognitoUser } from "@aws-amplify/auth";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "@ENV";
 import { AmplifyService } from "aws-amplify-angular";
@@ -7,6 +8,14 @@ import { Router } from "@angular/router";
 import { PerformerService } from "@services/performer.service";
 import { concatMap, map } from "rxjs/operators";
 import { of, pipe } from "rxjs";
+
+export interface NewUser {
+  email: string;
+  phone: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
 
 @Injectable({
   providedIn: "root",
@@ -19,6 +28,7 @@ export class AuthService {
   user: any;
   greeting: string;
   signedIn: boolean;
+  isResetPasswordSuccessful: boolean;
 
   constructor(
     private http: HttpClient,
@@ -30,6 +40,7 @@ export class AuthService {
       .pipe(
         concatMap((authState) => {
           if (authState.state === "signedIn") {
+            // In here I should call Auth.currentAuthenricatedUser
             return this.login(authState);
           } else {
             // standardize the data shape for the subscribe function to handle multiple cases
@@ -43,6 +54,22 @@ export class AuthService {
           this.signedIn = res.authState.state === "signedIn";
         } else if (res.authState.state === "signedIn") {
           this.performerService.storePerformerCreds(res);
+
+          // track performer signedIn state
+          this.signedIn = res.authState.state === "signedIn";
+
+          Auth.currentAuthenticatedUser({
+            bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+          })
+            .then((user) => {
+              if (user.signInUserSession.idToken.payload["cognito:groups"]) {
+                this.performerService.group =
+                  user.signInUserSession.idToken.payload["cognito:groups"][0];
+              }
+            })
+            .catch((err) => console.log("error: " + err));
+        } else if (res.authState.state === "confirmSignUp") {
+          // pass, this is needed to create beta testers
         } else {
           this.signedIn = res.authState.state === "signedIn";
         }
@@ -50,9 +77,6 @@ export class AuthService {
   }
 
   login(authState: any) {
-    // track performer signedIn state
-    this.signedIn = authState.state === "signedIn";
-
     // save amplify's creds
     this.performerAuthState = authState;
 
@@ -96,6 +120,7 @@ export class AuthService {
         this.performerSub = null;
         this.performerJwt = null;
         this.performerService.performer = null;
+        this.performerService.group = null;
         localStorage.clear();
         this.router.navigate(["login"]);
         return data;
@@ -125,5 +150,30 @@ export class AuthService {
       localStorage.getItem("performerJwt")
     );
     return headers;
+  }
+
+  /* Aws Authentication functions below */
+  signIn(username: string, password: string): Promise<CognitoUser | any> {
+    return new Promise((resolve, reject) => {
+      Auth.signIn(username, password)
+        .then((user: CognitoUser | any) => {
+          // this.loggedIn = true;
+          resolve(user);
+        })
+        .catch((error: any) => reject(error));
+    });
+  }
+
+  signUp(user: NewUser): Promise<CognitoUser | any> {
+    return Auth.signUp({
+      username: user.email,
+      password: user.password,
+      attributes: {
+        email: user.email,
+        given_name: user.firstName,
+        family_name: user.lastName,
+        phone_number: user.phone,
+      },
+    });
   }
 }

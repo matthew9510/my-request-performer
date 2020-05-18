@@ -1,0 +1,45 @@
+@import "~aws-amplify-angular/theme.css";
+
+div.center {
+  display: flex;
+  justify-content: center;
+}
+
+div.flex-column {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+@media only screen and (max-width: 599.99px) {
+  h2 {
+    font-size: 20px;
+  }
+}
+
+@media only screen and (max-height: 376px) {
+  div.center {
+    margin-top: 5px;
+  }
+  div.flex-column {
+    margin-top: 0px;
+  }
+  h2 {
+    margin-top: 10px;
+    font-size: 20px;
+    margin-bottom: 0px;
+  }
+  h3 {
+    margin-top: 5px;
+    font-size: 15px;
+  }
+  h4 {
+    margin-top: 5px;
+  }
+
+  button {
+    margin-bottom: 10px;
+  }
+}

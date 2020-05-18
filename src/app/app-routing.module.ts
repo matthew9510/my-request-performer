@@ -8,13 +8,23 @@ import { ProfileComponent } from "./components/dashboard/profile/profile.compone
 import { ManageEventsComponent } from "./components/manage-events/manage-events.component";
 import { CreateEventComponent } from "./components/create-event/create-event.component";
 import { LoginComponent } from "./components/login/login.component";
+import { ForgotPasswordComponent } from "./components/forgot-password/forgot-password.component";
+
 import { EventOverviewComponent } from "./components/event-overview/event-overview.component";
+import { AdminComponent } from "./components/admin/admin.component";
 import { AuthGuard } from "./guards/auth.guard";
 import { NotAuthGuard } from "./guards/not-auth.guard";
+import { AdminGuard } from "./guards/admin.guard";
+
 import { ErrorPageComponent } from "./components/error-page/error-page.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
+  {
+    path: "admin",
+    component: AdminComponent,
+    canActivate: [NotAuthGuard, AdminGuard],
+  },
   {
     path: "dashboard",
     component: DashboardComponent,
@@ -73,6 +83,12 @@ const routes: Routes = [
     path: "login",
     component: LoginComponent,
     data: { title: "Log in" },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "forgotPassword",
+    component: ForgotPasswordComponent,
+    data: { title: "Forgot Password" },
     canActivate: [AuthGuard],
   },
   {

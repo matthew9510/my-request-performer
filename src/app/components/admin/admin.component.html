@@ -1,0 +1,20 @@
+<app-sign-up
+  (successfulBetaAccountCreation)="showSuccessMessage($event)"
+  *ngIf="!isSignedUp; else success"
+></app-sign-up>
+<ng-template #success>
+  <div class="center">
+    <div class="flex-column">
+      <h2>My Request performer beta account successfully created</h2>
+
+      <h3>Beta Account Information:</h3>
+      <h4><strong>Email:</strong> {{ userEmail }}</h4>
+      <h4><strong>Temporary Password:</strong> {{ userTempPassword }}</h4>
+      <br />
+
+      <button mat-raised-button color="primary" (click)="showSignUp()">
+        Make another beta account
+      </button>
+    </div>
+  </div>
+</ng-template>

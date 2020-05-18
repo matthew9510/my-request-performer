@@ -16,7 +16,7 @@ export class PerformerService {
   // success message that is different depending on if its a new event that was created or an existing one that has been edited
   eventCreatedMessage: string;
   // eventEditedMessage: string = "Success! Your event was changed.";
-
+  group: string;
   constructor(private http: HttpClient, private router: Router) {}
 
   // gets all performers (all statuses)

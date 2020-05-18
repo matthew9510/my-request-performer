@@ -5,6 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { EventService } from "../../services/event.service";
 import { AuthService } from "../../services/auth.service";
+import { PerformerService } from "@services/performer.service";
 import { Location } from "@angular/common";
 
 @Component({
@@ -26,7 +27,8 @@ export class HeaderComponent implements OnInit {
     public dialog: MatDialog,
     private eventService: EventService,
     private authService: AuthService,
-    private location: Location
+    private location: Location,
+    private performerService: PerformerService
   ) {}
 
   ngOnInit() {
@@ -124,5 +126,9 @@ export class HeaderComponent implements OnInit {
 
   navToProfile() {
     this.router.navigate(["/profile"]);
+  }
+
+  navToAdmin() {
+    this.router.navigate(["/admin"]);
   }
 }

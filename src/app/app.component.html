@@ -1,5 +1,5 @@
-<app-header></app-header>
-<main>
+<app-header *ngIf="authService.signedIn"></app-header>
+<main [class.header-nav-spacing]="authService.signedIn">
   <router-outlet></router-outlet>
 </main>
 
