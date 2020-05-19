@@ -25,10 +25,10 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private activeRoute: ActivatedRoute,
     public dialog: MatDialog,
-    private eventService: EventService,
-    private authService: AuthService,
+    public eventService: EventService,
+    public authService: AuthService,
     private location: Location,
-    private performerService: PerformerService
+    public performerService: PerformerService
   ) {}
 
   ngOnInit() {
