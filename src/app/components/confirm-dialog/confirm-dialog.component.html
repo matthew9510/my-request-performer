@@ -1,0 +1,17 @@
+<ng-container *transloco="let t" class="mat-app-background">
+  <h1 mat-dialog-title>{{ data.title }}</h1>
+  <mat-dialog-content>{{ data.message }}</mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialog()">
+      {{ t("confirm dialog cancel") }}
+    </button>
+    <button
+      mat-button
+      appDebounceClick
+      (debounceClick)="confirmDialog()"
+      color="warn"
+    >
+      {{ data.action }}
+    </button>
+  </mat-dialog-actions>
+</ng-container>

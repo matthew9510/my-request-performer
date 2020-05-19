@@ -1,0 +1,42 @@
+<div class="header-items">
+  <div class="total-earnings">
+    <h1 id="earnings-total">{{ earnings | currency }}</h1>
+    <h4>Total Earnings</h4>
+    <button
+      class="extended-fab-button"
+      mat-raised-button
+      color="primary"
+      disabled="true"
+    >
+      <span>Payout</span>
+    </button>
+    <span class="warning">
+      <mat-icon inline="true">warning</mat-icon>
+      Payout will not be permitted while the app is running in free mode.
+    </span>
+  </div>
+</div>
+
+<mat-divider></mat-divider>
+<mat-toolbar>
+  <mat-toolbar-row>
+    <h1>Earnings Details</h1>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="sort" *ngIf="completedEvents">
+  <span class="sort-item">Event</span>
+  <span class="sort-item">Gross</span>
+</div>
+
+<mat-list class="events">
+  <app-eventdetails
+    *ngFor="let event of completedEvents | filter: searchText"
+    mat-list-item
+    class="event"
+    [eventData]="event"
+    [grossAmount]="event.grossAmount"
+    (click)="navToEventRecap(event.id)"
+  >
+  </app-eventdetails>
+</mat-list>

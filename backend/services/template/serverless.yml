@@ -1,0 +1,56 @@
+service: <ENDPOINT_NAME>
+app: my-request
+# org: softstack
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-west-2
+  stackName: ${self:app}-${self:service}-stack
+  apiName: ${self:app}-${self:service}-api
+  profile: default
+  # profile: ${self:org}
+  environment:
+    DYNAMODB_TABLE: ${self:app}-${self:service}-table
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  endpoints:
+    name: ${self:app}-${self:service}-lambda
+    handler: src/index.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+    layers:
+      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
+
+resources:
+  Resources:
+    myDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

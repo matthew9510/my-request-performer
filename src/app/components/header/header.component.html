@@ -1,0 +1,43 @@
+<mat-toolbar class="header-toolbar">
+  <button
+    mat-icon-button
+    color="primary"
+    [class.hidden]="hideBackButton"
+    (click)="backClicked()"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <h3 class="header-nav" *ngIf="displayEventTitle; else showPageTitle">
+    {{ eventTitle }}
+  </h3>
+  <ng-template #showPageTitle>
+    <h3 class="header-nav">{{ pageTitle }}</h3>
+  </ng-template>
+
+  <button
+    mat-icon-button
+    color="primary"
+    [matMenuTriggerFor]="menu"
+    aria-label="Account menu"
+    *ngIf="authService.signedIn"
+  >
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <!-- </a> -->
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="navToProfile()">
+      <span>Profile</span>
+    </button>
+    <button
+      mat-menu-item
+      *ngIf="performerService.group === 'Admin'"
+      (click)="navToAdmin()"
+    >
+      Admin
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <span>Log out</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

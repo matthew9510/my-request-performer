@@ -1,0 +1,31 @@
+<mat-card
+  class="mat-card-container mat-elevation-z0"
+  color="accent"
+  *ngIf="loading === false"
+>
+  <!-- <img mat-card-image src="../assets/images/test-image.png" alt="" class="image"> -->
+  <!-- <div class="image"></div> -->
+  <div class="date-container">
+    <span class="date">{{ event?.date | date: "MMM d" }}</span>
+  </div>
+  <mat-card-content class="info">
+    <span class="title">{{ event?.title }}</span>
+    <br />
+    <span class="venue">{{ event?.venue?.name }}</span>
+    <br />
+    <span class="venue">
+      {{ event?.date | date: "EEE, MMM d" }}
+      <span *ngIf="event?.startTime"> at {{ event?.startTime }} </span>
+    </span>
+  </mat-card-content>
+  <div class="amount-wrapper">
+    <span class="amount">{{ grossAmount | currency }}</span>
+  </div>
+  <div *ngIf="showStatus">
+    <span class="venue" *ngIf="event.status === 'created'">Upcoming</span>
+    <span class="venue" *ngIf="event.status === 'completed'">Ended</span>
+    <span class="venue" *ngIf="event.status === 'active'">Active</span>
+    <span class="venue" *ngIf="event.status === 'cancelled'">Cancelled</span>
+    <span class="venue" *ngIf="event.status === 'paused'">Paused</span>
+  </div>
+</mat-card>

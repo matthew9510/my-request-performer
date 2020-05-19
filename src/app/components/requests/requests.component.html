@@ -1,0 +1,293 @@
+<ng-container *transloco="let t; read: 'requests'">
+  <div id="event-title-banner" *ngIf="event" class="mat-app-background">
+    <span class="event-title">Queue</span>
+  </div>
+
+  <!--Appears when the event is not started yet, or if event is ended -->
+  <div *ngIf="eventStatus === 'completed' || eventStatus === 'created'">
+    <p class="body-text" *ngIf="eventStatus === 'created'">
+      {{ t("inactive event message") }}
+    </p>
+    <p class="body-text" *ngIf="eventStatus === 'completed'">
+      This event has ended.
+    </p>
+    <p class="body-text" *ngIf="eventStatus === 'created'">
+      <button mat-flat-button color="primary" (click)="startEvent()">
+        <span>{{ t("start event fab") }}</span>
+      </button>
+    </p>
+  </div>
+
+  <!-- Appears when the event is active -->
+
+  <!-- disablePagination will not work in current version of angular material-->
+  <mat-tab-group
+    *ngIf="eventStatus === 'active' || eventStatus === 'paused'"
+    disablePagination="true"
+    mat-align-tabs="center"
+    class="mat-app-background"
+  >
+    <mat-tab class="tab-label" [label]="acceptedTabLabel">
+      <ng-template matTabContent>
+        <div [class.large-screen-display]="isLargeScreen">
+          <div
+            [class.large-screen-child]="isLargeScreen"
+            class="subheader-wrapper"
+          >
+            <h3 class="request-subheader" mat-subheader>
+              {{ t("now playing") }}
+            </h3>
+
+            <!-- Change event status menu -->
+            <mat-menu #eventMenu="matMenu" xPosition="before">
+              <button
+                mat-menu-item
+                (click)="startEvent()"
+                [disabled]="event.status === 'active'"
+              >
+                <span *ngIf="event.status !== 'paused'">Start Event</span>
+                <span *ngIf="event.status === 'paused'">Resume Event</span>
+              </button>
+              <button
+                mat-menu-item
+                (click)="pauseEvent()"
+                [disabled]="event.status === 'paused'"
+              >
+                Pause Event
+              </button>
+              <button
+                mat-menu-item
+                (click)="openEndEventDialog()"
+                [disabled]="
+                  event.status === 'completed' || event.status === 'created'
+                "
+              >
+                End Event
+              </button>
+            </mat-menu>
+
+            <button mat-button [matMenuTriggerFor]="eventMenu">
+              <mat-icon color="accent">
+                {{ eventStatusMenuIcon }}
+              </mat-icon>
+              {{ eventMenuStatus }}
+            </button>
+          </div>
+
+          <!-- Now playing song -->
+          <div
+            *ngIf="currentlyPlaying; else selectNextSong"
+            [class.large-screen-child]="isLargeScreen"
+          >
+            <app-request-detail
+              [song]="nowPlayingRequest.song"
+              [artist]="nowPlayingRequest?.artist"
+              [status]="nowPlayingRequest?.status"
+              [amount]="nowPlayingRequest?.amount"
+              [memo]="nowPlayingRequest?.memo"
+            >
+              <button
+                endSongButton
+                mat-flat-button
+                class="request-button"
+                color="accent"
+                (click)="endCurrentSong()"
+              >
+                {{ t("end song button") }}
+              </button>
+            </app-request-detail>
+          </div>
+
+          <!-- Message that shows up when there is no song currently selected -->
+          <ng-template #selectNextSong>
+            <p class="body-text">
+              {{ t("no current song playing message") }}
+            </p>
+          </ng-template>
+
+          <!-- Accepted requests/Up Next -->
+          <h3
+            [class.large-screen-child]="isLargeScreen"
+            class="request-subheader"
+            mat-subheader
+          >
+            {{ t("up next") }}
+          </h3>
+          <!-- Sorting for accepted requests -->
+          <div class="sort" *ngIf="acceptedRequests">
+            <div
+              class="sort-item"
+              [class.active]="acceptedOrder === 'modifiedOn'"
+              (click)="setAcceptedOrder('modifiedOn')"
+            >
+              Newest
+              <span [hidden]="!acceptedReverse">▼</span>
+              <span [hidden]="acceptedReverse">▲</span>
+            </div>
+            <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
+
+            <!-- <div class="sort-item" [class.active]="acceptedOrder === 'song'" (click)="setOrder('song')">
+              Song title 
+              <span [hidden]="acceptedReverse">▼</span>
+              <span [hidden]="!acceptedReverse">▲</span>
+            </div>
+            <div class="sort-item" [class.active]="acceptedOrder === 'artist'" (click)="setOrder('artist')">
+              Artist 
+              <span [hidden]="acceptedReverse">▼</span>
+              <span [hidden]="!acceptedReverse">▲</span>
+            </div> -->
+            <div
+              class="sort-item"
+              [class.active]="acceptedOrder === 'amount'"
+              (click)="setAcceptedOrder('amount')"
+            >
+              Tip Amount
+              <span [hidden]="!acceptedReverse">▼</span>
+              <span [hidden]="acceptedReverse">▲</span>
+            </div>
+          </div>
+          <mat-list [class.large-screen-child]="isLargeScreen">
+            <app-request-detail
+              mat-list-item
+              [song]="request.song"
+              [artist]="request.artist"
+              [amount]="request.amount"
+              [status]="request.status"
+              [amountOfTopUps]="request.topUps.length"
+              *ngFor="
+                let request of sortedAcceptedRequests
+                  | orderBy: order:acceptedReverse:'case-insensitive';
+                index as i
+              "
+            >
+              <button
+                rejectButton
+                mat-button
+                class="request-button"
+                color="warn"
+                appDebounceClick
+                (debounceClick)="
+                  openRejectRequestDialog(request, 'acceptedRequests')
+                "
+              >
+                {{ t("reject") }}
+              </button>
+              <button
+                playNextButton
+                mat-flat-button
+                class="request-button"
+                color="primary"
+                appDebounceClick
+                (debounceClick)="playNext(request)"
+              >
+                {{ t("play next") }}
+              </button>
+            </app-request-detail>
+          </mat-list>
+        </div>
+      </ng-template>
+    </mat-tab>
+
+    <!-- Pending requests tab -->
+    <mat-tab [label]="pendingTabLabel">
+      <ng-template matTabContent>
+        <div [class.large-screen-display]="isLargeScreen">
+          <div
+            [class.large-screen-child]="isLargeScreen"
+            class="request-subheader"
+            mat-subheader
+          >
+            <h3>{{ t("pending requests") }}</h3>
+            <button
+              mat-icon-button
+              color="primary"
+              (click)="onGetRequestsByEventId()"
+            >
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+          <p class="body-text" *ngIf="eventStatus === 'paused'">
+            Event paused. You will not receive any new incoming pending requests
+            while paused.
+          </p>
+
+          <!-- Sorting for pending requests -->
+          <div class="sort" *ngIf="pendingRequests">
+            <div
+              class="sort-item"
+              [class.active]="pendingOrder === 'modifiedOn'"
+              (click)="setPendingOrder('modifiedOn')"
+            >
+              Newest
+              <span [hidden]="!pendingReverse">▼</span>
+              <span [hidden]="pendingReverse">▲</span>
+            </div>
+            <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
+
+            <!-- <div class="sort-item" [class.active]="pendingOrder === 'song'" (click)="setOrder('song')">
+              Song title 
+              <span [hidden]="pendingReverse">▼</span>
+              <span [hidden]="!pendingReverse">▲</span>
+            </div>
+            <div class="sort-item" [class.active]="pendingOrder === 'artist'" (click)="setOrder('artist')">
+              Artist 
+              <span [hidden]="pendingReverse">▼</span>
+              <span [hidden]="!pendingReverse">▲</span>
+            </div> -->
+            <div
+              class="sort-item"
+              [class.active]="pendingOrder === 'amount'"
+              (click)="setPendingOrder('amount')"
+            >
+              Tip Amount
+              <span [hidden]="!pendingReverse">▼</span>
+              <span [hidden]="pendingReverse">▲</span>
+            </div>
+          </div>
+
+          <!-- Pending request items -->
+          <mat-list [class.large-screen-child]="isLargeScreen">
+            <app-request-detail
+              mat-list-item
+              [song]="request.song"
+              [artist]="request.artist"
+              [amount]="request.amount"
+              [status]="request.status"
+              *ngFor="
+                let request of sortedPendingRequests
+                  | orderBy: order:pendingReverse:'case-insensitive';
+                index as i
+              "
+            >
+              <button
+                acceptButton
+                mat-icon-button
+                class="request-button"
+                appDebounceClick
+                (debounceClick)="acceptRequest(request)"
+              >
+                <mat-icon color="primary" class="request-button-icon">
+                  done
+                </mat-icon>
+              </button>
+
+              <button
+                rejectButton
+                mat-icon-button
+                class="request-button"
+                appDebounceClick
+                (debounceClick)="
+                  openRejectRequestDialog(request, 'pendingRequests')
+                "
+              >
+                <mat-icon color="warn" class="request-button-icon">
+                  clear
+                </mat-icon>
+              </button>
+            </app-request-detail>
+          </mat-list>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>

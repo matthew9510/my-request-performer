@@ -1,0 +1,82 @@
+@import "../../../styles.scss";
+
+@media screen and (max-width: 400px) {
+  #toolbar {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .events {
+    width: 700px;
+    margin: 0 auto 100px auto;
+  }
+  // toolbar is the expansion panel
+  #toolbar {
+    width: 700px;
+    margin: 0 auto;
+  }
+}
+
+mat-expansion-panel {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+#expansion-panel-content {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.extended-fab-button {
+  width: unset;
+  padding: 0 26px;
+  border-radius: 29px;
+}
+
+.fab-button-text {
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  font-weight: 500;
+}
+
+#fab-button-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+#fab-button {
+  align-self: center;
+  justify-self: flex-end;
+  position: fixed !important;
+  bottom: 4.5rem;
+  z-index: 99;
+}
+
+mat-form-field {
+  margin: 2px;
+}
+
+.sort {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 700px;
+  padding: 5px 10px 5px 10px;
+  margin: 10px auto 0 auto;
+  background: $header-background;
+  border: 5px solid $header-background;
+  border-radius: 4px;
+  position: sticky;
+}
+
+.sort-item {
+  // font-size: small;
+  margin-right: 20px;
+}
+
+mat-list {
+  margin-bottom: 100px;
+}

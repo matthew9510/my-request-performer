@@ -1,0 +1,61 @@
+service: performers
+app: my-request
+# org: softstack
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-west-2
+  stackName: ${self:app}-${self:service}-stack
+  apiName: ${self:app}-${self:service}-api
+  # profile: ${self:org}
+  profile: default
+  stage: dev
+  environment:
+    DYNAMODB_TABLE: ${self:app}-${self:service}-table
+    DYNAMODB_EVENTS_TABLE: ${self:app}-events-table
+    DYNAMODB_VENUES_TABLE: ${self:app}-venues-table
+    DYNAMODB_REQUESTS_TABLE : my-request-requests-table
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  endpoints:
+    name: ${self:app}-${self:service}-lambda
+    handler: src/index.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY     
+    layers:
+      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
+    role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
+
+resources:
+  Resources:
+    myDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

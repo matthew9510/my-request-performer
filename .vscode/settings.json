@@ -1,4 +1,7 @@
 {
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "html.format.enable": false,
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -21,5 +24,11 @@
     "**/test.ts": true,
     "**/polyfills.ts": true,
     "**/main.ts": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Enable per-language
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
   }
 }

@@ -1,0 +1,110 @@
+@import "~aws-amplify-angular/theme.css";
+@import "../../../styles.scss";
+
+div.center {
+  display: flex;
+  justify-content: center;
+}
+
+div.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  margin-top: 20px;
+  // height: 280px;
+  // width: 410px;
+  height: 170px;
+  width: 300px;
+  margin-bottom: 30px;
+  align-self: center;
+}
+
+h2 {
+  margin-bottom: 0px;
+  align-self: center;
+}
+
+h3 {
+  align-self: center;
+}
+
+h5 {
+  align-self: center;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+h5.invalid-creds {
+  color: red;
+}
+
+h4 {
+  align-self: center;
+}
+
+a {
+  color: $primary;
+  text-decoration: none;
+}
+
+#beta-access {
+  color: $accent;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 500px;
+  margin-bottom: 10px;
+}
+
+mat-form-field {
+  margin-bottom: 20px;
+}
+
+button {
+  margin-top: 20px;
+}
+
+@media only screen and (max-width: 959.99px) {
+  img {
+    margin-top: 20px;
+    height: 170px;
+    width: 300px;
+    margin-bottom: 30px;
+    align-self: center;
+  }
+}
+
+@media only screen and (max-width: 599.99px) {
+  img {
+    height: 90px;
+    width: 165px;
+  }
+  form {
+    padding-left: 25px;
+    padding-right: 25px;
+    width: 360px;
+  }
+}
+
+@media only screen and (max-height: 376px) {
+  img {
+    height: 70px;
+    width: 150px;
+  }
+  form {
+    font-size: 10px;
+    height: 200px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+  }
+  h3 {
+    margin-top: 5px;
+  }
+}

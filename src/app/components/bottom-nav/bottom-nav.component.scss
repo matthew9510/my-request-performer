@@ -1,0 +1,39 @@
+mat-toolbar {
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  z-index: 100;
+  height: 56px;
+
+  a {
+    display: flex;
+    flex-direction: column;
+    margin-top: -15px;
+    font-size: 12px;
+    align-items: center;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .5);
+
+    span {
+      display: flex;
+      margin-top: -18px;
+    }
+  }
+
+  a.active-link {
+    color: #fff;
+    font-size: 13px;
+    animation: scale ease-in-out 200ms alternate;
+  }
+}
+
+@keyframes scale {
+	0% {
+		transform: none;
+	}
+
+	100% {
+		transform: scale(1.02,1.02)
+	}
+}

@@ -1,0 +1,223 @@
+<ng-container *transloco="let t; read: 'createEvent'">
+  <mat-horizontal-stepper
+    #stepper
+    labelPosition="bottom"
+    class="stepper-div mat-app-background"
+    (animationDone)="setFocus()"
+  >
+    <mat-step [stepControl]="eventDetailForm">
+      <form [formGroup]="eventDetailForm" class="createEventForm">
+        <ng-template matStepLabel>{{ t("eventDetails") }}</ng-template>
+
+        <mat-form-field>
+          <mat-label>{{ t("eventTitle") }}</mat-label>
+          <input matInput formControlName="title" id="input0" #input0 />
+          <mat-error>Must enter an event title</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("coverFee") }}</mat-label>
+          <input
+            matInput
+            type="number"
+            class="example-right-align"
+            formControlName="coverFee"
+          />
+          <span matPrefix>$&nbsp;</span>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("genre") }}</mat-label>
+          <input matInput formControlName="genre" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("eventUrl") }}</mat-label>
+          <input matInput formControlName="url" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("description") }}</mat-label>
+          <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+        <div *ngIf="uploadImage">
+          <input
+            #imageInput
+            hidden="true"
+            type="file"
+            (change)="imageUploaded($event)"
+            accept="image/png, image/jpeg"
+          />
+          <button mat-flat-button color="primary" (click)="imageInput.click()">
+            {{ t("uploadImage") }}
+          </button>
+        </div>
+
+        <div class="stepper-nav-buttons">
+          <button mat-button class="hidden" color="primary" matStepperNext>
+            {{ t("back") }}
+          </button>
+          <button mat-button color="primary" type="submit" matStepperNext>
+            {{ t("next") }}
+          </button>
+        </div>
+        <div class="cancel">
+          <button mat-stroked-button color="warn" (click)="cancelUpdateEvent()">
+            {{ t("cancel") }}
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="eventTimeAndDateForm">
+      <form
+        [formGroup]="eventTimeAndDateForm"
+        class="createEventForm date-form"
+      >
+        <ng-template matStepLabel>{{ t("dateAndTime") }}</ng-template>
+
+        <mat-form-field class="date-select">
+          <mat-label>{{ t("chooseADate") }}</mat-label>
+          <input
+            matInput
+            [matDatepicker]="myDatepicker"
+            formControlName="date"
+            [min]="today"
+            (focus)="myDatepicker.open()"
+            [value]="eventTimeAndDateForm.value.date"
+            id="input1"
+            #input1
+            required
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="myDatepicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker></mat-datepicker>
+          <mat-error>Date is required</mat-error>
+        </mat-form-field>
+
+        <p>
+          <mat-form-field class="time-select">
+            <mat-label for="EnterTime">{{ t("startTime") }}</mat-label>
+            <mat-select type="time" formControlName="startTime">
+              <mat-option *ngFor="let time of times" [value]="time">
+                {{ time }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="time-select">
+            <mat-label for="EndTime">{{ t("endTime") }}</mat-label>
+            <mat-select type="time" formControlName="endTime">
+              <mat-option *ngFor="let time of times" [value]="time">
+                {{ time }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </p>
+
+        <div class="stepper-nav-buttons">
+          <button mat-button color="primary" matStepperPrevious>
+            {{ t("back") }}
+          </button>
+          <button mat-button color="primary" type="submit" matStepperNext>
+            {{ t("next") }}
+          </button>
+        </div>
+
+        <div class="cancel">
+          <button mat-stroked-button color="warn" (click)="cancelUpdateEvent()">
+            {{ t("cancel") }}
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="venueForm">
+      <form [formGroup]="venueForm" class="createEventForm">
+        <ng-template matStepLabel>{{ t("venue") }}</ng-template>
+
+        <mat-form-field>
+          <mat-label>{{ t("name") }}</mat-label>
+          <input matInput formControlName="name" id="input2" #input2 required />
+          <mat-error>Venue name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("address") }}</mat-label>
+          <input matInput formControlName="streetAddress" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("city") }}</mat-label>
+          <input matInput formControlName="city" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("state") }}</mat-label>
+          <input matInput formControlName="state" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("postal") }}</mat-label>
+          <input matInput formControlName="postalCode" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("country") }}</mat-label>
+          <input matInput formControlName="country" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ t("website") }}</mat-label>
+          <input matInput formControlName="url" />
+        </mat-form-field>
+
+        <div class="stepper-nav-buttons">
+          <button
+            mat-button
+            class="back-button"
+            color="primary"
+            matStepperPrevious
+          >
+            {{ t("back") }}
+          </button>
+          <button
+            *ngIf="!editEvent"
+            mat-flat-button
+            color="accent"
+            [disabled]="venueForm.invalid"
+            type="submit"
+            appDebounceClick
+            (debounceClick)="createEvent()"
+          >
+            {{ t("createEvent") }}
+          </button>
+          <button
+            *ngIf="editEvent"
+            mat-flat-button
+            color="accent"
+            [disabled]="venueForm.invalid"
+            type="submit"
+            appDebounceClick
+            (debounceClick)="updateEvent()"
+          >
+            {{ t("editEvent") }}
+          </button>
+        </div>
+
+        <div class="cancel">
+          <button
+            mat-stroked-button
+            color="warn"
+            class="cancel-button"
+            (click)="cancelUpdateEvent()"
+          >
+            {{ t("cancel") }}
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
+</ng-container>
