@@ -16,6 +16,10 @@ export class ForgotPasswordComponent implements OnInit {
   isUserNotFound: boolean = false;
   isVerificationCodeValid: boolean = true;
   isEmailCollected: boolean = false;
+  isPasswordValid: boolean = true;
+  invalidPasswordMessage: any;
+  isdefaultSignUpError: boolean = false;
+  defaultSignUpErrorMessage: any;
 
   collectEmailForm: FormGroup = new FormGroup({
     email: new FormControl("", [Validators.email, Validators.required]),
@@ -83,6 +87,10 @@ export class ForgotPasswordComponent implements OnInit {
   updatePassword() {
     // reset flags for errors
     this.isVerificationCodeValid = true;
+    this.isPasswordValid = true;
+    this.invalidPasswordMessage = undefined;
+    this.isdefaultSignUpError = false;
+    this.defaultSignUpErrorMessage = undefined;
 
     // Collect confirmation code and new password, then
     Auth.forgotPasswordSubmit(
@@ -94,11 +102,24 @@ export class ForgotPasswordComponent implements OnInit {
         this.authService.isResetPasswordSuccessful = true;
         this.router.navigate(["/login"]); // pass in a flag to say password reset successsfully
       })
-      .catch((err) => {
-        if (err.name === "CodeMismatchException") {
-          this.isVerificationCodeValid = false;
+      .catch((err: any) => {
+        switch (err.name) {
+          case "CodeMismatchException":
+            this.isVerificationCodeValid = false;
+            break;
+          case "InvalidPasswordException":
+            //set error flags
+            this.isPasswordValid = false;
+            let message = err.message.split(":")[1];
+            this.invalidPasswordMessage = message.slice(1, message.length);
+            break;
+          default:
+            console.log(err);
+            this.isdefaultSignUpError = true;
+            this.defaultSignUpErrorMessage =
+              "Password must have a length of at least 8 characters, and must contain at least one capital and lowercase letter, number, and symbol";
+            break;
         }
-        console.log(err);
       });
   }
 }

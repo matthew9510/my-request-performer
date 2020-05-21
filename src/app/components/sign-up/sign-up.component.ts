@@ -13,6 +13,11 @@ export class SignUpComponent implements OnInit {
   hide = true;
   isEmailTaken: boolean = false;
   emailTakenMessage: any;
+  isPasswordValid: boolean = true;
+  invalidPasswordMessage: any;
+  isdefaultSignUpError: boolean = false;
+  defaultSignUpErrorMessage: any;
+
   signupForm: FormGroup = new FormGroup({
     email: new FormControl("", [Validators.email, Validators.required]),
     tempPassword: new FormControl("", [Validators.required]),
@@ -72,6 +77,10 @@ export class SignUpComponent implements OnInit {
     // reset error flags
     this.isEmailTaken = false;
     this.emailTakenMessage = undefined;
+    this.isPasswordValid = true;
+    this.invalidPasswordMessage = undefined;
+    this.isdefaultSignUpError = false;
+    this.defaultSignUpErrorMessage = undefined;
 
     this._authService
       .signUp({
@@ -87,12 +96,25 @@ export class SignUpComponent implements OnInit {
         this.successfulBetaAccountCreation.emit(data);
       })
       .catch((error) => {
-        if (error.name === "UsernameExistsException") {
-          //set errror flags
-          this.isEmailTaken = true;
-          this.emailTakenMessage = error.message;
+        switch (error.name) {
+          case "UsernameExistsException":
+            //set error flags
+            this.isEmailTaken = true;
+            this.emailTakenMessage = error.message;
+            break;
+          case "InvalidPasswordException":
+            //set error flags
+            this.isPasswordValid = false;
+            let message = error.message.split(":")[1];
+            this.invalidPasswordMessage = message.slice(1, message.length);
+            break;
+          default:
+            console.log(error);
+            this.isdefaultSignUpError = true;
+            this.defaultSignUpErrorMessage =
+              "Password must have a length of at least 8 characters, and must contain at least one capital and lowercase letter, number, and symbol";
+            break;
         }
-        console.log(error);
       });
   }
 }

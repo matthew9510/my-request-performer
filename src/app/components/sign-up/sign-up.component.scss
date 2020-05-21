@@ -46,6 +46,10 @@ button {
     padding-left: 25px;
     padding-right: 25px;
   }
+
+  mat-form-field.extra-margin-for-long-err {
+    margin-bottom: 40px;
+  }
 }
 
 @media only screen and (max-height: 376px) {

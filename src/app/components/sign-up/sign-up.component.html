@@ -10,7 +10,7 @@
         required
       />
       <mat-hint *ngIf="!emailInput.value">Enter their email address</mat-hint>
-      <mat-hint *ngIf="emailTakenMessage" class="error">
+      <mat-hint *ngIf="isEmailTaken" class="error">
         {{ emailTakenMessage }}</mat-hint
       >
     </mat-form-field>
@@ -43,7 +43,7 @@
       />
       <mat-hint *ngIf="!lnameInput.value">Enter their last name</mat-hint>
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field [class.extra-margin-for-long-err]="isdefaultSignUpError">
       <input
         matInput
         placeholder="Password"
@@ -54,7 +54,15 @@
       <mat-icon matSuffix class="cursor-pointer" (click)="hide = !hide">{{
         hide ? "visibility_off" : "visibility"
       }}</mat-icon>
-      <mat-hint *ngIf="!passwordInput.value">Enter their password</mat-hint>
+      <mat-hint *ngIf="!passwordInput.value && !isdefaultSignUpError"
+        >Enter their password</mat-hint
+      >
+      <mat-hint *ngIf="!isPasswordValid" class="error">
+        {{ invalidPasswordMessage }}</mat-hint
+      >
+      <mat-hint *ngIf="isdefaultSignUpError" class="error">
+        {{ defaultSignUpErrorMessage }}
+      </mat-hint>
     </mat-form-field>
     <button
       mat-raised-button
