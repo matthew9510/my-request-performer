@@ -11,7 +11,7 @@ provider:
   stackName: ${self:app}-${self:service}-${self:provider:stage}
   apiName: ${self:app}-${self:service}-${self:provider:stage}
   profile: default
-  stage: dev
+  stage: "dev"
   # profile: ${self:org}
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider:stage}
