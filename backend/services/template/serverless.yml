@@ -1,5 +1,5 @@
 service: template
-app: my-request
+app: ${file(../../serverless.yml):app}
 org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
