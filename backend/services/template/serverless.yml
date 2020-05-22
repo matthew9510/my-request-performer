@@ -1,6 +1,6 @@
 service: template
-app: ${file(../../serverless.yml):app}
-# org: softstack
+app: my-request
+org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
