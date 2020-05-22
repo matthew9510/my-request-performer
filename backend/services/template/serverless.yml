@@ -8,13 +8,13 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: ${self:app}-${self:service}
-  apiName: ${self:app}-${self:service}
+  stackName: ${self:app}-${self:service}-${self:stage}
+  apiName: ${self:app}-${self:service}-${self:stage}
   profile: default
   stage: dev
   # profile: ${self:org}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}
+    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
