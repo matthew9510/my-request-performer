@@ -12,6 +12,9 @@ provider:
   apiName: ${self:app}-${self:service}-${self:provider.stage}
   profile: default
   stage: ${opt:stage, 'dev'}
+  stackTags:
+    PROJECT: ${self:app}
+    STAGE: ${self:provider.stage}
 
   # profile: ${self:org}
   environment:
