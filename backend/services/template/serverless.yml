@@ -30,7 +30,7 @@ provider:
 
 functions:
   endpoints:
-    name: ${self:app}-${self:service}
+    name: ${self:app}-${self:service}-${self:provider.stage}
     handler: src/index.handler
     events:
       - http:
