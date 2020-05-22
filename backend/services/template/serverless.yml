@@ -1,6 +1,6 @@
 service: template
 app: ${file(../../serverless.yml):app}
-org: ssfdev
+org: ${file(../../serverless.yml):org}
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,13 +8,13 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: ${self:app}-${self:service}-stack
-  apiName: ${self:app}-${self:service}-api
+  stackName: ${self:app}-${self:service}
+  apiName: ${self:app}-${self:service}
   profile: default
   stage: dev
   # profile: ${self:org}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-table
+    DYNAMODB_TABLE: ${self:app}-${self:service}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -28,7 +28,7 @@ provider:
 
 functions:
   endpoints:
-    name: ${self:app}-${self:service}-lambda
+    name: ${self:app}-${self:service}
     handler: src/index.handler
     events:
       - http:
