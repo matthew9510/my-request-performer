@@ -18,7 +18,6 @@ provider:
 
   # profile: ${self:org}
   environment:
-
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
@@ -58,3 +57,7 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+
