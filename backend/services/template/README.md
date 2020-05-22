@@ -1,4 +1,4 @@
-# Service TEMPLATE API
+# Service TEMPLATE API/s
 
 [Serverless Dashboard](TEMPLATE)
 
