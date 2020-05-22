@@ -1,5 +1,5 @@
-service: <ENDPOINT_NAME>
-app: my-request
+service: template
+app: ${file(../../serverless.yml):app}
 # org: softstack
 
 frameworkVersion: ">=1.1.0 <2.0.0"
@@ -11,6 +11,7 @@ provider:
   stackName: ${self:app}-${self:service}-stack
   apiName: ${self:app}-${self:service}-api
   profile: default
+  stage: dev
   # profile: ${self:org}
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-table
@@ -39,16 +40,14 @@ functions:
 resources:
   Resources:
     myDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
