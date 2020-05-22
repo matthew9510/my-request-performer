@@ -1,4 +1,4 @@
-# Service Events API
+# Service Events APIs
 
 Service: events
 
