@@ -16,17 +16,27 @@ export class ForgotPasswordComponent implements OnInit {
   isUserNotFound: boolean = false;
   isVerificationCodeValid: boolean = true;
   isEmailCollected: boolean = false;
-  isPasswordValid: boolean = true;
-  invalidPasswordMessage: any;
-  isdefaultSignUpError: boolean = false;
-  defaultSignUpErrorMessage: any;
+
+  // Error message displays when error with email form occurs
+  errorMessage: string;
+  showErrorMessage: boolean = false;
+
+  // Error that displays when update password form cannot be completed
+  showSubmitErrorMessage: boolean = true;
+  submitErrorMessage: string;
 
   collectEmailForm: FormGroup = new FormGroup({
     email: new FormControl("", [Validators.email, Validators.required]),
   });
   resetPasswordForm: FormGroup = new FormGroup({
     verificationCode: new FormControl("", [Validators.required]),
-    newPassword: new FormControl("", [Validators.required]),
+    newPassword: new FormControl("", [
+      Validators.required,
+      Validators.pattern(
+        /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%?=*&]).{8,20})/
+      ),
+      Validators.min(8),
+    ]),
   });
 
   constructor(private router: Router, private authService: AuthService) {}
@@ -44,33 +54,21 @@ export class ForgotPasswordComponent implements OnInit {
     return this.resetPasswordForm.get("newPassword");
   }
 
-  getEmailInputError() {
-    if (this.emailInput.hasError("email")) {
-      return "Please enter a valid email address.";
-    }
-    if (this.emailInput.hasError("required")) {
-      return "An Email is required.";
-    }
-  }
-
-  getPasswordInputError() {
-    if (this.newPasswordInput.hasError("required")) {
-      return "A password is required.";
-    }
-  }
-
   // Clear flags and state when user cancels the updating password flow
   resetState() {
     this.hide = true;
     this.isUserNotFound = false;
     this.isVerificationCodeValid = true;
     this.isEmailCollected = true;
+    this.showErrorMessage = false;
+    this.showSubmitErrorMessage = false;
   }
 
   // Trigger Aws to send code to performers email
   sendCode() {
     // reset flags for errors
     this.isUserNotFound = false;
+    this.showErrorMessage = false;
 
     Auth.forgotPassword(this.emailInput.value)
       .then((data) => {
@@ -79,18 +77,21 @@ export class ForgotPasswordComponent implements OnInit {
       .catch((err) => {
         if (err.name === "UserNotFoundException") {
           this.isUserNotFound = true;
+          this.errorMessage =
+            "Email is not registered with My Request Platform";
+        } else if ("LimitExceededException") {
+          this.showErrorMessage = true;
+          this.errorMessage = err.message;
+        } else {
+          this.showErrorMessage = true;
+          this.errorMessage = "Error. Your request could not be completed.";
         }
-        console.log(err);
       });
   }
 
   updatePassword() {
     // reset flags for errors
     this.isVerificationCodeValid = true;
-    this.isPasswordValid = true;
-    this.invalidPasswordMessage = undefined;
-    this.isdefaultSignUpError = false;
-    this.defaultSignUpErrorMessage = undefined;
 
     // Collect confirmation code and new password, then
     Auth.forgotPasswordSubmit(
@@ -103,22 +104,12 @@ export class ForgotPasswordComponent implements OnInit {
         this.router.navigate(["/login"]); // pass in a flag to say password reset successsfully
       })
       .catch((err: any) => {
-        switch (err.name) {
-          case "CodeMismatchException":
-            this.isVerificationCodeValid = false;
-            break;
-          case "InvalidPasswordException":
-            //set error flags
-            this.isPasswordValid = false;
-            let message = err.message.split(":")[1];
-            this.invalidPasswordMessage = message.slice(1, message.length);
-            break;
-          default:
-            console.log(err);
-            this.isdefaultSignUpError = true;
-            this.defaultSignUpErrorMessage =
-              "Password must have a length of at least 8 characters, and must contain at least one capital and lowercase letter, number, and symbol";
-            break;
+        if (err.name === "CodeMismatchException") {
+          this.isVerificationCodeValid = false;
+        } else {
+          this.submitErrorMessage =
+            "Error. Your request could not be completed.";
+          this.showSubmitErrorMessage = true;
         }
       });
   }

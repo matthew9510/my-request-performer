@@ -26,9 +26,9 @@
           formControlName="password"
           required
         />
-        <mat-icon matSuffix (click)="hide = !hide">{{
-          hide ? "visibility_off" : "visibility"
-        }}</mat-icon>
+        <mat-icon matSuffix (click)="hide = !hide">
+          {{ hide ? "visibility_off" : "visibility" }}
+        </mat-icon>
         <mat-hint *ngIf="!passwordInput.value">Enter your password</mat-hint>
         <mat-error *ngIf="!passwordInput.valid">
           {{ getPasswordInputError() }}
@@ -47,13 +47,15 @@
         Sign In
       </button>
     </form>
-    <h4><a routerLink="/forgotPassword">Forgot Password</a></h4>
+    <h4><a routerLink="/forgot-password">Forgot Password</a></h4>
     <h4>
       <a
         href="mailto: jeffpuszykowski@mac.com?subject=My Request Beta Access"
         id="beta-access"
-        >Send email to be part of the My Request beta</a
+        target="_blank"
       >
+        Send email to be part of the My Request beta
+      </a>
     </h4>
   </div>
 </div>

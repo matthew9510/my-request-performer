@@ -23,8 +23,8 @@ export const environment = {
     "https://ts1drgp3g3.execute-api.us-west-2.amazonaws.com/dev/performers",
   aws_project_region: "us-west-2",
   aws_cognito_region: "us-west-2",
-  aws_user_pools_id: "us-west-2_cyimjlwtU",
-  aws_user_pools_web_client_id: "2vah6r61ekscqp62f0oari1spr",
+  aws_user_pools_id: "us-west-2_7vXlPMZyi",
+  aws_user_pools_web_client_id: "24so57n8lsf569hgkdphao17vj",
 };
 /*
  * For easier debugging in development mode, you can import the following file
