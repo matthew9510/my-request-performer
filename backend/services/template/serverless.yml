@@ -23,7 +23,7 @@ provider:
         - ""
         - - "https://"
           - Ref: "ApiGatewayRestApi"
-          - ".execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}"
+          - ".execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}"
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
