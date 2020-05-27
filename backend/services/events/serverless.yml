@@ -1,21 +1,23 @@
 service: events
-app: my-request
-# org: softstack
+app: ${file(../../serverless.yml):app}
+org: ${file(../../serverless.yml):org}
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: ${file(../../serverless.yml):runtime}
   region: us-west-2
-  stackName: ${self:app}-${self:service}-stack
-  apiName: ${self:app}-${self:service}-api
-  # profile: ${self:org}
+  stackName: ${self:app}-${self:service}-${self:provider.stage}
+  apiName: ${self:app}-${self:service}-${self:provider.stage}
   profile: default
-  stage: dev
+  stage: ${opt:stage, 'dev'}
+  stackTags:
+    PROJECT: ${self:app}
+    STAGE: ${self:provider.stage}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-table
-    DYNAMODB_REQUESTS_TABLE : my-request-requests-table
+    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
+    DYNAMODB_REQUESTS_TABLE: my-request-requests-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -29,7 +31,7 @@ provider:
 
 functions:
   endpoints:
-    name: ${self:app}-${self:service}-lambda
+    name: ${self:app}-${self:service}-${self:provider.stage}
     handler: src/index.handler
     events:
       - http:
@@ -46,7 +48,7 @@ functions:
           #     - Authorization
           #     - X-Api-Key
           #     - X-Amz-Security-Token
-          #     - X-Amz-User-Agent 
+          #     - X-Amz-User-Agent
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
     role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
@@ -54,16 +56,14 @@ functions:
 resources:
   Resources:
     myDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -73,8 +73,8 @@ resources:
     #   Type: 'AWS::ApiGateway::GatewayResponse'
     #   Properties:
     #     ResponseParameters:
-    #       gatewayresponse.header.Access-Control-Allow-Origin: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'" 
-    #       gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'" 
+    #       gatewayresponse.header.Access-Control-Allow-Origin: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    #       gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
     #       gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
     #     ResponseType: DEFAULT_4XX
     #     RestApiId: "9kwwlfe0x0"
@@ -82,7 +82,7 @@ resources:
     #   Type: 'AWS::ApiGateway::GatewayResponse'
     #   Properties:
     #     ResponseParameters:
-    #       gatewayresponse.header.Access-Control-Allow-Origin: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'" 
-    #       gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'" 
+    #       gatewayresponse.header.Access-Control-Allow-Origin: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    #       gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
     #     ResponseType: DEFAULT_5XX
     #     RestApiId: "9kwwlfe0x0"
