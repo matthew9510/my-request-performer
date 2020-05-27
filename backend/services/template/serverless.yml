@@ -17,8 +17,7 @@ provider:
     STAGE: ${self:provider.stage}
 
   # profile: ${self:org}
-  environment:
-    RUNTIME: ${file(../../serverless.yml):provider.environment.runtime}
+  environment
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
