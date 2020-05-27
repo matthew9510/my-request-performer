@@ -36,7 +36,7 @@ const AWS = require("aws-sdk");
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 /**********************
- * GET method *
+ * GET method *    // Testing
  **********************/
 
 app.get("/template", function (req, res) {
