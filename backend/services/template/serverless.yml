@@ -69,4 +69,4 @@ resources:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
 outputs:
   TableName: ${self:provider.environment.DYNAMODB_TABLE}
-  URL: ${self:provider.environmen.URL}
+  URL: ${self:provider.environment.URL}
