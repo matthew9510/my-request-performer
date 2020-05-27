@@ -18,6 +18,12 @@ provider:
 
   # profile: ${self:org}
   environment:
+    URL:
+      Fn::Join:
+          - ""
+          - - "https://"
+            - Ref: "ApiGatewayRestApi"
+            - ".execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}"
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
@@ -50,12 +56,20 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: venueId
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+          - AttributeName: venueId
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
 outputs:
   TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:provider.environmen.URL}
+provider:
+  environment:
+    GW_URL:
