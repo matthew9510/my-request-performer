@@ -74,7 +74,7 @@ export class SignUpComponent implements OnInit {
         password: this.passwordInput.value,
         firstName: this.fnameInput.value,
         lastName: this.lnameInput.value,
-        phone: `+${this.phoneInput.value.replace(/-/g, "")}`,
+        phone: `${this.countryCode}${this.phoneInput.value.replace(/-/g, "")}`,
       })
       .then((data) => {
         data.tempPassword = this.passwordInput.value;
