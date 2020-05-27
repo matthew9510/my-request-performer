@@ -17,7 +17,7 @@ provider:
     STAGE: ${self:provider.stage}
 
   # profile: ${self:org}
-  environment
+  environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
