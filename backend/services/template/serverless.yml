@@ -1,6 +1,6 @@
-service: <ENDPOINT_NAME>
-app: my-request
-# org: softstack
+service: template
+app: ${file(../../serverless.yml):app}
+org: ${file(../../serverless.yml):org}
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,12 +8,17 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: ${self:app}-${self:service}-stack
-  apiName: ${self:app}-${self:service}-api
+  stackName: ${self:app}-${self:service}-${self:provider.stage}
+  apiName: ${self:app}-${self:service}-${self:provider.stage}
   profile: default
+  stage: ${opt:stage, 'dev'}
+  stackTags:
+    PROJECT: ${self:app}
+    STAGE: ${self:provider.stage}
+
   # profile: ${self:org}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-table
+    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -27,7 +32,7 @@ provider:
 
 functions:
   endpoints:
-    name: ${self:app}-${self:service}-lambda
+    name: ${self:app}-${self:service}-${self:provider.stage}
     handler: src/index.handler
     events:
       - http:
@@ -39,18 +44,36 @@ functions:
 resources:
   Resources:
     myDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: venueId
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
+          - AttributeName: venueId
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+custom:
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - "/"
+        - ${self:provider.stage}
+        - "/"
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:custom.apiEndpoint}

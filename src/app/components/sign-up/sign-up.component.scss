@@ -20,9 +20,9 @@ mat-form-field {
   margin-bottom: 15px;
 }
 
-mat-hint.error {
-  color: mat-color($app-warn) !important;
-}
+// mat-hint.error {
+//   color: mat-color($app-warn) !important;
+// }
 
 button {
   margin-top: 20px;
@@ -47,9 +47,9 @@ button {
     padding-right: 25px;
   }
 
-  mat-form-field.extra-margin-for-long-err {
-    margin-bottom: 40px;
-  }
+  // mat-form-field.extra-margin-for-long-err {
+  //   margin-bottom: 40px;
+  // }
 }
 
 @media only screen and (max-height: 376px) {
@@ -60,4 +60,8 @@ button {
     font-size: 20px;
     margin-bottom: 0px;
   }
+}
+
+.error-message {
+  color: $warn;
 }
