@@ -67,10 +67,17 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
-outputs:
-  TableName: ${self:provider.environment.DYNAMODB_TABLE}
-  URL:
+
+custom:
+  apiEndpoint:
     Fn::Join:
       - ""
       - - "https://"
-      - Ref: "ApiGatewayRestApi"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - ${self:provider.stage}
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:custom.apiEndpoint}
