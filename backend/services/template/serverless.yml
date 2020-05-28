@@ -70,4 +70,7 @@ resources:
 outputs:
   TableName: ${self:provider.environment.DYNAMODB_TABLE}
   URL:
-    - Ref: "ApiGatewayRestApi"
+    Fn::Join:
+      - ""
+      - - "https://"
+      - Ref: "ApiGatewayRestApi"
