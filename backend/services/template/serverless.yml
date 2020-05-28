@@ -80,4 +80,4 @@ custom:
         - /${self:provider.stage}/
 outputs:
   TableName: ${self:provider.environment.DYNAMODB_TABLE}
-  URL: ${self:custom.apiEndpoint}
+  URL: /${self:custom.apiEndpoint}/
