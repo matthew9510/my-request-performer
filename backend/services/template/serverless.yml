@@ -77,7 +77,7 @@ custom:
         - ".execute-api."
         - ${self:provider.region}.
         - Ref: "AWS::URLSuffix"
-        - ${self:provider.stage}
+        - /${self:provider.stage}/
 outputs:
   TableName: ${self:provider.environment.DYNAMODB_TABLE}
   URL: ${self:custom.apiEndpoint}
