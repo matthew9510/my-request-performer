@@ -71,6 +71,7 @@ custom:
         - ".execute-api."
         - ${self:provider.region}.
         - Ref: "AWS::URLSuffix"
+        - "/"
         - ${self:provider.stage}
         - "/"
 outputs:
