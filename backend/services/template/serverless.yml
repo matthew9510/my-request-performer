@@ -1,6 +1,6 @@
 service: template
-app: ${file(../../serverless.yml):app}
-# org: softstack
+app: my-request
+org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,13 +8,17 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: ${self:app}-${self:service}-stack
-  apiName: ${self:app}-${self:service}-api
+  stackName: ${self:app}-${self:service}-${self:provider.stage}
+  apiName: ${self:app}-${self:service}-${self:provider.stage}
   profile: default
-  stage: dev
-  # profile: ${self:org}
+  stage: ${opt:stage, 'dev'}
+  stackTags:
+    PROJECT: ${self:app}
+    STAGE: ${self:provider.stage}
+
+  # profile a: ${self:org}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-table
+    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -28,12 +32,15 @@ provider:
 
 functions:
   endpoints:
-    name: ${self:app}-${self:service}-lambda
+    name: ${self:app}-${self:service}-${self:provider.stage}
     handler: src/index.handler
     events:
       - http:
           path: /{proxy+}
           method: ANY
+          authorizer:
+            name: cognito-pool-auth
+            arn: arn:aws:cognito-idp:us-west-2:418615587574:userpool/us-west-2_cyimjlwtU
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
 
@@ -46,10 +53,30 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: venueId
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+          - AttributeName: venueId
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+custom:
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - "/"
+        - ${self:provider.stage}
+        - "/"
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:custom.apiEndpoint}

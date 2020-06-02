@@ -1,6 +1,6 @@
 service: venues
 app: my-request
-# org: softstack
+org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,13 +8,12 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: ${self:app}-${self:service}-stack
-  apiName: ${self:app}-${self:service}-api
-  # profile: ${self:org}
+  stackName: ${self:app}-${self:service}-${self:provider.stage}
+  apiName: ${self:app}-${self:service}-${self:provider.stage}
   profile: default
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-table
+    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -28,7 +27,7 @@ provider:
 
 functions:
   create:
-    name: ${self:app}-${self:service}-lambda
+    name: ${self:app}-${self:service}-${self:provider.stage}
     handler: src/index.handler
     events:
       - http:
@@ -47,6 +46,8 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: performerId
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
@@ -54,3 +55,31 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: performerId-id-index
+            KeySchema:
+              - AttributeName: performerId
+                KeyType: HASH
+              - AttributeName: id
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+
+custom:
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - "/"
+        - ${self:provider.stage}
+        - "/"
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:custom.apiEndpoint}

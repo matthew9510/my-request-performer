@@ -1,2 +1,7 @@
 app: my-request
 org: ssfdev
+provider:
+  environment:
+    runtime: nodejs10.x
+runtime: nodejs10.x
+

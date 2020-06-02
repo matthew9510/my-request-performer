@@ -122,7 +122,7 @@ app.get("/venues/:id", function (req, res) {
             "Unable to find record, please check venue id " +
             venueId +
             " was entered correctly... ",
-          invalid_id: venueID,
+          invalid_id: venueId,
         });
       }
     }

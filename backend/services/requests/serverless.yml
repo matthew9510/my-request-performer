@@ -1,6 +1,6 @@
 service: requests
 app: my-request
-# org: softstack
+org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,13 +8,15 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: ${self:app}-${self:service}-stack
-  apiName: ${self:app}-${self:service}-api
-  # profile: ${self:org}
+  stackName: ${self:app}-${self:service}-${self:provider.stage}
+  apiName: ${self:app}-${self:service}-${self:provider.stage}
   profile: default
-  stage: dev
+  stage: ${opt:stage, 'dev'}
+  stackTags:
+    PROJECT: ${self:app}
+    STAGE: ${self:provider.stage}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-table
+    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -28,7 +30,7 @@ provider:
 
 functions:
   endpoints:
-    name: ${self:app}-${self:service}-lambda
+    name: ${self:app}-${self:service}-${self:provider.stage}
     handler: src/index.handler
     events:
       - http:
@@ -41,18 +43,86 @@ functions:
 resources:
   Resources:
     myDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: createdOn
+            AttributeType: S
+          - AttributeName: modifiedOn
+            AttributeType: S
+          - AttributeName: eventId
+            AttributeType: S
+          - AttributeName: performerId
+            AttributeType: S
+          - AttributeName: requesterId
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: eventId-createdOn-index
+            KeySchema:
+              - AttributeName: eventId
+                KeyType: HASH
+              - AttributeName: createdOn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: eventId-modifiedOn-index
+            KeySchema:
+              - AttributeName: eventId
+                KeyType: HASH
+              - AttributeName: modifiedOn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: performerId-modifiedOn-index
+            KeySchema:
+              - AttributeName: performerId
+                KeyType: HASH
+              - AttributeName: modifiedOn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+          - IndexName: requesterId-createdOn-index
+            KeySchema:
+              - AttributeName: requesterId
+                KeyType: HASH
+              - AttributeName: createdOn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+custom:
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - "/"
+        - ${self:provider.stage}
+        - "/"
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:custom.apiEndpoint}

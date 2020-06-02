@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 /*
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
@@ -6,10 +6,10 @@ Licensed under the Apache License, Version 2.0 (the "License"). You may not use 
 or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
 */
-const uuid = require('uuid');
-const express = require('express');
-const bodyParser = require('body-parser');
-const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
+const uuid = require("uuid");
+const express = require("express");
+const bodyParser = require("body-parser");
+const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 
 // declare a new express app
 const app = express();
@@ -19,9 +19,12 @@ app.use(awsServerlessExpressMiddleware.eventContext());
 // Enable CORS for all methods
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT");
-  next()
+  next();
 });
 
 /**********************
@@ -33,13 +36,13 @@ const AWS = require("aws-sdk");
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 /**********************
- * GET method *
+ * GET method *    // Testing
  **********************/
 
-app.get('/template', function (req, res) {
-
+app.get("/template", function (req, res) {
+  // testing
   // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true")
+  const debug = Boolean(req.query.debug == "true");
 
   if (debug) console.log("GET REQUEST...", req);
 
@@ -55,7 +58,10 @@ app.get('/template', function (req, res) {
   dynamoDb.get(params, (error, result) => {
     // handle potential errors
     if (error) {
-      console.error("Unable to find item. Error JSON:", JSON.stringify(error, null, 2));
+      console.error(
+        "Unable to find item. Error JSON:",
+        JSON.stringify(error, null, 2)
+      );
     } else {
       if ("Item" in result && "id" in result.Item) {
         // create a response
@@ -64,14 +70,15 @@ app.get('/template', function (req, res) {
           body: result.Item,
         };
         res.json({
-          success: 'Successfully found item in the template table!',
-          response: response.body
-        })
+          success: "Successfully found item in the template table!",
+          response: response.body,
+        });
       } else {
         res.json({
-          message: 'Unable to find record, please check id was entered correctly... ',
-          invalid_id: params.Key.id
-        })
+          message:
+            "Unable to find record, please check id was entered correctly... ",
+          invalid_id: params.Key.id,
+        });
       }
     }
   });
@@ -81,11 +88,10 @@ app.get('/template', function (req, res) {
  * PUT method *
  ****************************/
 
-app.put('/template', function (req, res) {
-
+app.put("/template", function (req, res) {
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
-    Item: req.body
+    Item: req.body,
   };
 
   // Generate uuid & date record
@@ -94,16 +100,19 @@ app.put('/template', function (req, res) {
 
   dynamoDb.put(params, function (err, result) {
     if (err) {
-      console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+      console.error(
+        "Unable to add item. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
     } else {
       const response = {
         statusCode: 200,
         body: params.Item,
       };
       res.json({
-        success: 'Successfully added item to the template table!',
-        record: response.body
-      })
+        success: "Successfully added item to the template table!",
+        record: response.body,
+      });
     }
   });
 });
@@ -112,9 +121,9 @@ app.put('/template', function (req, res) {
  * DELETE method *
  ****************************/
 
-app.delete('/template', function (req, res) {
+app.delete("/template", function (req, res) {
   // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true")
+  const debug = Boolean(req.query.debug == "true");
 
   if (debug) console.log("DELETE template REQUEST...", req.body);
 
@@ -128,15 +137,18 @@ app.delete('/template', function (req, res) {
 
   dynamoDb.delete(params, function (err, result) {
     if (err) {
-      console.error("Unable to DELETE item. Error JSON:", JSON.stringify(err, null, 2));
+      console.error(
+        "Unable to DELETE item. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
     } else {
       const response = {
         statusCode: 200,
         body: req.body,
       };
       res.json({
-        success: 'delete call for template table succeeded!',
-        response: response
+        success: "delete call for template table succeeded!",
+        response: response,
       });
     }
   });
@@ -146,9 +158,9 @@ app.delete('/template', function (req, res) {
  * PATCH method *
  ****************************/
 
-app.patch('/template', function (req, res) {
+app.patch("/template", function (req, res) {
   // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true")
+  const debug = Boolean(req.query.debug == "true");
 
   if (debug) console.log("UPDATE template REQUEST...", req);
 
@@ -160,32 +172,35 @@ app.patch('/template', function (req, res) {
     },
     UpdateExpression: "set #n = :val1",
     ExpressionAttributeValues: {
-      ":val1": req.query.name
+      ":val1": req.query.name,
     },
     ExpressionAttributeNames: {
-      "#n": "name"
+      "#n": "name",
     },
-    ReturnValues: "UPDATED_NEW"
+    ReturnValues: "UPDATED_NEW",
   };
 
   dynamoDb.update(params, function (err, result) {
     if (err) {
-      console.error("Unable to Update item. Error JSON:", JSON.stringify(err, null, 2));
+      console.error(
+        "Unable to Update item. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
     } else {
       const response = {
         statusCode: 200,
         body: result,
       };
       res.json({
-        success: 'UPDATE for record on template table succeeded!',
-        response: response.body
+        success: "UPDATE for record on template table succeeded!",
+        response: response.body,
       });
     }
   });
 });
 
 app.listen(3000, function () {
-  console.log("My Request API...")
+  console.log("My Request API...");
 });
 
 // Export the app object. When executing the application local this does nothing. However,
