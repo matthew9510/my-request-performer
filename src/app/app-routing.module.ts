@@ -86,7 +86,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: "forgotPassword",
+    path: "forgot-password",
     component: ForgotPasswordComponent,
     data: { title: "Forgot Password" },
     canActivate: [AuthGuard],
