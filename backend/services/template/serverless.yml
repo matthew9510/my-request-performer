@@ -1,6 +1,8 @@
 service: template
-app: ${file(../../serverless.yml):app}
-org: ${file(../../serverless.yml):org}
+
+app: my-request
+org: ssfdev
+
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -16,7 +18,8 @@ provider:
     PROJECT: ${self:app}
     STAGE: ${self:provider.stage}
 
-  # profile: ${self:org}
+  # profile a: ${self:org}
+
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
@@ -38,6 +41,9 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
+          authorizer:
+            name: cognito-pool-auth
+            arn: arn:aws:cognito-idp:us-west-2:418615587574:userpool/us-west-2_cyimjlwtU
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:3
 

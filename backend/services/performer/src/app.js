@@ -426,7 +426,9 @@ app.post("/performers", function (req, res) {
   if (debug) console.log("Params:\n", params);
 
   // Date the record
-  params.Item.createdOn = new Date().toJSON();
+  let newRecordDate = new Date().toJSON();
+  params.Item.createdOn = newRecordDate;
+  params.Item.modifiedOn = newRecordDate;
 
   // Note if table item is being inserted for the first time, the result will be empty
   dynamoDb.put(params, function (err, result) {

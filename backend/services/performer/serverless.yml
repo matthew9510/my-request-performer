@@ -1,6 +1,6 @@
 service: performers
 app: my-request
-# org: softstack
+org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -8,16 +8,15 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: us-west-2
-  stackName: ${self:app}-${self:service}-stack
-  apiName: ${self:app}-${self:service}-api
-  # profile: ${self:org}
+  stackName: ${self:app}-${self:service}-${self:provider.stage}
+  apiName: ${self:app}-${self:service}-${self:provider.stage}
   profile: default
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-table
-    DYNAMODB_EVENTS_TABLE: ${self:app}-events-table
-    DYNAMODB_VENUES_TABLE: ${self:app}-venues-table
-    DYNAMODB_REQUESTS_TABLE : my-request-requests-table
+    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
+    DYNAMODB_EVENTS_TABLE: ${self:app}-events-${self:provider.stage}
+    DYNAMODB_VENUES_TABLE: ${self:app}-venues-${self:provider.stage}
+    DYNAMODB_REQUESTS_TABLE: ${self:app}-requests-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -31,12 +30,12 @@ provider:
 
 functions:
   endpoints:
-    name: ${self:app}-${self:service}-lambda
+    name: ${self:app}-${self:service}-${self:provider.stage}
     handler: src/index.handler
     events:
       - http:
           path: /{proxy+}
-          method: ANY     
+          method: ANY
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
     role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
@@ -44,18 +43,32 @@ functions:
 resources:
   Resources:
     myDynamoDBTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+custom:
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - "/"
+        - ${self:provider.stage}
+        - "/"
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:custom.apiEndpoint}

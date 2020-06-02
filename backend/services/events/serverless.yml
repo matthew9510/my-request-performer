@@ -1,6 +1,8 @@
 service: events
-app: ${file(../../serverless.yml):app}
-org: ${file(../../serverless.yml):org}
+
+app: my-request
+org: ssfdev
+
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -62,6 +64,11 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: performerId
+            AttributeType: S
+          - AttributeName: date
+
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
@@ -69,6 +76,18 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        GlobalSecondaryIndexes:
+          - IndexName: performerId-date-index
+            KeySchema:
+              - AttributeName: performerId
+                KeyType: HASH
+              - AttributeName: date
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
     # GatewayResponseDefault4XX:
     #   Type: 'AWS::ApiGateway::GatewayResponse'
     #   Properties:

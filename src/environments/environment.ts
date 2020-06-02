@@ -4,23 +4,15 @@
 
 export const environment = {
   production: false,
-  authUrl: "",
-  baseUrl: "https://develop.d2875do098zx8f.amplifyapp.com",
+  frontendUrl: "https://develop.d2875do098zx8f.amplifyapp.com",
   eventsUrl:
-    "https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events",
-  imagesUrl:
-    "https://90bx9hlja5.execute-api.us-west-2.amazonaws.com/dev/images",
-  queueUrl: "https://u8pn7ho2md.execute-api.us-west-2.amazonaws.com/dev/queue",
+    "https://0n4g9hsewd.execute-api.us-west-2.amazonaws.com/dev/events",
   requestsUrl:
-    "https://8vgvs38e0m.execute-api.us-west-2.amazonaws.com/dev/requests",
-  requesterUrl:
-    "https://npfjwp3yrd.execute-api.us-west-2.amazonaws.com/dev/requester",
-  transactionsUrl:
-    "https://hndjafk1sl.execute-api.us-west-2.amazonaws.com/dev/transactions",
+    "https://05wqrtg3r2.execute-api.us-west-2.amazonaws.com/dev/requests",
   venuesUrl:
-    "https://4gw3k61sti.execute-api.us-west-2.amazonaws.com/dev/venues",
+    "https://6wa1c5s4gd.execute-api.us-west-2.amazonaws.com/dev/venues",
   performersUrl:
-    "https://ts1drgp3g3.execute-api.us-west-2.amazonaws.com/dev/performers",
+    "https://oqfcq1xmw6.execute-api.us-west-2.amazonaws.com/dev/performers",
   aws_project_region: "us-west-2",
   aws_cognito_region: "us-west-2",
   aws_user_pools_id: "us-west-2_7vXlPMZyi",

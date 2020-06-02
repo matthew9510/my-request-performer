@@ -70,14 +70,16 @@ export class PerformerService {
     let performer = res.performer.response;
     // let authState = res.authState;
 
-    if (performer.statusCode === 200) {
-      this.performer = performer.body.Item;
+    if (performer) {
+      if (performer.statusCode === 200) {
+        this.performer = performer.body.Item;
 
-      // Set variables for potential on-boarding process
-      this.isSignedUp = true;
-      this.showEventsSnackBar = false;
+        // Set variables for potential on-boarding process
+        this.isSignedUp = true;
+        this.showEventsSnackBar = false;
 
-      this.router.navigate(["/dashboard"]);
+        this.router.navigate(["/dashboard"]);
+      }
     } else {
       this.router.navigate(["/profile"]);
     }
