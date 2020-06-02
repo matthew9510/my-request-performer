@@ -7,6 +7,7 @@ import { BreakpointObserver } from "@angular/cdk/layout";
 import { AuthService } from "@services/auth.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { translate } from "@ngneat/transloco";
+import { environment } from "@ENV";
 
 @Component({
   selector: "app-profile",
@@ -43,15 +44,18 @@ export class ProfileComponent implements OnInit {
 
     // Update form if the performer already exists in the db
     this.performerService.fetchPerformer().subscribe((res: any) => {
-      if (res.response.statusCode === 200) {
-        // Update performer
-        this.performerService.performer = res.response.body.Item;
+      let performer = res.response;
+      if (performer) {
+        if (performer.statusCode === 200) {
+          // Update performer
+          this.performerService.performer = performer.body.Item;
 
-        // fill in form fields
-        this.profileForm.patchValue(this.performerService.performer);
+          // fill in form fields
+          this.profileForm.patchValue(this.performerService.performer);
 
-        // set form to read only
-        this.profileForm.disable();
+          // set form to read only
+          this.profileForm.disable();
+        }
       }
     });
   }
@@ -69,9 +73,6 @@ export class ProfileComponent implements OnInit {
     let performer = {};
     Object.assign(performer, this.profileForm.value, {
       id: localStorage.getItem("performerSub"),
-      awsIdentityId: localStorage.getItem(
-        "aws.cognito.identity-id.us-west-2:68ff65f5-9fd0-42c9-80e1-325e03d9c1e9"
-      ),
     });
 
     this.performerService.createPerformer(performer).subscribe(
