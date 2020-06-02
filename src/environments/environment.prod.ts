@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  frontendUrl: "https://develop.d2875do098zx8f.amplifyapp.com",
+  frontendUrl: "https://myrequest.ssflabs.com",
   eventsUrl:
     "https://970enl1mz3.execute-api.us-west-2.amazonaws.com/prod/events",
   requestsUrl:
@@ -13,4 +13,5 @@ export const environment = {
   aws_cognito_region: "us-west-2",
   aws_user_pools_id: "us-west-2_2rPpXcag5",
   aws_user_pools_web_client_id: "koejhfmj4bqeou1eem9bl0vlo",
+  cognitoIdentityIdPrefix: "aws.cognito.identity-id.",
 };
