@@ -1,4 +1,4 @@
-# Service Events APIs
+# Service Events API
 
 Service: events
 
@@ -8,19 +8,20 @@ Region: us-west-2
 
 Stack: my-request-events-stack
 
-AWS Resources: 
-   - API Gateway:
-        - my-request-events-api
-   - DynamoDB:
-        - my-request-events-table
-   - Lambda: 
-        - my-request-events-lambda
-   - S3:
-        - my-request-events-stack-serverlessdeploymentbucke-wew29vy9i4fu
-   - CloudWatch:
-        - my-request-events-lambda
-   - CloudFormation: 
-        - my-request-events-stack
+AWS Resources:
+
+- API Gateway:
+  - my-request-events-api
+- DynamoDB:
+  - my-request-events-table
+- Lambda:
+  - my-request-events-lambda
+- S3:
+  - my-request-events-stack-serverlessdeploymentbucke-wew29vy9i4fu
+- CloudWatch:
+  - my-request-events-lambda
+- CloudFormation:
+  - my-request-events-stack
 
 Layers: my-request-libraries
 
@@ -40,7 +41,7 @@ Endpoints:
     PUT (patch) an event - https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id
     Delete an event - https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events/:id
 
-Get /events 
+Get /events
 Sample Events Response:
 
     {
@@ -62,6 +63,3 @@ Sample Events Response:
             "title": "Sample Title"
         }
     }
-
-
-
