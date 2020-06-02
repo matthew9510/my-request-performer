@@ -3,7 +3,6 @@ service: events
 app: my-request
 org: ssfdev
 
-
 frameworkVersion: ">=1.1.0 <2.0.0"
 
 provider:
@@ -105,3 +104,19 @@ resources:
     #       gatewayresponse.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
     #     ResponseType: DEFAULT_5XX
     #     RestApiId: "9kwwlfe0x0"
+custom:
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - "/"
+        - ${self:provider.stage}
+        - "/"
+
+outputs:
+  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  URL: ${self:custom.apiEndpoint}

@@ -2,13 +2,13 @@ export const environment = {
   production: true,
   frontendUrl: "https://develop.d2875do098zx8f.amplifyapp.com",
   eventsUrl:
-    "https://tlsvnj7msi.execute-api.us-west-2.amazonaws.com/dev/events",
+    "https://970enl1mz3.execute-api.us-west-2.amazonaws.com/prod/events",
   requestsUrl:
-    "https://8vgvs38e0m.execute-api.us-west-2.amazonaws.com/dev/requests",
+    "https://kwckpypns3.execute-api.us-west-2.amazonaws.com/prod/requests",
   venuesUrl:
-    "https://4gw3k61sti.execute-api.us-west-2.amazonaws.com/dev/venues",
+    "https://e41dhhn1te.execute-api.us-west-2.amazonaws.com/prod/venues",
   performersUrl:
-    "https://ts1drgp3g3.execute-api.us-west-2.amazonaws.com/dev/performers",
+    "https://9qvk4ld314.execute-api.us-west-2.amazonaws.com/prod/performers",
   aws_project_region: "us-west-2",
   aws_cognito_region: "us-west-2",
   aws_user_pools_id: "us-west-2_2rPpXcag5",
