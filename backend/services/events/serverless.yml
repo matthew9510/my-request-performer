@@ -1,6 +1,8 @@
 service: events
+
 app: my-request
 org: ssfdev
+
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -65,6 +67,7 @@ resources:
           - AttributeName: performerId
             AttributeType: S
           - AttributeName: date
+
             AttributeType: S
         KeySchema:
           - AttributeName: id

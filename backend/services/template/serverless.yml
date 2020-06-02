@@ -1,6 +1,8 @@
 service: template
+
 app: my-request
 org: ssfdev
+
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -17,6 +19,7 @@ provider:
     STAGE: ${self:provider.stage}
 
   # profile a: ${self:org}
+
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
   iamRoleStatements:
