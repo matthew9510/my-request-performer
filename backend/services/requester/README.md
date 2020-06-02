@@ -1,4 +1,4 @@
-# Service Requester API
+# Service Requester APIs
 
 [Serverless Dashboard](https://dashboard.serverless.com/tenants/softstack/applications/my-request/services/requester/stage/dev/region/us-west-2)
 
@@ -13,16 +13,18 @@ stack: my-request-requester-stack
 Endpoint:
 
     ANY - https://npfjwp3yrd.execute-api.us-west-2.amazonaws.com/dev/requester
-    
+
 # Endpoint Test Using Postman
 
 We'll be using Postman to populate our new table with test data using a PUT request.
 
 ##### Postman Configuration:
+
 - Endpoint: https://npfjwp3yrd.execute-api.us-west-2.amazonaws.com/dev/requester
 - Authorization: no auth
 
 ##### Populate with sample data
+
 - From the body tab select 'raw' of type JSON
 - Provide Payload
 
@@ -62,14 +64,14 @@ Successful PUT Response:
             "date_created": "2020-02-23"
         }
     }
-    
 
 ##### Check record with GET Request:
+
 - From the body tab select 'none'
 - Currently ALL GET requests require a id
 - From the params tab provide the following key & value
-    - Key: id
-    - Value: 03efc660-561c-11ea-8c19-352d0ade63d8
+  - Key: id
+  - Value: 03efc660-561c-11ea-8c19-352d0ade63d8
 
 Successful GET Request
 
@@ -92,4 +94,3 @@ Successful GET Request
             "id": "03efc660-561c-11ea-8c19-352d0ade63d8"
         }
     }
-    
