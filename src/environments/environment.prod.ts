@@ -5,8 +5,8 @@ export const environment = {
     "https://970enl1mz3.execute-api.us-west-2.amazonaws.com/prod/events",
   requestsUrl:
     "https://kwckpypns3.execute-api.us-west-2.amazonaws.com/prod/requests",
-  venuesUrl:
-    "https://e41dhhn1te.execute-api.us-west-2.amazonaws.com/prod/venues",
+
+  venuesUrl: "https://npbggtaft6.execute-api.us-west-2.amazonaws.com/prod",
   performersUrl:
     "https://9qvk4ld314.execute-api.us-west-2.amazonaws.com/prod/performers",
   aws_project_region: "us-west-2",
