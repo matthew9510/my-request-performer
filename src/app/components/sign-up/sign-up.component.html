@@ -1,77 +1,108 @@
 <div class="center">
   <form [formGroup]="signupForm">
     <h2>Create a My Request performer beta account</h2>
+    <!-- Error message shows when account already exists -->
+    <p *ngIf="isEmailTaken" class="error-message">
+      {{ emailTakenMessage }}
+    </p>
+    <!-- Error message shows when form submission fails -->
+    <p *ngIf="showSubmitErrorMessage" class="error-message">
+      {{ submitErrorMessage }}
+    </p>
+    <!-- Email input -->
     <mat-form-field>
+      <mat-label>Email</mat-label>
       <input
         matInput
-        placeholder="Email"
+        placeholder="Ex. john@example.com"
         type="email"
         formControlName="email"
         required
       />
-      <mat-hint *ngIf="!emailInput.value">Enter their email address</mat-hint>
-      <mat-hint *ngIf="isEmailTaken" class="error">
-        {{ emailTakenMessage }}</mat-hint
-      >
+      <mat-error *ngIf="emailInput.invalid && emailInput.touched">
+        A valid email address is required
+      </mat-error>
     </mat-form-field>
+    <!-- Phone number input -->
     <mat-form-field>
+      <mat-label>Phone Number</mat-label>
+      <span matPrefix>+1 &nbsp;</span>
       <input
         type="tel"
         matInput
-        placeholder="Telephone"
+        placeholder="555-555-1234"
         formControlName="phone"
+        required
       />
-      <mat-hint *ngIf="!phoneInput.value">Enter their phone number</mat-hint>
+      <mat-error *ngIf="phoneInput.invalid && phoneInput.touched">
+        A valid phone number is required (Ex. 555-555-1234)
+      </mat-error>
     </mat-form-field>
+    <!-- First name input -->
     <mat-form-field>
+      <mat-label>First name</mat-label>
       <input
         matInput
-        placeholder="First Name"
+        placeholder="Ex. John"
         type="text"
         formControlName="fname"
         required
       />
-      <mat-hint *ngIf="!fnameInput.value">Enter their first name</mat-hint>
+      <mat-error *ngIf="fnameInput.invalid && fnameInput.touched">
+        First name is required
+      </mat-error>
     </mat-form-field>
+    <!-- Last name input -->
     <mat-form-field>
+      <mat-label>Last name</mat-label>
       <input
         matInput
-        placeholder="Last Name"
+        placeholder="Ex. Smith"
         type="text"
         formControlName="lname"
         required
       />
-      <mat-hint *ngIf="!lnameInput.value">Enter their last name</mat-hint>
+      <mat-error *ngIf="lnameInput.invalid && lnameInput.touched">
+        Last name is required
+      </mat-error>
     </mat-form-field>
-    <mat-form-field [class.extra-margin-for-long-err]="isdefaultSignUpError">
+    <!-- Password input -->
+    <!-- <mat-form-field [class.extra-margin-for-long-err]="isdefaultSignUpError"> -->
+    <mat-form-field>
+      <mat-label>Temporary Password</mat-label>
       <input
         matInput
         placeholder="Password"
         [type]="hide ? 'password' : 'text'"
         formControlName="tempPassword"
         required
+        #tooltip="matTooltip"
+        matTooltip="Create a temporary password for the new user to sign into their account.
+        Create a new, unique password and never share any of your personal
+        passwords."
+        matTooltipPosition="above"
       />
-      <mat-icon matSuffix class="cursor-pointer" (click)="hide = !hide">{{
-        hide ? "visibility_off" : "visibility"
-      }}</mat-icon>
-      <mat-hint *ngIf="!passwordInput.value && !isdefaultSignUpError"
-        >Enter their password</mat-hint
-      >
-      <mat-hint *ngIf="!isPasswordValid" class="error">
-        {{ invalidPasswordMessage }}</mat-hint
-      >
-      <mat-hint *ngIf="isdefaultSignUpError" class="error">
-        {{ defaultSignUpErrorMessage }}
+      <mat-hint align="start">
+        Must contain at least one capital and lowercase letter, number, and
+        symbol
       </mat-hint>
+      <mat-hint align="end">{{ passwordInput.value.length }}/8</mat-hint>
+      <mat-icon matSuffix class="cursor-pointer" (click)="hide = !hide">
+        {{ hide ? "visibility_off" : "visibility" }}
+      </mat-icon>
+      <mat-error *ngIf="passwordInput.invalid && passwordInput.touched">
+        Must contain at least 8 characters, one capital and lowercase letter,
+        number, and symbol.
+      </mat-error>
     </mat-form-field>
     <button
       mat-raised-button
       color="primary"
       appDebounceClick
       (debounceClick)="signUp()"
-      [disabled]="shouldEnableSubmit()"
+      [disabled]="signupForm.invalid"
     >
-      Sign them up
+      Create Account
     </button>
   </form>
 </div>
