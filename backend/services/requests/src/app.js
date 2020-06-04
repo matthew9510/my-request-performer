@@ -268,12 +268,19 @@ app.put("/requests/:id", function (req, res) {
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
-    Item: item,
+    Key: {
+      id: req.body.id,
+    },
+    UpdateExpression: "set status = :s",
+    ExpressionAttributeValues: {
+      ":s": req.body.status,
+    },
+    ReturnValues: "UPDATED_REQ",
   };
   if (debug) console.log("Params:\n", params);
 
   // Note if table item is being updated then the result will be the new item
-  dynamoDb.put(params, function (err, result) {
+  dynamoDb.update(params, function (err, result) {
     if (debug) console.log("Result:", result);
     if (err) {
       console.error(
