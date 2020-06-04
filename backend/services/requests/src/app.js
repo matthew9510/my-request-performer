@@ -252,7 +252,7 @@ app.delete("/requests", function (req, res) {
 /****************************
  * PATCH method *
  ****************************/
-// requires the body to be the item to update
+// Will only work for requests updating status currently, requires id and status
 app.put("/requests/:id", function (req, res) {
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
