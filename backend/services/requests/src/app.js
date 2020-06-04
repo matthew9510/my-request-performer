@@ -271,7 +271,10 @@ app.put("/requests/:id", function (req, res) {
     Key: {
       id: req.body.id,
     },
-    UpdateExpression: "set status = :s",
+    ExpressionAttributeNames: {
+    "#status": "status"
+  },
+    UpdateExpression: "set #status = :s",
     ExpressionAttributeValues: {
       ":s": req.body.status,
     },
