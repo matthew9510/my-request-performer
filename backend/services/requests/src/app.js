@@ -275,7 +275,7 @@ app.put("/requests/:id", function (req, res) {
     ExpressionAttributeValues: {
       ":s": req.body.status,
     },
-    ReturnValues: "UPDATED_REQ",
+    ReturnValues: "UPDATED_OLD",
   };
   if (debug) console.log("Params:\n", params);
 
