@@ -20,7 +20,7 @@ export class EventOverviewComponent implements OnInit {
   venue: any;
   performer: any;
   typeOfCoverFee: string;
-  baseUrl: string = environment.frontendUrl;
+  baseUrl: string = environment.requesterUrl;
   loading: boolean = true;
 
   constructor(
@@ -65,10 +65,13 @@ export class EventOverviewComponent implements OnInit {
         this.typeOfCoverFee = typeof this.event.coverFee;
         this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
           this.venue = res.response.body.Item;
+          // console.log(this.event.performerId);
           this.performerService
             .getPerformerInfoById(this.event.performerId)
             .subscribe((res: any) => {
-              this.performer = res.response.body.Item;
+              if (res.response !== undefined) {
+                this.performer = res.response.body.Item;
+              }
               this.loading = false;
             });
         });

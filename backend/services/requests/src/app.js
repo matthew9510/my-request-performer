@@ -252,7 +252,7 @@ app.delete("/requests", function (req, res) {
 /****************************
  * PATCH method *
  ****************************/
-// requires the body to be the item to update
+// Will only work for requests updating status currently, requires id and status
 app.put("/requests/:id", function (req, res) {
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
@@ -268,12 +268,22 @@ app.put("/requests/:id", function (req, res) {
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
-    Item: item,
+    Key: {
+      id: req.body.id,
+    },
+    ExpressionAttributeNames: {
+    "#status": "status"
+  },
+    UpdateExpression: "set #status = :s",
+    ExpressionAttributeValues: {
+      ":s": req.body.status,
+    },
+    ReturnValues: "UPDATED_OLD",
   };
   if (debug) console.log("Params:\n", params);
 
   // Note if table item is being updated then the result will be the new item
-  dynamoDb.put(params, function (err, result) {
+  dynamoDb.update(params, function (err, result) {
     if (debug) console.log("Result:", result);
     if (err) {
       console.error(
