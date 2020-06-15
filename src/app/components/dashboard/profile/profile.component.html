@@ -1,8 +1,9 @@
 <ng-container *transloco="let t; read: 'profile'">
   <div class="personal-info-container">
-    <h4 *ngIf="performerService.isSignedUp === false">
-      {{ t("personalInformationMessage") }}
-    </h4>
+    <p *ngIf="performerService.isSignedUp === false">
+      {{ t("personalInformationMessage") }}<br />
+      {{ t("not signed up message") }}
+    </p>
     <form [formGroup]="profileForm">
       <div class="centered-flex-box">
         <h2>{{ t("personalInformation") }}</h2>

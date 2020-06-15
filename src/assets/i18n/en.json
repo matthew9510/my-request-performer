@@ -58,11 +58,13 @@
     "menu item past events": "Past Events",
     "menu item new event": "Create a New Event",
     "search": "Search",
-    "makeAnEvent": "Create your first event!"
+    "makeAnEvent": "Create your first event!",
+    "not signed up message": "Completed registration is required before creating an event. Navigate to Account > Profile to complete."
   },
   "profile": {
+    "not signed up message": "You will not be able to create an event until registration is completed.",
     "personalInformation": "Personal Information",
-    "personalInformationMessage": "Please provide the following information",
+    "personalInformationMessage": "Please provide the following information.",
     "firstName": "First Name",
     "firstNameRequiredMessage": "Must enter first name",
     "lastName": "Last Name",

@@ -9,6 +9,7 @@ import { of } from "rxjs";
 })
 export class PerformerService {
   performer: any;
+  // isSignedUp lets us know if the performer has filled out their profile & exists on the performers table on the db. Creating event routes are blocked when this is false.
   isSignedUp: boolean = false;
   showEventsSnackBar: boolean = true;
   // changed to true when event is created or edited successfully

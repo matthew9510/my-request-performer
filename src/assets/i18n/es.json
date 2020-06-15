@@ -11,10 +11,9 @@
     "inactive event message": "You must start your event to allow requests. Start your event by clicking the button below.",
     "end song button": "End song"
   },
-  "request confirm dialog cancel": "Go back",
+  "confirm dialog cancel": "Go back",
   "request confirm dialog title": "Reject Request?",
   "request confirm dialog message": "Are you sure you want to reject this request? This action cannot be undone.",
-  "event confirm dialog cancel": "Cancel",
   "event confirm dialog title": "End Event?",
   "event confirm dialog message": "Are you sure you want to end this event? All requests will be rejected. This action cannot be undone.",
   "request confirm dialog action": "Reject",
@@ -59,11 +58,13 @@
     "menu item past events": "Past Events",
     "menu item new event": "Create a New Event",
     "search": "Search",
-    "makeAnEvent": "Create your first event!"
+    "makeAnEvent": "Create your first event!",
+    "not signed up message": "Completed registration is required before creating an event. Navigate to Account > Profile to complete."
   },
   "profile": {
+    "not signed up message": "You will not be able to create an event until registration is completed.",
     "personalInformation": "Personal Information",
-    "personalInformationMessage": "Please provide the following information",
+    "personalInformationMessage": "Please provide the following information.",
     "firstName": "First Name",
     "firstNameRequiredMessage": "Must enter first name",
     "lastName": "Last Name",

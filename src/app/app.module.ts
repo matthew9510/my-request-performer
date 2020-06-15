@@ -71,6 +71,7 @@ import {
 import Auth from "@aws-amplify/auth";
 import { AuthGuard } from "./guards/auth.guard";
 import { NotAuthGuard } from "./guards/not-auth.guard";
+import { RegisterGuard } from "./guards/register.guard";
 import { DebounceClickDirective } from "./directives/debounce-click.directive";
 import { AdminComponent } from "./components/admin/admin.component";
 import { SignUpComponent } from "./components/sign-up/sign-up.component";
@@ -157,6 +158,7 @@ import { ForgotPasswordComponent } from "./components/forgot-password/forgot-pas
     AuthGuard,
     NotAuthGuard,
     VenueService,
+    RegisterGuard,
   ],
   bootstrap: [AppComponent],
 })
