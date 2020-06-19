@@ -11,6 +11,7 @@ export const environment = {
     "https://npbggtaft6.execute-api.us-west-2.amazonaws.com/prod/venues",
   performersUrl:
     "https://9qvk4ld314.execute-api.us-west-2.amazonaws.com/prod/performers",
+  stripeUrl: "n/a",
   aws_project_region: "us-west-2",
   aws_cognito_region: "us-west-2",
   aws_user_pools_id: "us-west-2_2rPpXcag5",

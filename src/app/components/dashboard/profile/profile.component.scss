@@ -68,6 +68,13 @@
   }
 }
 
+button.stripe-button {
+  text-align: center;
+  margin-top: 1%;
+  margin-bottom: 2%;
+  color: mat-color($app-primary);
+}
+
 .nav-buttons {
   display: flex;
   justify-content: flex-start;

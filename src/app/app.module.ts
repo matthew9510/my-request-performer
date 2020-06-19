@@ -76,6 +76,7 @@ import { DebounceClickDirective } from "./directives/debounce-click.directive";
 import { AdminComponent } from "./components/admin/admin.component";
 import { SignUpComponent } from "./components/sign-up/sign-up.component";
 import { ForgotPasswordComponent } from "./components/forgot-password/forgot-password.component";
+import { RedirectComponent } from './components/redirect/redirect.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { ForgotPasswordComponent } from "./components/forgot-password/forgot-pas
     AdminComponent,
     SignUpComponent,
     ForgotPasswordComponent,
+    RedirectComponent,
   ],
   entryComponents: [ConfirmDialogComponent],
   imports: [

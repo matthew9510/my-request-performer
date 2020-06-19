@@ -5,9 +5,11 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { PerformerService } from "@services/performer.service";
 import { BreakpointObserver } from "@angular/cdk/layout";
 import { AuthService } from "@services/auth.service";
+import { StripeService } from "@services/stripe.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { translate } from "@ngneat/transloco";
 import { environment } from "@ENV";
+import { concatMap } from "rxjs/operators";
 
 @Component({
   selector: "app-profile",
@@ -23,6 +25,7 @@ export class ProfileComponent implements OnInit {
     private location: Location,
     private performerService: PerformerService,
     private authService: AuthService,
+    private stripeService: StripeService,
     private fb: FormBuilder,
     private breakpointObserver: BreakpointObserver,
     private _snackBar: MatSnackBar
@@ -68,14 +71,17 @@ export class ProfileComponent implements OnInit {
     return this.breakpointObserver.isMatched("(min-width: 700px)");
   }
 
-  submit() {
+  prepCreationOfPerformer() {
     // Create a performer db entry where the primary key (id) is AWS sub
     let performer = {};
     Object.assign(performer, this.profileForm.value, {
       id: localStorage.getItem("performerSub"),
     });
+    return this.performerService.createPerformer(performer);
+  }
 
-    this.performerService.createPerformer(performer).subscribe(
+  submit() {
+    this.prepCreationOfPerformer().subscribe(
       (res: any) => {
         // save the performer
         this.performerService.performer = res.record;
@@ -85,9 +91,53 @@ export class ProfileComponent implements OnInit {
         this.router.navigate(["/events"]);
       },
       (err) => {
-        console.error("Couldn't create event", err);
+        console.error("Couldn't create performer", err);
       }
     );
+  }
+
+  triggerStripeOath() {
+    //create a performer entry
+    this.prepCreationOfPerformer()
+      .pipe(
+        concatMap((performer: any) => {
+          // save the performer in a the performer service
+          this.performerService.performer = performer.record;
+          this.performerService.isSignedUp = true;
+
+          // Generate a state for stripe onboarding flow
+          return this.stripeService.createState(
+            this.performerService.performer
+          );
+        })
+      )
+      .subscribe(
+        (res: any) => {
+          console.log("create state's updated performer", res);
+
+          // update our performer state since it now has a state property
+          this.performerService.performer = res.record; // check this is right
+
+          let state = res.record.state;
+          let redirectLink = `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code`;
+          console.log("state", state);
+          console.log("redirect link", redirectLink);
+
+          // redirect to stripe for onboarding
+          // this.router.navigate([
+          //   "/externalRedirect",
+          //   {
+          //     externalUrl: `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code`,
+          //   },
+          // ]);
+        },
+        (err) => {
+          console.error(
+            "Couldn't create stripe state or create a performer",
+            err
+          );
+        }
+      );
   }
 
   // When performer wants to make changes to their profile

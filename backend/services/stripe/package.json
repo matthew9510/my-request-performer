@@ -1,0 +1,16 @@
+{
+  "name": "stripe",
+  "version": "1.0.0",
+  "description": "dependencies for stripe lambda",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "stripe": "^8.64.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

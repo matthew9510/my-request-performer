@@ -78,9 +78,21 @@
         <input matInput formControlName="phone" />
       </mat-form-field>
 
+      <br />
+
+      <button
+        mat-button
+        class="stripe-button"
+        appDebounceClick
+        (debounceClick)="triggerStripeOath()"
+      >
+        Create or link existing stripe account for payments
+      </button>
+      <br />
       <p *ngIf="profileForm.invalid" class="error-message">
         {{ t("requiredFormFieldsMessage") }}
       </p>
+
       <div id="fab-button-wrapper">
         <button
           *ngIf="editProfile === true"
