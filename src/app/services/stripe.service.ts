@@ -9,7 +9,7 @@ export class StripeService {
 
   createState(performer: any) {
     return this.http.get(
-      `${environment.stripeUrl}/connect/oath/state`,
+      `${environment.stripeUrl}/connect/oath/state?debug=true`,
       performer
     );
   }

@@ -40,10 +40,10 @@ app.use(function (req, res, next) {
 app.options("*", cors()); // include before other routes
 
 // Create a unique state for preventing csrf attacks
-app.get("/connect/oath/state", function (req, res, next) {
+app.get("/stripe/connect/oath/state", function (req, res, next) {
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
-  let performer = req.query.performer; // might have to use JSON.parse
+  let performer = req.body; // might have to use JSON.parse
 
   if (debug)
     console.log("GET stripe connect oath state for performer request:\n", req);
