@@ -7,10 +7,10 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 export class StripeService {
   constructor(private http: HttpClient) {}
 
-  createState(performer: any) {
-    return this.http.get(
-      `${environment.stripeUrl}/connect/oath/state?debug=true`,
-      performer
+  createState(performerId: any) {
+    return this.http.patch(
+      `${environment.stripeUrl}/connect/oath/state?debug=true&id=${performerId}`,
+      this.createHeaders()
     );
   }
 

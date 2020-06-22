@@ -41,38 +41,51 @@ app.options("*", cors()); // include before other routes
 
 // Create a unique state for preventing csrf attacks
 app.get("/stripe/connect/oath/state", function (req, res, next) {
-  // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
-  let performer = req.body; // might have to use JSON.parse
+  let performerId = req.query.id;
 
-  if (debug)
+  // If debug flag passed show console logs
+  if (debug) {
     console.log("GET stripe connect oath state for performer request:\n", req);
+  }
 
-  // Generate state
-  performer.state = Math.random().toString(36).slice(2);
-
-  // create params
+  // create parameters for dynamo db
   const params = {
     TableName: process.env.DYNAMODB_PERFORMERS_TABLE,
     Key: {
-      id: performer.performerId,
+      id: performerId,
     },
+    ExpressionAttributeNames: {
+      "#state": "state",
+    },
+    ExpressionAttributeValues: {
+      ":modifiedOn": new Date().toJSON(),
+      ":state": Math.random().toString(36).slice(2),
+    },
+    UpdateExpression: "set modifiedOn = :modifiedOn, #state = :state",
+    ReturnValues: "ALL_NEW",
   };
   if (debug) console.log("Params:\n", params);
 
-  let response = {
-    record: {
-      state: performer.state,
-    },
-  };
+  // Note if table item is being updated then the result will be the new item
+  dynamoDb.update(params, function (err, result) {
+    if (debug) console.log("Result:", result);
+    if (err) {
+      console.error(
+        "Unable to Update item. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
+    } else {
+      const response = {
+        statusCode: 200,
+        performer: result.Attributes,
+        message: "UPDATE for record on requests table succeeded!",
+      };
+      if (debug) console.log("Response:\n", response);
 
-  res.json({
-    success: "Successfully added state to performer db entry",
-    response: response,
+      res.json(response);
+    }
   });
-
-  // save the state to the performers table entry;
-  // in subscribe send it back
 });
 
 // app.post("/connect/oath", function (req, res, next) {

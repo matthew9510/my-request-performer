@@ -101,35 +101,38 @@ export class ProfileComponent implements OnInit {
     this.prepCreationOfPerformer()
       .pipe(
         concatMap((performer: any) => {
+          console.log(
+            "in subscribe creating a user for the first time",
+            performer
+          );
           // save the performer in a the performer service
           this.performerService.performer = performer.record;
           this.performerService.isSignedUp = true;
 
           // Generate a state for stripe onboarding flow
           return this.stripeService.createState(
-            this.performerService.performer
+            this.performerService.performer.id
           );
         })
       )
       .subscribe(
         (res: any) => {
-          console.log("create state's updated performer", res);
+          console.log("create updated performer with new state attribute", res);
 
           // update our performer state since it now has a state property
-          this.performerService.performer = res.record; // check this is right
-
-          let state = res.record.state;
+          this.performerService.performer = res.performer;
+          let state = this.performerService.performer.state;
           let redirectLink = `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code`;
           console.log("state", state);
           console.log("redirect link", redirectLink);
 
           // redirect to stripe for onboarding
-          // this.router.navigate([
-          //   "/externalRedirect",
-          //   {
-          //     externalUrl: `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code`,
-          //   },
-          // ]);
+          this.router.navigate([
+            "/externalRedirect",
+            {
+              externalUrl: redirectLink,
+            },
+          ]);
         },
         (err) => {
           console.error(
