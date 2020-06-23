@@ -8,7 +8,7 @@ export class StripeService {
   constructor(private http: HttpClient) {}
 
   createState(performerId: any) {
-    return this.http.patch(
+    return this.http.get(
       `${environment.stripeUrl}/connect/oath/state?debug=true&id=${performerId}`,
       this.createHeaders()
     );
