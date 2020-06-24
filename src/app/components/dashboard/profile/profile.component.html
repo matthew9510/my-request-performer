@@ -80,7 +80,21 @@
 
       <br />
 
+      <div *ngIf="stripeLinkComplete">
+        <p>Stipe Connected!</p>
+      </div>
+
+      <div
+        *ngIf="stripeLinkInProgress && !stripeLinkComplete"
+        class="StripeButtonSpinner"
+      >
+        <p>Linking stripe accounts</p>
+        <mat-spinner color="accent"></mat-spinner>
+      </div>
+
       <button
+        #linkStripeButton
+        *ngIf="!stripeLinkInProgress && !stripeLinkComplete"
         mat-button
         class="stripe-button"
         appDebounceClick

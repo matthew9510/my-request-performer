@@ -14,6 +14,13 @@ export class StripeService {
     );
   }
 
+  linkStripeAccounts(stripeState, stripeAuthCode, performerId, performerState) {
+    return this.http.get(
+      `${environment.stripeUrl}/linkStripeAccount?stripeState=${stripeState}&stripeAuthCode=${stripeAuthCode}&performerId=${performerId}&performerState=${performerState}`,
+      this.createHeaders()
+    );
+  }
+
   createHeaders() {
     return {
       headers: new HttpHeaders({

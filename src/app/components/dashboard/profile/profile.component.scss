@@ -94,6 +94,12 @@ button.stripe-button {
   }
 }
 
+div.StripeButtonSpinner {
+  display: flex;
+  text-align: center;
+  color: mat-color($app-primary);
+}
+
 @media screen and (max-width: 450px) {
 }
 

@@ -69,8 +69,6 @@ export class PerformerService {
 
   storePerformerCreds(res: any) {
     let performer = res.performer.response;
-    // let authState = res.authState;
-
     if (performer) {
       if (performer.statusCode === 200) {
         this.performer = performer.body.Item;
@@ -78,11 +76,7 @@ export class PerformerService {
         // Set variables for potential on-boarding process
         this.isSignedUp = true;
         this.showEventsSnackBar = false;
-
-        this.router.navigate(["/dashboard"]);
       }
-    } else {
-      this.router.navigate(["/profile"]);
     }
   }
 

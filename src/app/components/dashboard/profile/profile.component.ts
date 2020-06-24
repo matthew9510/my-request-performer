@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { PerformerService } from "@services/performer.service";
@@ -19,9 +19,16 @@ import { concatMap } from "rxjs/operators";
 export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   editProfile: boolean = false;
+  stripeLinkInProgress: boolean = false;
+  stripeState;
+  stripeAuthCode;
+  stripeError;
+  stripeErrorDescription;
+  stripeLinkComplete;
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private location: Location,
     private performerService: PerformerService,
     private authService: AuthService,
@@ -45,6 +52,16 @@ export class ProfileComponent implements OnInit {
       endEventMessage: [null],
     });
 
+    // Preparation of stripe redirecting
+    this.stripeState = this.activatedRoute.snapshot.queryParamMap.get("state");
+    this.stripeAuthCode = this.activatedRoute.snapshot.queryParamMap.get(
+      "code"
+    );
+    this.stripeError = this.activatedRoute.snapshot.queryParamMap.get("error");
+    this.stripeErrorDescription = this.activatedRoute.snapshot.queryParamMap.get(
+      "error_description"
+    );
+
     // Update form if the performer already exists in the db
     this.performerService.fetchPerformer().subscribe((res: any) => {
       let performer = res.response;
@@ -58,6 +75,33 @@ export class ProfileComponent implements OnInit {
 
           // set form to read only
           this.profileForm.disable();
+
+          // Handling of stripe redirecting
+          if (this.stripeState) {
+            // && !this.performerService.hasSripeAccount // how do i know if stripe even called with these parameters ( breachers )
+            this.stripeLinkInProgress = true;
+            // need to replace button with a spinner and a message saying attempting to link stripe accounts
+            let performerId = localStorage.getItem("performerSub");
+            console.log(this.performerService.performer);
+            let performerState = this.performerService.performer.state;
+            this.stripeService
+              .linkStripeAccounts(
+                this.stripeState,
+                this.stripeAuthCode,
+                performerId,
+                performerState
+              )
+              .subscribe((res) => {
+                // Stop spinner and present a message saying stripe account setup
+                this.stripeLinkInProgress = false;
+                this.stripeLinkComplete = true;
+
+                console.log(res);
+
+                // Todo
+                // - save performer to performer service
+              });
+          }
         }
       }
     });
