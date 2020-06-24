@@ -137,11 +137,11 @@ app.get("/stripe/linkStripeAccount", function (req, res, next) {
             "set modifiedOn = :modifiedOn, stripeId = :stripeId",
           ReturnValues: "ALL_NEW",
         };
-        if (debug) console.log("Params:\n", params);
+        console.log("Params for db update:\n", params);
 
         // Note if table item is being updated then the result will be the new item
         dynamoDb.update(params, function (err, result) {
-          if (debug) console.log("Result:", result);
+          console.log(" in update subscribe Result:", result);
           if (err) {
             console.error(
               "Unable to Update item. Error JSON:",
@@ -153,13 +153,14 @@ app.get("/stripe/linkStripeAccount", function (req, res, next) {
               performer: result.Attributes,
               message: "UPDATE for record on performer table succeeded!",
             };
-            if (debug) console.log("Response:\n", response);
+            console.log("preparation of Response:\n", response);
 
             res.json(response);
           }
         });
       },
       (err) => {
+        console.log("in error of stripe.token catch", err);
         if (err.type === "StripeInvalidGrantError") {
           return res
             .status(400)
