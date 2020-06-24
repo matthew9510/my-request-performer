@@ -166,9 +166,7 @@ export class ProfileComponent implements OnInit {
           // update our performer state since it now has a state property
           this.performerService.performer = res.performer;
           let state = this.performerService.performer.state;
-          let redirectUri =
-            "https://develop.d3ff8wrh2zwja6.amplifyapp.com/profile";
-          let redirectLink = `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code&redirect_uri=${redirectUri}`;
+          let redirectLink = `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code&redirect_uri=${environment.stripeRedirectLink}`;
           console.log("state", state);
           console.log("redirect link", redirectLink);
 
