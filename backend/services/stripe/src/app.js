@@ -126,9 +126,6 @@ app.get("/stripe/linkStripeAccount", function (req, res, next) {
           Key: {
             id: performerId,
           },
-          ExpressionAttributeNames: {
-            "#state": "state",
-          },
           ExpressionAttributeValues: {
             ":modifiedOn": new Date().toJSON(),
             ":stripeId": connected_account_id,
