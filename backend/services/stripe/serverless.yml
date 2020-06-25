@@ -18,6 +18,7 @@ provider:
     STAGE: ${self:provider.stage}
   environment:
     DYNAMODB_PERFORMERS_TABLE: my-request-performers-${self:provider.stage}
+    STRIPE_TEST_SK: sk_test_Y2Zm1w5cMdrXWT5mQ8lKbjrD00N97nDCUY
   iamRoleStatements:
     - Effect: Allow
       Action:

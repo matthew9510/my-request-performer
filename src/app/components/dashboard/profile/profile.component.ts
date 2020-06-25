@@ -20,11 +20,11 @@ export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   editProfile: boolean = false;
   stripeLinkInProgress: boolean = false;
+  stripeLinkComplete: boolean = false;
   stripeState;
   stripeAuthCode;
   stripeError;
   stripeErrorDescription;
-  stripeLinkComplete;
 
   constructor(
     private router: Router,
@@ -70,20 +70,30 @@ export class ProfileComponent implements OnInit {
           // Update performer
           this.performerService.performer = performer.body.Item;
 
+          // Set appropriate flags for component
+          if (this.performerService.performer.stripeId) {
+            this.performerService.isStripeAccountLinked = true;
+
+            // setup showing appropriate html content for this component
+            this.stripeLinkComplete = true;
+          }
           // fill in form fields
           this.profileForm.patchValue(this.performerService.performer);
 
           // set form to read only
           this.profileForm.disable();
 
-          // Handling of stripe redirecting
-          if (this.stripeState) {
-            // && !this.performerService.hasSripeAccount // how do i know if stripe even called with these parameters ( breachers )
+          // Handling of stripe redirecting if performer hasn't signed up yet
+          if (
+            this.stripeState === this.performerService.performer.state &&
+            !this.performerService.isStripeAccountLinked
+          ) {
+            // show spinner stating link of stripe accounts in progress
             this.stripeLinkInProgress = true;
-            // need to replace button with a spinner and a message saying attempting to link stripe accounts
+
             let performerId = localStorage.getItem("performerSub");
-            console.log(this.performerService.performer);
             let performerState = this.performerService.performer.state;
+
             this.stripeService
               .linkStripeAccounts(
                 this.stripeState,
@@ -91,15 +101,16 @@ export class ProfileComponent implements OnInit {
                 performerId,
                 performerState
               )
-              .subscribe((res) => {
+              .subscribe((res: any) => {
+                // Update performer
+                this.performerService.performer = res.performer;
+
+                // Update app flags
+                this.performerService.isStripeAccountLinked = true;
+
                 // Stop spinner and present a message saying stripe account setup
                 this.stripeLinkInProgress = false;
                 this.stripeLinkComplete = true;
-
-                console.log(res);
-
-                // Todo
-                // - save performer to performer service
               });
           }
         }
@@ -145,10 +156,6 @@ export class ProfileComponent implements OnInit {
     this.prepCreationOfPerformer()
       .pipe(
         concatMap((performer: any) => {
-          console.log(
-            "in subscribe creating a user for the first time",
-            performer
-          );
           // save the performer in a the performer service
           this.performerService.performer = performer.record;
           this.performerService.isSignedUp = true;
@@ -161,14 +168,10 @@ export class ProfileComponent implements OnInit {
       )
       .subscribe(
         (res: any) => {
-          console.log("create updated performer with new state attribute", res);
-
           // update our performer state since it now has a state property
           this.performerService.performer = res.performer;
           let state = this.performerService.performer.state;
           let redirectLink = `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code&redirect_uri=${environment.stripeRedirectLink}`;
-          console.log("state", state);
-          console.log("redirect link", redirectLink);
 
           // redirect to stripe for onboarding
           this.router.navigate([

@@ -8,7 +8,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const cors = require("cors");
-const stripe = require("stripe")("sk_test_Y2Zm1w5cMdrXWT5mQ8lKbjrD00N97nDCUY", {
+const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
   apiVersion: "",
 });
 
