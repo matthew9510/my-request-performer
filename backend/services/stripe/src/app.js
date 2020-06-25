@@ -112,7 +112,7 @@ app.get("/stripe/linkStripeAccount", function (req, res, next) {
   stripe.oauth
     .token({
       grant_type: "authorization_code",
-      stripeAuthCode,
+      code: stripeAuthCode,
     })
     .then(
       (response) => {
