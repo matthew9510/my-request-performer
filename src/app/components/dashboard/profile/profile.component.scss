@@ -94,9 +94,16 @@ button.stripe-button {
   }
 }
 
-div.StripeButtonSpinner {
+div.StripeLinkingSpinner {
   display: flex;
+  flex-direction: column;
   text-align: center;
+  color: mat-color($app-primary);
+}
+.spinner {
+  align-self: center;
+}
+p.stripe-font {
   color: mat-color($app-primary);
 }
 

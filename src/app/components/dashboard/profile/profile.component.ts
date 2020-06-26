@@ -10,7 +10,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { translate } from "@ngneat/transloco";
 import { environment } from "@ENV";
 import { concatMap } from "rxjs/operators";
-
+import { HttpParams } from "@angular/common/http";
 @Component({
   selector: "app-profile",
   templateUrl: "./profile.component.html",
@@ -170,8 +170,44 @@ export class ProfileComponent implements OnInit {
         (res: any) => {
           // update our performer state since it now has a state property
           this.performerService.performer = res.performer;
-          let state = this.performerService.performer.state;
-          let redirectLink = `https://connect.stripe.com/oauth/authorize?client_id=${environment.stripeClient}&state=${state}&scope=read_write&response_type=code&redirect_uri=${environment.stripeRedirectLink}`;
+
+          // setup local scope variables
+          let performer = this.performerService.performer;
+
+          // Prepare stripe redirect link
+          let params = new HttpParams();
+          params = params.append("scope", "read_write");
+          params = params.append("response_type", "code");
+          params = params.append("client_id", environment.stripeClient);
+          params = params.append("state", performer.state);
+          params = params.append(
+            "redirect_uri",
+            environment.stripeRedirectLink
+          );
+          params = params.append(
+            "stripe_user[first_name]",
+            performer.firstName
+          );
+          params = params.append("stripe_user[last_name]", performer.lastName);
+          params = params.append("stripe_user[email]", performer.email);
+          params = params.append(
+            "stripe_user[phone_number]",
+            performer.phone.slice(3)
+          );
+          params = params.append("stripe_user[country]", "US");
+          params = params.append("stripe_user[business_type]", "individual");
+          params = params.append(
+            "stripe_user[url]",
+            "http://www.MyRequest.com"
+          );
+          params = params.append("stripe_user[physical_product]", "false");
+          params = params.append(
+            "stripe_user[product_description]",
+            "My Request Performer"
+          );
+          params = params.append("stripe_user[currency]", "usd");
+
+          let redirectLink = `https://connect.stripe.com/oauth/authorize?${params.toString()}`;
 
           // redirect to stripe for onboarding
           this.router.navigate([
