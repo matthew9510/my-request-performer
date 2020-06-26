@@ -126,12 +126,15 @@ app.get("/stripe/linkStripeAccount", function (req, res, next) {
           Key: {
             id: performerId,
           },
+          ExpressionAttributeNames: {
+            "#state": "state",
+          },
           ExpressionAttributeValues: {
             ":modifiedOn": new Date().toJSON(),
             ":stripeId": connected_account_id,
           },
           UpdateExpression:
-            "set modifiedOn = :modifiedOn, stripeId = :stripeId remove state",
+            "set modifiedOn = :modifiedOn, stripeId = :stripeId remove #state",
           ReturnValues: "ALL_NEW",
         };
         console.log("Params for db update:\n", params);
