@@ -131,7 +131,7 @@ app.get("/stripe/linkStripeAccount", function (req, res, next) {
             ":stripeId": connected_account_id,
           },
           UpdateExpression:
-            "set modifiedOn = :modifiedOn, stripeId = :stripeId",
+            "set modifiedOn = :modifiedOn, stripeId = :stripeId remove state",
           ReturnValues: "ALL_NEW",
         };
         console.log("Params for db update:\n", params);
