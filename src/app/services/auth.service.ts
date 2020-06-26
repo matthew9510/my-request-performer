@@ -68,6 +68,16 @@ export class AuthService {
               }
             })
             .catch((err) => console.log("error: " + err));
+
+          let currentUrl = this.router.url;
+          if (currentUrl === "/login") {
+            if (this.performerService.isSignedUp === false) {
+              // redirect to profile page
+              this.router.navigate(["/profile"]);
+            } else {
+              this.router.navigate(["/dashboard"]);
+            }
+          }
         } else if (res.authState.state === "confirmSignUp") {
           // pass, this is needed to create beta testers
         } else {
