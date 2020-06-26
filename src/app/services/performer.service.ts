@@ -68,7 +68,6 @@ export class PerformerService {
       }),
     };
   }
-
   storePerformerCreds(res: any) {
     let performer = res.performer.response;
     if (performer) {
