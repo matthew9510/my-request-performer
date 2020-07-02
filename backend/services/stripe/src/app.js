@@ -275,6 +275,8 @@ app.post("/stripe/createPaymentIntent", function (req, res, next) {
       // print the params if the debug flag is set
       if (debug) console.log("Params:\n", params);
 
+      const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
       const dynamoDbPut$ = bindNodeCallback(dynamoDb.put);
       return dynamoDbPut$(params).pipe(
         retry(3),
