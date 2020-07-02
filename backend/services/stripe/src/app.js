@@ -16,8 +16,12 @@ const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
 
 //  Load AWS SDK for JavaScr'ipt to interact with AWS DynamoDB
 const AWS = require("aws-sdk");
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
+// Setup dynamo db to interact with db
+const DynamoDB = require("rxjs-dynamodb-client");
+const dynamoDb = new DynamoDB({
+  client: new AWS.DynamoDB(),
+});
 // declare a new express app
 const app = express();
 
