@@ -16,7 +16,7 @@ const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
 
 //  Load AWS SDK for JavaScr'ipt to interact with AWS DynamoDB
 const AWS = require("aws-sdk");
-const dynamoDb = new AWS.DynamoDB();
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 // declare a new express app
 const app = express();
@@ -275,17 +275,17 @@ app.post("/stripe/createPaymentIntent", function (req, res, next) {
       // print the params if the debug flag is set
       if (debug) console.log("Params:\n", params);
 
-      const dynamoDb = new AWS.DynamoDB.DocumentClient();
-
-      const dynamoDbPut$ = bindNodeCallback(dynamoDb.put);
-      return dynamoDbPut$(params).pipe(
-        retry(3),
-        catchError((err) => {
-          let errorMessage = "Can't create entry on requests database table";
-          console.log(errorMessage, JSON.stringify(err, null, 2));
-          return throwError({ errorMessage, err });
-        })
-      );
+      return dynamoDb
+        .table(process.env.DYNAMODB_REQUESTS_TABLE)
+        .insert(requestsDbEntry)
+        .pipe(
+          retry(3),
+          catchError((err) => {
+            let errorMessage = "Can't create entry on requests database table";
+            console.log(errorMessage, JSON.stringify(err, null, 2));
+            return throwError({ errorMessage, err });
+          })
+        );
     })
   );
 
