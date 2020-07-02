@@ -8,7 +8,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const cors = require("cors");
-const { pipe, from, throwError } = require("rxjs");
+const { pipe, from, throwError, bindNodeCallback } = require("rxjs");
 const { concatMap, catchError, retry } = require("rxjs/operators");
 const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
   apiVersion: "",
@@ -275,7 +275,8 @@ app.post("/stripe/createPaymentIntent", function (req, res, next) {
       // print the params if the debug flag is set
       if (debug) console.log("Params:\n", params);
 
-      return from(dynamoDb.put(params).promise()).pipe(
+      const dynamoDbPut$ = bindNodeCallback(dynamoDb.put);
+      return dynamoDbPut$(params).pipe(
         retry(3),
         catchError((err) => {
           let errorMessage = "Can't create entry on requests database table";
