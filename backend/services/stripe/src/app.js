@@ -8,6 +8,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const cors = require("cors");
+const { pipe, from, throwError } = require("rxjs");
+const { concatMap, catchError, retry } = require("rxjs/operators");
 const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
   apiVersion: "",
 });
@@ -90,7 +92,8 @@ app.get("/stripe/connect/oath/state", function (req, res, next) {
   });
 });
 
-app.get("/stripe/linkStripeAccount", function (req, res, next) {
+// Link the performer's standard account and the My Request platform account
+app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
   // load request query params in to local scope
   const {
     stripeState,
@@ -170,6 +173,142 @@ app.get("/stripe/linkStripeAccount", function (req, res, next) {
         }
       }
     );
+});
+
+// Initialization of a payment intent
+app.post("/stripe/createPaymentIntent", function (req, res, next) {
+  const debug = Boolean(req.query.debug == "true");
+  const {
+    song,
+    artist,
+    amount,
+    memo,
+    eventId,
+    performerId,
+    performerStripeId,
+    originalRequestId,
+    status,
+    requesterId,
+    firstName,
+    lastName,
+  } = req.body;
+  let stripeClientSecret;
+
+  // Validate amount
+  if (req.body.amount < 0) {
+    const response = {
+      statusCode: 400,
+      body: "Amount cannot be less than 0.",
+    };
+    console.error(response);
+    return res.json(response);
+  }
+
+  const stripeSub$ = from(
+    stripe.paymentIntents.create(
+      {
+        payment_method_types: ["card"],
+        amount,
+        currency: "usd",
+        // application_fee_amount: 0,
+      },
+      {
+        stripeAccount: performerStripeId,
+      }
+    )
+  ).pipe(
+    // retry 3 times if stripe sends back an error
+    retry(3),
+    // sends error to the subscribe error callback if the call above fails on the 4th attempt
+    catchError((err) => {
+      let errorMessage = "Stripe couldn't create a payment intent";
+      console.log(errorMessage, JSON.stringify(err, null, 2));
+      return throwError({
+        err,
+        errorMessage,
+      }); // should I pass a message to saying couldn't create a payment intent as well
+    }), // do something with this
+    concatMap((paymentIntent) => {
+      // save payment intent client secret to a local variable to send back in response
+      stripeClientSecret = paymentIntent.client_secret;
+
+      // setup the database entry
+      let requestsDbEntry = {
+        song,
+        artist,
+        amount,
+        memo,
+        eventId,
+        performerId,
+        performerStripeId,
+        originalRequestId,
+        status,
+        requesterId,
+        firstName,
+        lastName,
+        paymentIntentId: paymentIntent.id,
+      };
+
+      // Convert any empty strings to null for dynamoDB
+      requestsDbEntry.firstName =
+        requestsDbEntry.firstName === "" ? null : requestsDbEntry.firstName;
+      requestsDbEntry.lastName =
+        requestsDbEntry.lastName === "" ? null : requestsDbEntry.lastName;
+      requestsDbEntry.memo =
+        requestsDbEntry.memo === "" ? null : requestsDbEntry.memo;
+
+      // Generate uuid & date for the record
+      let currentDate = new Date().toJSON();
+      requestsDbEntry.id = uuid.v1();
+      requestsDbEntry.createdOn = currentDate;
+      requestsDbEntry.modifiedOn = currentDate;
+
+      // Needed for top-up implementation of frontend app
+      requestsDbEntry.originalRequestId = requestsDbEntry.id;
+
+      // setup the dynamoDb config
+      let params = {
+        TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+        Item: requestsDbEntry,
+      };
+
+      // print the params if the debug flag is set
+      if (debug) console.log("Params:\n", params);
+
+      return from(dynamoDb.put(params).promise()).pipe(
+        retry(3),
+        catchError((err) => {
+          let errorMessage = "Can't create entry on requests database table";
+          console.log(errorMessage, JSON.stringify(err, null, 2));
+          return throwError({ errorMessage, err });
+        })
+      );
+    })
+  );
+
+  stripeSub$.subscribe(
+    ((ledgerEntry) => {
+      // send back successful response
+      res.json({
+        message: "Successfully added item to the stripe table!",
+        record: ledgerEntry,
+        stripeClientSecret,
+        statusCode: 200,
+      });
+    },
+    (error) => {
+      console.log(error);
+      let errorMessage = error.errorMessage;
+      let err = error.err;
+
+      // send back unsuccessful response
+      res.json({
+        // message: errorMessage,
+        error: error,
+        statusCode: 400,
+      });
+    })
+  );
 });
 
 /**********************
