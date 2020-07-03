@@ -8,7 +8,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const cors = require("cors");
-const { pipe, from, throwError, bindNodeCallback } = require("rxjs");
+const { pipe, from, throwError } = require("rxjs");
 const { concatMap, catchError, retry } = require("rxjs/operators");
 const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
   apiVersion: "",
@@ -18,10 +18,8 @@ const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
 const AWS = require("aws-sdk");
 
 // Setup dynamo db to interact with db
-const DynamoDB = require("rxjs-dynamodb-client");
-const dynamoDb = new DynamoDB({
-  client: new AWS.DynamoDB(),
-});
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
 // declare a new express app
 const app = express();
 
@@ -180,7 +178,7 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
 });
 
 // Initialization of a payment intent
-app.post("/stripe/createPaymentIntent", function (req, res, next) {
+app.post("/stripe/createPaymentIntent", async function (req, res, next) {
   const debug = Boolean(req.query.debug == "true");
   const {
     song,
@@ -196,7 +194,6 @@ app.post("/stripe/createPaymentIntent", function (req, res, next) {
     firstName,
     lastName,
   } = req.body;
-  let stripeClientSecret;
 
   // Validate amount
   if (req.body.amount < 0) {
@@ -208,8 +205,9 @@ app.post("/stripe/createPaymentIntent", function (req, res, next) {
     return res.json(response);
   }
 
-  const stripeSub$ = from(
-    stripe.paymentIntents.create(
+  try {
+    // create a payment intent for this request
+    const paymentIntent = await stripe.paymentIntents.create(
       {
         payment_method_types: ["card"],
         amount,
@@ -219,103 +217,89 @@ app.post("/stripe/createPaymentIntent", function (req, res, next) {
       {
         stripeAccount: performerStripeId,
       }
-    )
-  ).pipe(
-    // retry 3 times if stripe sends back an error
-    retry(3),
-    // sends error to the subscribe error callback if the call above fails on the 4th attempt
-    catchError((err) => {
-      let errorMessage = "Stripe couldn't create a payment intent";
-      console.log(errorMessage, JSON.stringify(err, null, 2));
-      return throwError({
-        err,
-        errorMessage,
-      }); // should I pass a message to saying couldn't create a payment intent as well
-    }), // do something with this
-    concatMap((paymentIntent) => {
-      // save payment intent client secret to a local variable to send back in response
-      stripeClientSecret = paymentIntent.client_secret;
+    );
 
-      // setup the database entry
-      let requestsDbEntry = {
-        song,
-        artist,
-        amount,
-        memo,
-        eventId,
-        performerId,
-        performerStripeId,
-        originalRequestId,
-        status,
-        requesterId,
-        firstName,
-        lastName,
-        paymentIntentId: paymentIntent.id,
-      };
+    // save payment intent client secret to a local variable to send back in response
+    let stripeClientSecret = paymentIntent.client_secret;
 
-      // Convert any empty strings to null for dynamoDB
-      requestsDbEntry.firstName =
-        requestsDbEntry.firstName === "" ? null : requestsDbEntry.firstName;
-      requestsDbEntry.lastName =
-        requestsDbEntry.lastName === "" ? null : requestsDbEntry.lastName;
-      requestsDbEntry.memo =
-        requestsDbEntry.memo === "" ? null : requestsDbEntry.memo;
+    // setup the database entry
+    let requestsDbEntry = {
+      song,
+      artist,
+      amount,
+      memo,
+      eventId,
+      performerId,
+      performerStripeId,
+      originalRequestId,
+      status,
+      requesterId,
+      firstName,
+      lastName,
+      paymentIntentId: paymentIntent.id,
+    };
 
-      // Generate uuid & date for the record
-      let currentDate = new Date().toJSON();
-      requestsDbEntry.id = uuid.v1();
-      requestsDbEntry.createdOn = currentDate;
-      requestsDbEntry.modifiedOn = currentDate;
+    // Convert any empty strings to null for dynamoDB
+    requestsDbEntry.firstName =
+      requestsDbEntry.firstName === "" ? null : requestsDbEntry.firstName;
+    requestsDbEntry.lastName =
+      requestsDbEntry.lastName === "" ? null : requestsDbEntry.lastName;
+    requestsDbEntry.memo =
+      requestsDbEntry.memo === "" ? null : requestsDbEntry.memo;
 
-      // Needed for top-up implementation of frontend app
-      requestsDbEntry.originalRequestId = requestsDbEntry.id;
+    // Generate uuid & date for the record
+    let currentDate = new Date().toJSON();
+    requestsDbEntry.id = uuid.v1();
+    requestsDbEntry.createdOn = currentDate;
+    requestsDbEntry.modifiedOn = currentDate;
 
-      // setup the dynamoDb config
-      let params = {
-        TableName: process.env.DYNAMODB_REQUESTS_TABLE,
-        Item: requestsDbEntry,
-      };
+    // Needed for top-up implementation of frontend app
+    requestsDbEntry.originalRequestId = requestsDbEntry.id;
 
-      // print the params if the debug flag is set
-      if (debug) console.log("Params:\n", params);
+    // setup the dynamoDb config
+    let params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      Item: requestsDbEntry,
+    };
 
-      return dynamoDb
-        .table(process.env.DYNAMODB_REQUESTS_TABLE)
-        .insert(requestsDbEntry)
-        .pipe(
-          retry(3),
-          catchError((err) => {
-            let errorMessage = "Can't create entry on requests database table";
-            console.log(errorMessage, JSON.stringify(err, null, 2));
-            return throwError({ errorMessage, err });
-          })
-        );
-    })
-  );
+    // print the params if the debug flag is set
+    if (debug) console.log("Params:\n", params);
 
-  stripeSub$.subscribe(
-    ((ledgerEntry) => {
+    // call dynamodb.put
+    try {
+      let dbRequestEntry = await dynamoDb.put(params).promise();
+
+      if (debug) {
+        console.log("request db entry", dbRequestEntry);
+        console.log("paymentIntent", paymentIntent);
+      }
+
       // send back successful response
-      res.json({
+      return res.json({
         message: "Successfully added item to the stripe table!",
-        record: ledgerEntry,
+        record: dbRequestEntry,
         stripeClientSecret,
         statusCode: 200,
       });
-    },
-    (error) => {
-      console.log(error);
-      let errorMessage = error.errorMessage;
-      let err = error.err;
+    } catch (error) {
+      let errorMessage =
+        "Couldn't create a dynamodb entry in the requests table";
+      console.error(errorMessage, JSON.stringify(error, null, 2));
 
       // send back unsuccessful response
-      res.json({
-        // message: errorMessage,
-        error: error,
+      return res.json({
+        message: errorMessage,
         statusCode: 400,
       });
-    })
-  );
+    }
+  } catch (error) {
+    let errorMessage = "Stripe couldn't create a payment intent";
+    console.error(errorMessage, JSON.stringify(error, null, 2));
+    res.json({
+      message: errorMessage,
+      statusCode: 400,
+    });
+  }
 });
 
 /**********************
