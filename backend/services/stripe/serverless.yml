@@ -22,6 +22,8 @@ provider:
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
     DYNAMODB_REQUESTS_TABLE: my-request-requests-${self:provider.stage}
     DYNAMODB_PERFORMERS_TABLE: my-request-performers-${self:provider.stage}
+    STRIPE_TEST_SK: sk_test_Y2Zm1w5cMdrXWT5mQ8lKbjrD00N97nDCUY
+    STAGE: ${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -60,7 +62,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        TableName: ${self:provider.environment.DYNAMODB_REQUESTS_TABLE}
         # GlobalSecondaryIndexes:
         #   - IndexName: performerId-date-index
         #     KeySchema:
@@ -89,6 +91,12 @@ custom:
   dynamodb:
     stages:
       - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
 
 outputs:
   URL: ${self:custom.apiEndpoint}

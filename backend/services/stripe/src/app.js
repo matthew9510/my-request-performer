@@ -15,10 +15,12 @@ const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
 });
 
 //  Load AWS SDK for JavaScr'ipt to interact with AWS DynamoDB
-const AWS = require("aws-sdk");
+// const AWS = require("aws-sdk");
 
 // Setup dynamo db to interact with db
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+// const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+const dynamoDb = require("./dynamodb");
 
 // declare a new express app
 const app = express();
@@ -218,6 +220,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
         stripeAccount: performerStripeId,
       }
     );
+    console.log(paymentIntent, "CREATED");
 
     // save payment intent client secret to a local variable to send back in response
     let stripeClientSecret = paymentIntent.client_secret;
@@ -255,14 +258,14 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 
     // Needed for top-up implementation of frontend app
     requestsDbEntry.originalRequestId = requestsDbEntry.id;
-
+    console.log("Table Name ", process.env.DYNAMODB_REQUESTS_TABLE);
     // setup the dynamoDb config
     let params = {
+      // TableName: process.env.DYNAMODB_REQUESTS_TABLE,
       TableName: process.env.DYNAMODB_REQUESTS_TABLE,
       Item: requestsDbEntry,
       //ReturnValues: "ALL_OLD",
     };
-
     // print the params if the debug flag is set
     if (debug) console.log("Params:\n", params);
 
@@ -271,6 +274,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 
     dynamoDb.put(params, (error, result) => {
       if (error) {
+        console.log("db error", error);
         console.error(
           "Unable to Update item. Error JSON:",
           JSON.stringify(error, null, 2)
@@ -281,7 +285,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
           console.log("request db entry", result);
           console.log("paymentIntent", paymentIntent);
         }
-
+        console.log(result, "$$$$$$$$$$$$$$");
         // send back successful response
         return res.json({
           message: "Successfully added item to the stripe table!",

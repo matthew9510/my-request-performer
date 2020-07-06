@@ -10,8 +10,9 @@
     "stripe": "^8.64.0"
   },
   "devDependencies": {
-    "serverless-offline": "^6.4.0",
-    "serverless-dynamodb-local": "0.2.38"
+    "express": "^4.17.1",
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-offline": "^6.4.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
