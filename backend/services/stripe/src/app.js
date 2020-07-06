@@ -266,34 +266,24 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     if (debug) console.log("Params:\n", params);
 
     // call dynamodb.put
-    try {
-      let dbRequestEntry = await dynamoDb.put(params).promise();
 
-      if (debug) {
-        console.log("request db entry", dbRequestEntry);
-        console.log("paymentIntent", paymentIntent);
-      }
+    let dbRequestEntry = await dynamoDb.put(params).promise();
 
-      // send back successful response
-      return res.json({
-        message: "Successfully added item to the stripe table!",
-        record: dbRequestEntry,
-        stripeClientSecret,
-        statusCode: 200,
-      });
-    } catch (error) {
-      let errorMessage =
-        "Couldn't create a dynamodb entry in the requests table";
-      console.error(errorMessage, JSON.stringify(error, null, 2));
-
-      // send back unsuccessful response
-      return res.json({
-        message: errorMessage,
-        statusCode: 400,
-      });
+    if (debug) {
+      console.log("request db entry", dbRequestEntry);
+      console.log("paymentIntent", paymentIntent);
     }
+
+    // send back successful response
+    return res.json({
+      message: "Successfully added item to the stripe table!",
+      record: dbRequestEntry,
+      stripeClientSecret,
+      statusCode: 200,
+    });
   } catch (error) {
-    let errorMessage = "Stripe couldn't create a payment intent";
+    let errorMessage =
+      "Stripe couldn't create a payment intent or create a database entry";
     console.error(errorMessage, JSON.stringify(error, null, 2));
     res.json({
       message: errorMessage,
