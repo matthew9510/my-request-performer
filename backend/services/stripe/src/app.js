@@ -260,26 +260,36 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     let params = {
       TableName: process.env.DYNAMODB_REQUESTS_TABLE,
       Item: requestsDbEntry,
+      //ReturnValues: "ALL_OLD",
     };
 
     // print the params if the debug flag is set
     if (debug) console.log("Params:\n", params);
 
     // call dynamodb.put
+    // let dbRequestEntry = await dynamoDb.put(params).promise(); // not natively a promise -> use the call back
 
-    let dbRequestEntry = await dynamoDb.put(params).promise();
+    dynamoDb.put(params, (error, result) => {
+      if (error) {
+        console.error(
+          "Unable to Update item. Error JSON:",
+          JSON.stringify(error, null, 2)
+        );
+        throw new Error(error);
+      } else {
+        if (debug) {
+          console.log("request db entry", result);
+          console.log("paymentIntent", paymentIntent);
+        }
 
-    if (debug) {
-      console.log("request db entry", dbRequestEntry);
-      console.log("paymentIntent", paymentIntent);
-    }
-
-    // send back successful response
-    return res.json({
-      message: "Successfully added item to the stripe table!",
-      record: dbRequestEntry,
-      stripeClientSecret,
-      statusCode: 200,
+        // send back successful response
+        return res.json({
+          message: "Successfully added item to the stripe table!",
+          result: result,
+          stripeClientSecret,
+          statusCode: 200,
+        });
+      }
     });
   } catch (error) {
     let errorMessage =
@@ -290,6 +300,45 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       statusCode: 400,
     });
   }
+});
+
+/**********************
+ * GET all method *
+ **********************/
+app.get("/requests", function (req, res) {
+  // If debug flag passed show console logs
+  const debug = Boolean(req.query.debug == "true");
+
+  if (debug) console.log("GET all requests request:\n", req);
+
+  // create params
+  const params = {
+    TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+  };
+  if (debug) console.log("Params:\n", params);
+
+  // fetch event from the database
+  dynamoDb.scan(params, (error, result) => {
+    // handle potential errors
+    if (error) {
+      console.error(
+        "Unable to find items. Error JSON:",
+        JSON.stringify(error, null, 2)
+      );
+    } else {
+      // create a response
+      const response = {
+        statusCode: 200,
+        body: result,
+      };
+      if (debug) console.log("Response:\n", response);
+
+      res.json({
+        success: "Successfully found records from the performers table!",
+        response: response,
+      });
+    }
+  });
 });
 
 /**********************

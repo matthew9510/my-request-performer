@@ -5,8 +5,8 @@ org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 plugins:
-  - serverless-offline
   - serverless-dynamodb-local
+  - serverless-offline
 provider:
   name: aws
   runtime: nodejs10.x
