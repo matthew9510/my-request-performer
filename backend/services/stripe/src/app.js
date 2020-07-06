@@ -14,12 +14,7 @@ const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
   apiVersion: "",
 });
 
-//  Load AWS SDK for JavaScr'ipt to interact with AWS DynamoDB
-// const AWS = require("aws-sdk");
-
-// Setup dynamo db to interact with db
-// const dynamoDb = new AWS.DynamoDB.DocumentClient();
-
+// Declare a new dynamo db client
 const dynamoDb = require("./dynamodb");
 
 // declare a new express app
@@ -258,38 +253,36 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 
     // Needed for top-up implementation of frontend app
     requestsDbEntry.originalRequestId = requestsDbEntry.id;
-    console.log("Table Name ", process.env.DYNAMODB_REQUESTS_TABLE);
+
     // setup the dynamoDb config
     let params = {
       // TableName: process.env.DYNAMODB_REQUESTS_TABLE,
       TableName: process.env.DYNAMODB_REQUESTS_TABLE,
       Item: requestsDbEntry,
-      //ReturnValues: "ALL_OLD",
     };
+
     // print the params if the debug flag is set
     if (debug) console.log("Params:\n", params);
 
-    // call dynamodb.put
-    // let dbRequestEntry = await dynamoDb.put(params).promise(); // not natively a promise -> use the call back
-
+    // Save this request entry to the table
     dynamoDb.put(params, (error, result) => {
       if (error) {
         console.log("db error", error);
         console.error(
-          "Unable to Update item. Error JSON:",
+          "Unable store paid request item. Error JSON:",
           JSON.stringify(error, null, 2)
         );
         throw new Error(error);
       } else {
         if (debug) {
-          console.log("request db entry", result);
+          console.log("request db entry", requestsDbEntry);
           console.log("paymentIntent", paymentIntent);
         }
-        console.log(result, "$$$$$$$$$$$$$$");
+
         // send back successful response
         return res.json({
           message: "Successfully added item to the stripe table!",
-          result: result,
+          result: requestsDbEntry,
           stripeClientSecret,
           statusCode: 200,
         });
@@ -304,45 +297,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       statusCode: 400,
     });
   }
-});
-
-/**********************
- * GET all method *
- **********************/
-app.get("/requests", function (req, res) {
-  // If debug flag passed show console logs
-  const debug = Boolean(req.query.debug == "true");
-
-  if (debug) console.log("GET all requests request:\n", req);
-
-  // create params
-  const params = {
-    TableName: process.env.DYNAMODB_REQUESTS_TABLE,
-  };
-  if (debug) console.log("Params:\n", params);
-
-  // fetch event from the database
-  dynamoDb.scan(params, (error, result) => {
-    // handle potential errors
-    if (error) {
-      console.error(
-        "Unable to find items. Error JSON:",
-        JSON.stringify(error, null, 2)
-      );
-    } else {
-      // create a response
-      const response = {
-        statusCode: 200,
-        body: result,
-      };
-      if (debug) console.log("Response:\n", response);
-
-      res.json({
-        success: "Successfully found records from the performers table!",
-        response: response,
-      });
-    }
-  });
 });
 
 /**********************
