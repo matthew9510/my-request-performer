@@ -19,10 +19,9 @@ provider:
     PROJECT: ${self:app}
     STAGE: ${self:provider.stage}
   environment:
-    DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
+    # DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
     DYNAMODB_REQUESTS_TABLE: my-request-requests-${self:provider.stage}
     DYNAMODB_PERFORMERS_TABLE: my-request-performers-${self:provider.stage}
-    STRIPE_TEST_SK: sk_test_Y2Zm1w5cMdrXWT5mQ8lKbjrD00N97nDCUY
     STAGE: ${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
@@ -33,7 +32,11 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PERFORMERS_TABLE}"
+      Resource:
+        [
+          "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_REQUESTS_TABLE}",
+          "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PERFORMERS_TABLE}",
+        ]
 
 functions:
   endpoints:
@@ -47,34 +50,34 @@ functions:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
     role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
 
-resources:
-  Resources:
-    myDynamoDBTable:
-      Type: "AWS::DynamoDB::Table"
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_REQUESTS_TABLE}
-        # GlobalSecondaryIndexes:
-        #   - IndexName: performerId-date-index
-        #     KeySchema:
-        #       - AttributeName: performerId
-        #         KeyType: HASH
-        #       - AttributeName: date
-        #         KeyType: RANGE
-        #     Projection:
-        #       ProjectionType: ALL
-        #     ProvisionedThroughput:
-        #       ReadCapacityUnits: 1
-        #       WriteCapacityUnits: 1
+# resources:
+#   Resources:
+#     myDynamoDBTable:
+#       Type: "AWS::DynamoDB::Table"
+#       DeletionPolicy: Retain
+#       Properties:
+#         AttributeDefinitions:
+#           - AttributeName: id
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: id
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+#         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+# GlobalSecondaryIndexes:
+#   - IndexName: performerId-date-index
+#     KeySchema:
+#       - AttributeName: performerId
+#         KeyType: HASH
+#       - AttributeName: date
+#         KeyType: RANGE
+#     Projection:
+#       ProjectionType: ALL
+#     ProvisionedThroughput:
+#       ReadCapacityUnits: 1
+#       WriteCapacityUnits: 1
 
 custom:
   apiEndpoint:
@@ -100,4 +103,4 @@ custom:
 
 outputs:
   URL: ${self:custom.apiEndpoint}
-  TableName: ${self:provider.environment.DYNAMODB_TABLE}
+  # TableName: ${self:provider.environment.DYNAMODB_TABLE}
