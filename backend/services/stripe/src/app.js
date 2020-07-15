@@ -203,11 +203,13 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
   }
 
   try {
+    // Get amount in stripe desired form
+    const paymentIntentAmount = amount * 100;
     // create a payment intent for this request
     const paymentIntent = await stripe.paymentIntents.create(
       {
         payment_method_types: ["card"],
-        amount,
+        paymentIntentAmount,
         currency: "usd",
         // application_fee_amount: 0,
       },
