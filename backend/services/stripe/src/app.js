@@ -189,6 +189,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     requesterId,
     firstName,
     lastName,
+    originalRequestId,
   } = req.body;
 
   // Validate amount
@@ -216,9 +217,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     );
     console.log(paymentIntent, "CREATED");
 
-    // save payment intent client secret to a local variable to send back in response
-    let stripeClientSecret = paymentIntent.client_secret;
-
     // setup the database entry
     let requestsDbEntry = {
       song,
@@ -233,6 +231,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       firstName,
       lastName,
       paymentIntentId: paymentIntent.id,
+      paymentIntentClientSecret: paymentIntent.client_secret,
     };
 
     // Convert any empty strings to null for dynamoDB
@@ -249,12 +248,16 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     requestsDbEntry.createdOn = currentDate;
     requestsDbEntry.modifiedOn = currentDate;
 
-    // Needed for top-up implementation of frontend app
-    requestsDbEntry.originalRequestId = requestsDbEntry.id;
+    // Handle linking top-ups with original requests
+    if (originalRequestId === undefined) {
+      // Needed for top-up implementation of frontend app
+      requestsDbEntry.originalRequestId = requestsDbEntry.id;
+    } else {
+      requestsDbEntry.originalRequestId = originalRequestId;
+    }
 
     // setup the dynamoDb config
     let params = {
-      // TableName: process.env.DYNAMODB_REQUESTS_TABLE,
       TableName: process.env.DYNAMODB_REQUESTS_TABLE,
       Item: requestsDbEntry,
     };
@@ -281,7 +284,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
         return res.json({
           message: "Successfully added item to the stripe table!",
           result: requestsDbEntry,
-          stripeClientSecret,
           statusCode: 200,
         });
       }
