@@ -118,7 +118,6 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
     })
     .then(
       (response) => {
-        console.log("stripe response", response);
         var connected_account_id = response.stripe_user_id;
 
         // If successful we should maybe remove the state property as well
@@ -176,7 +175,7 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
 
 // Initialization of a payment intent
 app.post("/stripe/createPaymentIntent", async function (req, res, next) {
-  const debug = Boolean(req.query.debug == "true");
+  const debug = req.query.debug === "true";
   const {
     song,
     artist,
@@ -204,12 +203,13 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 
   try {
     // Get amount in stripe desired form
-    const paymentIntentAmount = amount * 100;
+    const convertedPaymentIntentAmount = Math.floor(amount * 100);
+
     // create a payment intent for this request
     const paymentIntent = await stripe.paymentIntents.create(
       {
         payment_method_types: ["card"],
-        paymentIntentAmount,
+        amount: convertedPaymentIntentAmount,
         currency: "usd",
         // application_fee_amount: 0,
       },
@@ -217,7 +217,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
         stripeAccount: performerStripeId,
       }
     );
-    console.log(paymentIntent, "CREATED");
 
     // setup the database entry
     let requestsDbEntry = {
