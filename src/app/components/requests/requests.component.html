@@ -153,6 +153,7 @@
               [artist]="request.artist"
               [amount]="request.amount"
               [status]="request.status"
+              [memo]="request?.memo"
               [amountOfTopUps]="request.topUps.length"
               *ngFor="
                 let request of sortedAcceptedRequests
@@ -253,6 +254,7 @@
               [artist]="request.artist"
               [amount]="request.amount"
               [status]="request.status"
+              [memo]="request?.memo"
               *ngFor="
                 let request of sortedPendingRequests
                   | orderBy: order:pendingReverse:'case-insensitive';
