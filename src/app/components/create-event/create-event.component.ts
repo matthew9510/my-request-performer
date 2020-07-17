@@ -102,12 +102,13 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     this.eventDetailForm = this.fb.group({
       title: [null, [Validators.required]],
       description: [null],
-      coverFee: [null],
+
       genre: [null],
       url: [null],
       status: ["created"],
       performerId: [localStorage.getItem("performerSub")],
       venueId: [null],
+      isPaidRequestsOnly: [false],
       // image: [null],
     });
 

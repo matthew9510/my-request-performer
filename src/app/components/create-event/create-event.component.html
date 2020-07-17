@@ -16,17 +16,6 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>{{ t("coverFee") }}</mat-label>
-          <input
-            matInput
-            type="number"
-            class="example-right-align"
-            formControlName="coverFee"
-          />
-          <span matPrefix>$&nbsp;</span>
-        </mat-form-field>
-
-        <mat-form-field>
           <mat-label>{{ t("genre") }}</mat-label>
           <input matInput formControlName="genre" />
         </mat-form-field>
@@ -52,6 +41,13 @@
             {{ t("uploadImage") }}
           </button>
         </div>
+
+        <mat-checkbox
+          color="primary"
+          formControlName="isPaidRequestsOnly"
+          [labelPosition]="after"
+          >{{ t("paidRequestsOnlyMessage") }}</mat-checkbox
+        >
 
         <div class="stepper-nav-buttons">
           <button mat-button class="hidden" color="primary" matStepperNext>
