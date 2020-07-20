@@ -18,11 +18,9 @@ export class RequestDetailComponent implements OnInit {
   constructor(private breakpointObserver: BreakpointObserver) {}
 
   ngOnInit() {
-    console.log(this.amount);
     if (this.amount === "") {
       this.amount = 0;
     }
-    console.log(this.amount);
   }
 
   get isSmallScreen() {

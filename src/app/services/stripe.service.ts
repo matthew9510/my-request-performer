@@ -21,6 +21,13 @@ export class StripeService {
     );
   }
 
+  capturePaymentIntent(request) {
+    return this.http.post(
+      `${environment.stripeUrl}/capturePaymentIntent/`,
+      request
+    );
+  }
+
   createHeaders() {
     return {
       headers: new HttpHeaders({

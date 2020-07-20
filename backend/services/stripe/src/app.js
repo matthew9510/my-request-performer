@@ -301,6 +301,71 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
   }
 });
 
+// Capturing of a payment intent
+app.post("/stripe/capturePaymentIntent/", async function (req, res, next) {
+  const debug = req.query.debug === "true";
+  const request = req.body;
+
+  try {
+    // capture stripe payment intent
+    const capturedPaymentIntent = await stripe.confirmCardPayment(clientSecret);
+
+    if (capturedPaymentIntent.paymentIntent.status === "succeeded") {
+      //update modified date
+      request.modifiedOn = new Date().toJSON();
+
+      // temporarily store the status of paymentIntent
+      request.paymentIntentStatus = capturedPaymentIntent.paymentIntent.status;
+
+      // create params
+      const params = {
+        TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+        Key: {
+          id: request.id,
+        },
+        UpdateExpression:
+          "set modifiedOn = :modifiedOn, paymentIntentStatus = request.paymentIntentStatus",
+
+        ReturnValues: "UPDATED_OLD",
+      };
+      if (debug) console.log("Params:\n", params);
+
+      // Note if table item is being updated then the result will be the new item
+      dynamoDb.update(params, function (error, result) {
+        if (error) {
+          console.log("db error", error);
+          console.error(
+            "Unable store paid request item. Error JSON:",
+            JSON.stringify(error, null, 2)
+          );
+          throw new Error(error);
+        } else {
+          if (debug) {
+            console.log("request db result form update", result);
+            console.log("expected request db entry", request);
+            console.log("capturedPaymentIntent", capturedPaymentIntent);
+          }
+
+          // send back successful response
+          return res.json({
+            message: "Successfully added item to the stripe table!",
+            result: request,
+            statusCode: 200,
+          });
+        }
+      });
+    }
+  } catch (error) {
+    let errorMessage =
+      "Stripe couldn't capture a payment intent or create a database entry";
+    console.error(errorMessage, JSON.stringify(error, null, 2));
+    res.json({
+      message: errorMessage,
+      statusCode: 400,
+    });
+  }
+});
+
 /**********************
  *  Listen for requests
  **********************/
