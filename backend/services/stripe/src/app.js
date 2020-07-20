@@ -100,6 +100,7 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
     performerId,
     performerState,
   } = req.query;
+  const debug = req.query.debug === "true";
 
   // load performer state from db rather than client?
 
@@ -138,11 +139,11 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
             "set modifiedOn = :modifiedOn, stripeId = :stripeId remove #state",
           ReturnValues: "ALL_NEW",
         };
-        console.log("Params for db update:\n", params);
+        if (debug) console.log("Params for db update:\n", params);
 
         // Note if table item is being updated then the result will be the new item
         dynamoDb.update(params, function (err, result) {
-          console.log(" in update subscribe Result:", result);
+          if (debug) console.log(" in update subscribe Result:", result);
           if (err) {
             console.error(
               "Unable to Update item. Error JSON:",
@@ -154,14 +155,14 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
               performer: result.Attributes,
               message: "UPDATE for record on performer table succeeded!",
             };
-            console.log("preparation of Response:\n", response);
+            if (debug) console.log("preparation of Response:\n", response);
 
             res.json(response);
           }
         });
       },
       (err) => {
-        console.log("in error of stripe.token catch", err);
+        if (debug) console.log("in error of stripe.token catch", err);
         if (err.type === "StripeInvalidGrantError") {
           return res
             .status(400)
