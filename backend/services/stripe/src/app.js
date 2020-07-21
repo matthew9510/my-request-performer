@@ -209,7 +209,11 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     // create a payment intent for this request
     const paymentIntent = await stripe.paymentIntents.create(
       {
-        payment_method_types: ["card"],
+        payment_method_data: {
+          type: "card",
+          "card[token]": req.body.token.id,
+        },
+
         amount: convertedPaymentIntentAmount,
         currency: "usd",
         // application_fee_amount: 0,
@@ -219,6 +223,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       }
     );
 
+    console.log(paymentIntent);
     // setup the database entry
     let requestsDbEntry = {
       song,
@@ -307,9 +312,17 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   const request = req.body;
 
   try {
+    if (debug) console.log("before capture", request.paymentIntentId);
     // capture stripe payment intent
-    const capturedPaymentIntent = await stripe.confirmCardPayment(clientSecret);
-    console.log(capturedPaymentIntent);
+    // const capturedPaymentIntent = await stripe.confirmCardPayment(
+    //   request.paymentIntentClientSecret
+    // );
+
+    const capturedPaymentIntent = await stripe.paymentIntents.confirm(
+      request.paymentIntentId
+    );
+    if (debug) console.log("after capture");
+    if (debug) console.log(capturedPaymentIntent);
 
     if (capturedPaymentIntent.paymentIntent.status === "succeeded") {
       //update modified date
@@ -326,8 +339,12 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
         Key: {
           id: request.id,
         },
+        ExpressionAttributeValues: {
+          ":modifiedOn": request.modifiedOn,
+          ":paymentIntentStatus": request.paymentIntentStatus,
+        },
         UpdateExpression:
-          "set modifiedOn = :modifiedOn, paymentIntentStatus = request.paymentIntentStatus",
+          "set modifiedOn = :modifiedOn, paymentIntentStatus = :paymentIntentStatus",
 
         ReturnValues: "UPDATED_OLD",
       };
@@ -361,9 +378,9 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   } catch (error) {
     let errorMessage =
       "Stripe couldn't capture a payment intent or create a database entry";
-    console.error(errorMessage, JSON.stringify(error, null, 2));
+    console.error(error, JSON.stringify(error, null, 2));
     res.json({
-      message: errorMessage,
+      message: error,
       statusCode: 400,
     });
   }
