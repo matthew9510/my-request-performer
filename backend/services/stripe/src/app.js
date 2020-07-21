@@ -302,13 +302,14 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 });
 
 // Capturing of a payment intent
-app.post("/stripe/capturePaymentIntent/", async function (req, res, next) {
+app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   const debug = req.query.debug === "true";
   const request = req.body;
 
   try {
     // capture stripe payment intent
     const capturedPaymentIntent = await stripe.confirmCardPayment(clientSecret);
+    console.log(capturedPaymentIntent);
 
     if (capturedPaymentIntent.paymentIntent.status === "succeeded") {
       //update modified date
@@ -316,6 +317,8 @@ app.post("/stripe/capturePaymentIntent/", async function (req, res, next) {
 
       // temporarily store the status of paymentIntent
       request.paymentIntentStatus = capturedPaymentIntent.paymentIntent.status;
+
+      if (debug) console.log(request.paymentIntentStatus);
 
       // create params
       const params = {
