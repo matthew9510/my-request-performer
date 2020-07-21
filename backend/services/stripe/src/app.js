@@ -312,7 +312,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 // Capturing of a payment intent
 app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
-    stripeAccount: req.body.performerStripeId,
     apiVersion: "",
   });
   const debug = req.query.debug === "true";
@@ -320,13 +319,12 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
 
   try {
     if (debug) console.log("before capture", request.paymentIntentId);
-    // capture stripe payment intent
-    // const capturedPaymentIntent = await stripe.confirmCardPayment(
-    //   request.paymentIntentClientSecret
-    // );
 
-    const capturedPaymentIntent = await stripe.paymentIntents.confirm(
-      request.paymentIntentId
+    const capturedPaymentIntent = await stripe.paymentIntents.capture(
+      request.paymentIntentId,
+      {
+        stripeAccount: performerStripeId,
+      }
     );
     if (debug) console.log("after capture");
     if (debug) console.log(capturedPaymentIntent);
