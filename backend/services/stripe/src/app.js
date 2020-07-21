@@ -320,10 +320,10 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   try {
     if (debug) console.log("before capture", request.paymentIntentId);
 
-    const capturedPaymentIntent = await stripe.paymentIntents.capture(
+    const capturedPaymentIntent = await stripe.paymentIntents.confirm(
       request.paymentIntentId,
       {
-        stripeAccount: performerStripeId,
+        stripeAccount: request.performerStripeId,
       }
     );
     if (debug) console.log("after capture");
