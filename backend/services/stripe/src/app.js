@@ -10,9 +10,6 @@ const awsServerlessExpressMiddleware = require("aws-serverless-express/middlewar
 const cors = require("cors");
 const { pipe, from, throwError } = require("rxjs");
 const { concatMap, catchError, retry } = require("rxjs/operators");
-const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
-  apiVersion: "",
-});
 
 // Declare a new dynamo db client
 const dynamoDb = require("./dynamodb");
@@ -93,6 +90,9 @@ app.get("/stripe/connect/oath/state", function (req, res, next) {
 
 // Link the performer's standard account and the My Request platform account
 app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
+  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
+    apiVersion: "",
+  });
   // load request query params in to local scope
   const {
     stripeState,
@@ -191,6 +191,9 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     lastName,
     originalRequestId,
   } = req.body;
+  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
+    apiVersion: "",
+  });
 
   // Validate amount
   if (req.body.amount < 0) {
@@ -308,6 +311,10 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 
 // Capturing of a payment intent
 app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
+  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
+    stripeAccount: req.body.performerStripeId,
+    apiVersion: "",
+  });
   const debug = req.query.debug === "true";
   const request = req.body;
 

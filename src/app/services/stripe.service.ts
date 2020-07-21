@@ -23,7 +23,7 @@ export class StripeService {
 
   capturePaymentIntent(request) {
     return this.http.post(
-      `${environment.stripeUrl}/stripe/capturePaymentIntent?debug=true`,
+      `${environment.stripeUrl}/capturePaymentIntent?debug=true`,
       request
     );
   }

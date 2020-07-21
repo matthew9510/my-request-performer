@@ -620,7 +620,7 @@ export class RequestsComponent implements OnInit {
   }
 
   onChangeRequestStatus(request, requestId: string | number) {
-    if (request.amount > 0) {
+    if (request.amount > 0 && request.status === "now playing") {
       this.stripeService.capturePaymentIntent(request).subscribe((res) => {
         console.log(res);
         this.onGetRequestsByEventId();
