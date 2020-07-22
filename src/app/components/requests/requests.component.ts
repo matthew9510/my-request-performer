@@ -621,12 +621,32 @@ export class RequestsComponent implements OnInit {
 
   onChangeRequestStatus(request, requestId: string | number) {
     if (request.amount > 0 && request.status === "now playing") {
-      this.stripeService.capturePaymentIntent(request).subscribe((res) => {
-        console.log(res);
-        this.onGetRequestsByEventId();
-      }),
-        (err: any) => err;
+      this.stripeService.capturePaymentIntent(request).subscribe(
+        (res) => {
+          console.log(res);
+          this.onGetRequestsByEventId();
+        },
+        (err: any) => err
+      );
+    } else if (request.amount > 0 && request.status === "rejected") {
+      // cancel the stripe payment intent
+
+      const payload = {
+        status: request.status,
+        paymentIntentId: request.paymentIntentId,
+        performerStripeId: request.performerStripeId,
+      };
+
+      // prepare the payload
+      this.stripeService.cancelPaymentIntent(payload, request.id).subscribe(
+        (res) => {
+          console.log(res);
+          this.onGetRequestsByEventId();
+        },
+        (err: any) => err
+      );
     } else {
+      // for free requests
       this.requestsService
         .changeRequestStatus(request, requestId)
         .subscribe((res) => {

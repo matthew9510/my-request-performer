@@ -394,6 +394,87 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   }
 });
 
+// Capturing of a payment intent
+app.patch("/stripe/cancelPaymentIntent/:requestId", async function (
+  req,
+  res,
+  next
+) {
+  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
+    apiVersion: "",
+  });
+  const debug = req.query.debug === "true";
+  const requestId = req.params.requestId;
+  const { paymentIntentId, status, performerStripeId } = req.body;
+
+  try {
+    const cancelledPaymentIntent = await stripe.paymentIntents.cancel(
+      paymentIntentId,
+      {
+        stripeAccount: performerStripeId,
+      }
+    );
+    if (debug) console.log("after capture", cancelledPaymentIntent);
+
+    if (cancelledPaymentIntent.status === "canceled") {
+      //update modified date
+      let modifiedOn = new Date().toJSON();
+
+      // create params
+      const params = {
+        TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+        Key: {
+          id: requestId,
+        },
+        ExpressionAttributeNames: {
+          "#status": "status",
+        },
+        ExpressionAttributeValues: {
+          ":status": status,
+          ":modifiedOn": modifiedOn,
+          ":paymentIntentStatus": cancelledPaymentIntent.status,
+        },
+        UpdateExpression:
+          "set modifiedOn = :modifiedOn, paymentIntentStatus = :paymentIntentStatus, #status= :status",
+        ReturnValues: "UPDATED_OLD",
+      };
+      if (debug) console.log("Params:\n", params);
+
+      // Note if table item is being updated then the result will be the new item
+      dynamoDb.update(params, function (error, result) {
+        if (error) {
+          console.log("db error", error);
+          console.error(
+            "Unable store canceled request item. Error JSON:",
+            JSON.stringify(error, null, 2)
+          );
+          throw new Error(error);
+        } else {
+          if (debug) {
+            console.log("request db result form update", result);
+            console.log("cancelledPaymentIntent", cancelledPaymentIntent);
+          }
+
+          // send back successful response
+          return res.json({
+            message: "Successfully added item to the stripe table!",
+            result: result,
+            statusCode: 200,
+          });
+        }
+      });
+    }
+  } catch (error) {
+    let errorMessage =
+      "Stripe couldn't capture a payment intent or create a database entry";
+    console.error(error, JSON.stringify(error, null, 2));
+    res.json({
+      message: error,
+      statusCode: 400,
+    });
+  }
+});
+
 /**********************
  *  Listen for requests
  **********************/

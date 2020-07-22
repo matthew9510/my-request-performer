@@ -28,6 +28,13 @@ export class StripeService {
     );
   }
 
+  cancelPaymentIntent(requestChanges, requestId) {
+    return this.http.patch(
+      `${environment.stripeUrl}/cancelPaymentIntent/${requestId}?debug=true`,
+      requestChanges
+    );
+  }
+
   createHeaders() {
     return {
       headers: new HttpHeaders({
