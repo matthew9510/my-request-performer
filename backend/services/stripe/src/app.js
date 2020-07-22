@@ -344,13 +344,16 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
         Key: {
           id: request.id,
         },
+        ExpressionAttributeNames: {
+          "#status": "status",
+        },
         ExpressionAttributeValues: {
+          ":status": request.status,
           ":modifiedOn": request.modifiedOn,
           ":paymentIntentStatus": request.paymentIntentStatus,
         },
         UpdateExpression:
-          "set modifiedOn = :modifiedOn, paymentIntentStatus = :paymentIntentStatus",
-
+          "set modifiedOn = :modifiedOn, paymentIntentStatus = :paymentIntentStatus, #status= :status",
         ReturnValues: "UPDATED_OLD",
       };
       if (debug) console.log("Params:\n", params);
