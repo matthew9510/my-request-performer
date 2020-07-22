@@ -216,7 +216,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
           type: "card",
           "card[token]": req.body.token.id,
         },
-
+        confirmation_method: "manual",
         amount: convertedPaymentIntentAmount,
         currency: "usd",
         // application_fee_amount: 0,
@@ -329,12 +329,12 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
     if (debug) console.log("after capture");
     if (debug) console.log(capturedPaymentIntent);
 
-    if (capturedPaymentIntent.paymentIntent.status === "succeeded") {
+    if (capturedPaymentIntent.status === "succeeded") {
       //update modified date
       request.modifiedOn = new Date().toJSON();
 
       // temporarily store the status of paymentIntent
-      request.paymentIntentStatus = capturedPaymentIntent.paymentIntent.status;
+      request.paymentIntentStatus = capturedPaymentIntent.status;
 
       if (debug) console.log(request.paymentIntentStatus);
 
