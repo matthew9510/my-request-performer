@@ -106,17 +106,16 @@
       >
         Create or link existing stripe account for payments
       </button>
-      <br />
-      <p *ngIf="profileForm.invalid" class="error-message">
-        {{ t("requiredFormFieldsMessage") }}
-      </p>
-
       <p
         class="performer-not-signed-up-with-stripe-prompt"
         *ngIf="!this.performerService.isStripeAccountLinked"
       >
         The performer must link their stripe account under the profile page to
         accept paid requests
+      </p>
+      <br />
+      <p *ngIf="profileForm.invalid" class="error-message">
+        {{ t("requiredFormFieldsMessage") }}
       </p>
 
       <div id="fab-button-wrapper">
