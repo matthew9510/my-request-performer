@@ -80,7 +80,7 @@
             [class.large-screen-child]="isLargeScreen"
           >
             <app-request-detail
-              [song]="nowPlayingRequest.song"
+              [song]="nowPlayingRequest?.song"
               [artist]="nowPlayingRequest?.artist"
               [status]="nowPlayingRequest?.status"
               [amount]="nowPlayingRequest?.amount"
