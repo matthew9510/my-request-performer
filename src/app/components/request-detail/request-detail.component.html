@@ -22,7 +22,10 @@
     </span> -->
   </div>
   <div id="tip-and-buttons" [class.actions-small-screen]="isSmallScreen">
-    <div id="amount-wrapper">
+    <div
+      id="amount-wrapper"
+      *ngIf="this.performerService.isStripeAccountLinked"
+    >
       <span class="tip-amount">{{ amount | currency }}</span>
     </div>
     <div id="buttons-wrapper">

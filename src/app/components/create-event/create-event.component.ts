@@ -157,6 +157,15 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
         new Date(this.eventToClone.date)
       );
     }
+
+    this.performerService
+      .getPerformerInfoById(localStorage.getItem("performerSub"))
+      .subscribe((res) => {
+        // Set appropriate flags for component
+        if (this.performerService.performer.stripeId) {
+          this.performerService.isStripeAccountLinked = true;
+        }
+      });
   }
 
   /* These two methods below set autofocus on the first input of each step of the stepper */

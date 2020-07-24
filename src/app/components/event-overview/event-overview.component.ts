@@ -50,6 +50,15 @@ export class EventOverviewComponent implements OnInit {
         this.performerService.eventCreatedSnackbar = false;
       });
     }
+
+    this.performerService
+      .getPerformerInfoById(localStorage.getItem("performerSub"))
+      .subscribe((res) => {
+        // Set appropriate flags for component
+        if (this.performerService.performer.stripeId) {
+          this.performerService.isStripeAccountLinked = true;
+        }
+      });
   }
 
   navigateToErrorPage() {

@@ -35,6 +35,9 @@ p.event-status-message {
   padding: 10px;
 }
 
+p.performer-not-signed-up-with-stripe-prompt {
+  color: $accent;
+}
 .info-wrapper {
   display: flex;
 }

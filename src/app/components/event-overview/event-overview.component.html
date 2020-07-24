@@ -158,6 +158,15 @@
           <button mat-flat-button color="primary">Copy URL</button> -->
         </div>
       </div>
+
+      <p
+        class="performer-not-signed-up-with-stripe-prompt"
+        *ngIf="!this.performerService.isStripeAccountLinked"
+      >
+        The performer must link their stripe account under the profile page to
+        accept paid requests.
+      </p>
+
       <mat-card-actions align="end">
         <button
           mat-button

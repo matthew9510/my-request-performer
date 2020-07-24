@@ -43,11 +43,20 @@
         </div>
 
         <mat-checkbox
+          *ngIf="this.performerService.isStripeAccountLinked"
           color="primary"
           formControlName="isPaidRequestsOnly"
           [labelPosition]="after"
           >{{ t("paidRequestsOnlyMessage") }}</mat-checkbox
         >
+
+        <p
+          class="performer-not-signed-up-with-stripe-prompt"
+          *ngIf="!this.performerService.isStripeAccountLinked"
+        >
+          The performer must link their stripe account under the profile page to
+          accept paid requests.
+        </p>
 
         <div class="stepper-nav-buttons">
           <button mat-button class="hidden" color="primary" matStepperNext>
