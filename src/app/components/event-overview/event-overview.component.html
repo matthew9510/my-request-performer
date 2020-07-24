@@ -144,7 +144,7 @@
         </div>
       </div>
 
-      <div class="info-wrapper">
+      <div class="info-wrapper event-url-spacing">
         <div class="icon">
           <mat-icon>link</mat-icon>
         </div>
@@ -159,13 +159,15 @@
         </div>
       </div>
 
-      <p
-        class="performer-not-signed-up-with-stripe-prompt"
-        *ngIf="!this.performerService.isStripeAccountLinked"
-      >
-        The performer must link their stripe account under the profile page to
-        accept paid requests.
-      </p>
+      <div class="info-wrapper">
+        <p
+          class="performer-not-signed-up-with-stripe-prompt"
+          *ngIf="!this.performerService.isStripeAccountLinked"
+        >
+          The performer must link their stripe account under the profile page to
+          accept paid requests.
+        </p>
+      </div>
 
       <mat-card-actions align="end">
         <button

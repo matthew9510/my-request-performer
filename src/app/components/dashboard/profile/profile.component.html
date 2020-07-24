@@ -111,6 +111,14 @@
         {{ t("requiredFormFieldsMessage") }}
       </p>
 
+      <p
+        class="performer-not-signed-up-with-stripe-prompt"
+        *ngIf="!this.performerService.isStripeAccountLinked"
+      >
+        The performer must link their stripe account under the profile page to
+        accept paid requests
+      </p>
+
       <div id="fab-button-wrapper">
         <button
           *ngIf="editProfile === true"

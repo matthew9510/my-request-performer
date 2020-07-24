@@ -37,7 +37,9 @@ p.event-status-message {
 
 p.performer-not-signed-up-with-stripe-prompt {
   color: $accent;
+  text-align: center;
 }
+
 .info-wrapper {
   display: flex;
 }
@@ -103,6 +105,10 @@ a:visited {
 
 .event-url {
   opacity: 0.6;
+}
+
+.event-url-spacing {
+  max-width: 100%;
 }
 
 .spinner {

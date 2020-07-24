@@ -107,6 +107,10 @@ p.stripe-font {
   color: mat-color($app-primary);
 }
 
+p.performer-not-signed-up-with-stripe-prompt {
+  color: $accent;
+}
+
 @media screen and (max-width: 450px) {
 }
 
