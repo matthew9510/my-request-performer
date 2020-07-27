@@ -110,8 +110,12 @@ p.stripe-font {
 p.performer-not-signed-up-with-stripe-prompt {
   color: $accent;
 }
-.stripe-dashboard-link {
-  color: $accent;
+#stripe-dashboard {
+  text-decoration: none;
+  color: white;
+}
+.redirect-icon {
+  margin-left: 1%;
 }
 
 @media screen and (max-width: 450px) {
