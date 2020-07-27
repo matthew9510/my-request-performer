@@ -81,7 +81,18 @@
       <br />
 
       <div *ngIf="stripeLinkComplete">
-        <p class="stripe-font">Stripe account connected</p>
+        <p class="stripe-font">
+          Stripe Account ID: {{ performerService.performer?.stripeId }}
+        </p>
+
+        <p>
+          <a
+            href="https://dashboard.stripe.com/login"
+            target="_blank"
+            class="stripe-font stripe-dashboard-link"
+            >Click here to be redirected to the Stripe dashboard</a
+          >
+        </p>
       </div>
 
       <div
