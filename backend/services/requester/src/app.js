@@ -302,7 +302,6 @@ app.get("/requester/:id/requests", function (req, res, next) {
       // Print the result
       if (debug) console.log("Result:\n", result);
 
-      console.log("Result:\n", result);
       if (result.Items.length >= 1) {
         // setup a successful response
         const successfulResponse = {

@@ -569,20 +569,15 @@ export class RequestsComponent implements OnInit {
   playNext(request: any) {
     this.endCurrentSong();
 
-    console.log("request coming in (maybe has a few topups)", request);
-
     let requestToPlay = this.acceptedRequests.filter(
       (req) => req.originalRequestId === request.originalRequestId
     )[0];
-
-    console.log("original request ", requestToPlay);
 
     // if request has top-ups alter the top-up statuses in db
     if (requestToPlay.topUps.length > 0) {
       var topUpAmount = 0;
       for (let topUp of requestToPlay.topUps) {
         let alteredTopUp = JSON.parse(JSON.stringify(topUp));
-        console.log("top-up", alteredTopUp);
         alteredTopUp.status = "now playing";
         this.onChangeRequestStatus(alteredTopUp, topUp.id);
         topUpAmount += topUp.amount;
@@ -600,10 +595,6 @@ export class RequestsComponent implements OnInit {
     // delete top-ups array from now playing request
     delete alteredRequestToPlay.topUps;
 
-    console.log(
-      "alteredRequestToPlay (original now playing)",
-      alteredRequestToPlay
-    );
     this.onChangeRequestStatus(alteredRequestToPlay, requestToPlay.id);
 
     this.nowPlayingRequest = {
@@ -623,7 +614,6 @@ export class RequestsComponent implements OnInit {
     if (request.amount > 0 && request.status === "now playing") {
       this.stripeService.capturePaymentIntent(request).subscribe(
         (res) => {
-          console.log(res);
           this.onGetRequestsByEventId();
         },
         (err: any) => err
@@ -640,7 +630,6 @@ export class RequestsComponent implements OnInit {
       // prepare the payload
       this.stripeService.cancelPaymentIntent(payload, request.id).subscribe(
         (res) => {
-          console.log(res);
           this.onGetRequestsByEventId();
         },
         (err: any) => err

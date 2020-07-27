@@ -17,6 +17,11 @@ const dynamoDb = require("./dynamodb");
 // declare a new express app
 const app = express();
 
+// stripe library
+const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
+  apiVersion: "",
+});
+
 /**********************
  *   Middleware
  **********************/
@@ -90,9 +95,6 @@ app.get("/stripe/connect/oath/state", function (req, res, next) {
 
 // Link the performer's standard account and the My Request platform account
 app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
-  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
-    apiVersion: "",
-  });
   // load request query params in to local scope
   const {
     stripeState,
@@ -191,9 +193,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
     lastName,
     originalRequestId,
   } = req.body;
-  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
-    apiVersion: "",
-  });
 
   // Validate amount
   if (req.body.amount < 0) {
@@ -226,7 +225,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       }
     );
 
-    console.log(paymentIntent);
     // setup the database entry
     let requestsDbEntry = {
       song,
@@ -311,9 +309,6 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
 
 // Capturing of a payment intent
 app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
-  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
-    apiVersion: "",
-  });
   const debug = req.query.debug === "true";
   const request = req.body;
 
@@ -400,9 +395,6 @@ app.patch("/stripe/cancelPaymentIntent/:requestId", async function (
   res,
   next
 ) {
-  const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
-    apiVersion: "",
-  });
   const debug = req.query.debug === "true";
   const requestId = req.params.requestId;
   const { paymentIntentId, status, performerStripeId } = req.body;

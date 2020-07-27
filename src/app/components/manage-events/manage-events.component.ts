@@ -87,7 +87,6 @@ export class ManageEventsComponent implements OnInit {
     // displays events with status === 'active' or 'paused' and with a date in the future
     if (status === "active") {
       this.eventService.getEvents().subscribe((res: any) => {
-        console.log(res);
         this.events = res.response.body.filter(
           (el: {
             status: string;

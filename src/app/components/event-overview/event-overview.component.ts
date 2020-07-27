@@ -74,7 +74,6 @@ export class EventOverviewComponent implements OnInit {
         this.typeOfCoverFee = typeof this.event.coverFee;
         this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
           this.venue = res.response.body.Item;
-          // console.log(this.event.performerId);
           this.performerService
             .getPerformerInfoById(this.event.performerId)
             .subscribe((res: any) => {
