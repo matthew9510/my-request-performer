@@ -34,7 +34,7 @@ export class HistoryComponent implements OnInit {
   }
 
   ngOnInit() {
-    setTimeout(() => this.onFetchRequests(this.eventId), 300);
+    setTimeout(() => this.onFetchRequests(this.eventId), 500);
     this.onGetEventById();
   }
 
