@@ -9,7 +9,7 @@ export class StripeService {
 
   createState(performerId: any) {
     return this.http.get(
-      `${environment.stripeUrl}/connect/oath/state?debug=true&id=${performerId}`,
+      `${environment.stripeUrl}/connect/oath/state?debug=false&id=${performerId}`,
       this.createHeaders()
     );
   }
@@ -23,14 +23,14 @@ export class StripeService {
 
   capturePaymentIntent(request) {
     return this.http.post(
-      `${environment.stripeUrl}/capturePaymentIntent?debug=true`,
+      `${environment.stripeUrl}/capturePaymentIntent?debug=false`,
       request
     );
   }
 
   cancelPaymentIntent(requestChanges, requestId) {
     return this.http.patch(
-      `${environment.stripeUrl}/cancelPaymentIntent/${requestId}?debug=true`,
+      `${environment.stripeUrl}/cancelPaymentIntent/${requestId}?debug=false`,
       requestChanges
     );
   }
