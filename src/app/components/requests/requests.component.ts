@@ -604,6 +604,9 @@ export class RequestsComponent implements OnInit {
         )
       );
 
+      const message = translate("snackbar song ended");
+      this.openSnackBar(message);
+
       forkJoin(listOfAlteredRequestObservables).subscribe(
         (res) => {
           this.currentlyPlaying = false;
@@ -615,8 +618,7 @@ export class RequestsComponent implements OnInit {
             status: null,
             id: null,
           };
-          const message = translate("snackbar song ended");
-          this.openSnackBar(message);
+
           this.onGetRequestsByEventId();
         },
         (err) => console.error(err)
@@ -631,8 +633,6 @@ export class RequestsComponent implements OnInit {
         status: null,
         id: null,
       };
-      const message = translate("snackbar song ended"); // this might not need to be here since its in the subscribe of the fork join above
-      this.openSnackBar(message); // this might not need to be here since its in the subscribe of the fork join above
     }
   }
 
