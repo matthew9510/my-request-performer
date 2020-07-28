@@ -105,11 +105,11 @@ export class ManageEventsComponent implements OnInit {
               startTimeHour = 0;
             }
 
-            // Add 12 for pm times
-            if (!isStartTimeAm) {
+            // Add 12 for pm times except if the hour is 12 pm
+            if (!isStartTimeAm && startTimeHour !== 12) {
               startTimeHour += 12;
             }
-            if (!isEndTimeAm) {
+            if (!isEndTimeAm && endTimeHour !== 12) {
               endTimeHour += 12;
             }
 
