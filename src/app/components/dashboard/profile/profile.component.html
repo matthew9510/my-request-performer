@@ -119,6 +119,8 @@
         *ngIf="!stripeLinkInProgress && !stripeLinkComplete"
         mat-button
         class="stripe-button"
+        matTooltip="You can link an existing account by clicking the sign in button on the top right of the page you are being redirected to"
+        matTooltipPosition="below"
         appDebounceClick
         (debounceClick)="triggerStripeOath()"
       >
