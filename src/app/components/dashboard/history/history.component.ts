@@ -62,6 +62,17 @@ export class HistoryComponent implements OnInit {
       .getRequestsByEventId(eventId, "completed")
       .subscribe((requests: any) => {
         this.completedRequests = requests.response.body;
+        this.completedRequests = this.completedRequests.filter(
+          (request: any) => {
+            if (
+              request.amount === 0 &&
+              request.id !== request.originalRequestId
+            ) {
+              return false;
+            }
+            return true;
+          }
+        );
         this.calculateTotalEarnings(requests.response.body);
         // populates the data table and enables sort
         this.dataSource = new MatTableDataSource(this.completedRequests);
