@@ -1,6 +1,7 @@
 <ng-container *transloco="let t; read: 'createEvent'">
   <mat-horizontal-stepper
     #stepper
+    [linear]="true"
     labelPosition="bottom"
     class="stepper-div mat-app-background"
     (animationDone)="setFocus()"
@@ -62,7 +63,13 @@
           <button mat-button class="hidden" color="primary" matStepperNext>
             {{ t("back") }}
           </button>
-          <button mat-button color="primary" type="submit" matStepperNext>
+          <button
+            mat-button
+            color="primary"
+            type="submit"
+            matStepperNext
+            [disabled]="eventDetailForm.invalid"
+          >
             {{ t("next") }}
           </button>
         </div>
@@ -110,6 +117,7 @@
                 {{ time }}
               </mat-option>
             </mat-select>
+            <mat-error>Start time is required</mat-error>
           </mat-form-field>
 
           <mat-form-field class="time-select">
@@ -119,6 +127,7 @@
                 {{ time }}
               </mat-option>
             </mat-select>
+            <mat-error>End time is required</mat-error>
           </mat-form-field>
         </p>
 
@@ -126,7 +135,13 @@
           <button mat-button color="primary" matStepperPrevious>
             {{ t("back") }}
           </button>
-          <button mat-button color="primary" type="submit" matStepperNext>
+          <button
+            mat-button
+            color="primary"
+            type="submit"
+            matStepperNext
+            [disabled]="eventTimeAndDateForm.invalid"
+          >
             {{ t("next") }}
           </button>
         </div>

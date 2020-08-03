@@ -102,7 +102,6 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     this.eventDetailForm = this.fb.group({
       title: [null, [Validators.required]],
       description: [null],
-
       genre: [null],
       url: [null],
       status: ["created"],
@@ -114,8 +113,8 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
 
     this.eventTimeAndDateForm = this.fb.group({
       date: [null, [Validators.required]],
-      startTime: [null],
-      endTime: [null],
+      startTime: [null, [Validators.required]],
+      endTime: [null, [Validators.required]],
     });
 
     this.eventTimeAndDateForm.valueChanges.subscribe((x) => {
