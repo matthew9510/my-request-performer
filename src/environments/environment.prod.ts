@@ -18,4 +18,6 @@ export const environment = {
   aws_user_pools_id: "us-west-2_2rPpXcag5",
   aws_user_pools_web_client_id: "koejhfmj4bqeou1eem9bl0vlo",
   cognitoIdentityIdPrefix: "aws.cognito.identity-id.",
+  stripeClient: "ca_FnxwvPOnx2EiFJgVVnPWNJsneZMfJkFU",
+  stripeRedirectLink: "https://develop.d3ff8wrh2zwja6.amplifyapp.com/profile",
 };
