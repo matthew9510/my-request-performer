@@ -152,7 +152,12 @@
           <span class="subheader">Share Your Event</span>
           <br />
           <span class="event-url">
-            {{ baseUrl }}/event-overview/{{ event?.id }}
+            <a
+              href="{{ baseUrl }}/event-overview/{{ event?.id }}"
+              target="_blank"
+            >
+              {{ baseUrl }}/event-overview/{{ event?.id }}
+            </a>
           </span>
           <!-- <br />
           <button mat-flat-button color="primary">Copy URL</button> -->
