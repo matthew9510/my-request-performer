@@ -39,17 +39,17 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * GET method *
  **********************/
 
-app.get("/requester", function (req, res) {
+app.get("/requester/:id", function (req, res) {
+  const requesterId = req.params.id;
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
-
   if (debug) console.log("GET REQUEST...", req);
 
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Key: {
-      id: req.query.id,
+      id: requesterId,
     },
   };
 
@@ -88,18 +88,22 @@ app.get("/requester", function (req, res) {
 });
 
 /****************************
- * PUT method *
+ * Post method *
  ****************************/
 
-app.put("/requester", function (req, res) {
+app.post("/requester/:id", function (req, res) {
+  const requesterId = req.params.id;
+
   let params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: req.body,
   };
 
   // Generate uuid & date record
-  params.Item.id = uuid.v1();
-  params.Item.date_created = new Date().toJSON().slice(0, 10);
+  params.Item.id = requesterId;
+  let currentDate = new Date().toJSON().slice(0, 10);
+  params.Item.createdOn = currentDate;
+  params.Item.modifiedOn = currentDate;
 
   dynamoDb.put(params, function (err, result) {
     if (err) {
@@ -161,26 +165,29 @@ app.delete("/requester", function (req, res) {
  * PATCH method *
  ****************************/
 
-app.patch("/requester", function (req, res) {
+app.patch("/requester/:id", function (req, res) {
+  const requesterId = req.params.id;
+
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
 
   if (debug) console.log("UPDATE requester REQUEST...", req);
 
+  let modifiedOn = new Date().toJSON();
+
   // create params
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Key: {
-      id: req.query.id,
+      id: requesterId,
     },
-    UpdateExpression: "set #n = :val1",
+    UpdateExpression:
+      "set acknowledgementOfMerchant = :acknowledgementOfMerchant, modifiedOn = :modifiedOn",
     ExpressionAttributeValues: {
-      ":val1": req.query.name,
+      ":acknowledgementOfMerchant": req.body.acknowledgementOfMerchant,
+      ":modifiedOn": modifiedOn,
     },
-    ExpressionAttributeNames: {
-      "#n": "name",
-    },
-    ReturnValues: "UPDATED_NEW",
+    ReturnValues: "UPDATED_OLD",
   };
 
   dynamoDb.update(params, function (err, result) {
@@ -190,6 +197,7 @@ app.patch("/requester", function (req, res) {
         JSON.stringify(err, null, 2)
       );
     } else {
+      console.log("result UPDATED_OLD values", result);
       const response = {
         statusCode: 200,
         body: result,
