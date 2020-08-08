@@ -22,7 +22,7 @@ mat-card {
   flex-grow: 1;
   margin-right: 5px;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  // white-space: nowrap; // commented out to allow longer memos to display properly
   justify-content: center;
 }
 
