@@ -26,6 +26,8 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT");
   next();
 });
+// Enable CORS Pre-Flight
+app.options("*", cors()); // include before other routes
 
 /**********************
  *  Load AWS SDK for JavaScript
@@ -101,7 +103,7 @@ app.post("/requester/:id", function (req, res) {
 
   // Generate uuid & date record
   params.Item.id = requesterId;
-  let currentDate = new Date().toJSON().slice(0, 10);
+  let currentDate = new Date().toJSON();
   params.Item.createdOn = currentDate;
   params.Item.modifiedOn = currentDate;
 
@@ -115,11 +117,9 @@ app.post("/requester/:id", function (req, res) {
       const response = {
         statusCode: 200,
         body: params.Item,
-      };
-      res.json({
         success: "Successfully added item to the requester table!",
-        record: response.body,
-      });
+      };
+      res.json(response);
     }
   });
 });
@@ -187,7 +187,7 @@ app.patch("/requester/:id", function (req, res) {
       ":acknowledgementOfMerchant": req.body.acknowledgementOfMerchant,
       ":modifiedOn": modifiedOn,
     },
-    ReturnValues: "UPDATED_OLD",
+    ReturnValues: "UPDATED_NEW",
   };
 
   dynamoDb.update(params, function (err, result) {
@@ -197,17 +197,16 @@ app.patch("/requester/:id", function (req, res) {
         JSON.stringify(err, null, 2)
       );
     } else {
-      console.log("result UPDATED_OLD values", result);
       const response = {
         statusCode: 200,
         body: result,
-      };
-      res.json({
         success:
           "UPDATE for record " +
           req.query.id +
           " on requester table succeeded!",
-        response: response.body,
+      };
+      res.json({
+        response,
       });
     }
   });
