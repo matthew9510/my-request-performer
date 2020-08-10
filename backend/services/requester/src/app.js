@@ -115,12 +115,11 @@ app.post("/requester/:id", function (req, res) {
         JSON.stringify(err, null, 2)
       );
     } else {
-      const response = {
+      res.json({
         statusCode: 200,
         body: params.Item,
         success: "Successfully added item to the requester table!",
-      };
-      res.json(response);
+      });
     }
   });
 });
@@ -198,16 +197,13 @@ app.patch("/requester/:id", function (req, res) {
         JSON.stringify(err, null, 2)
       );
     } else {
-      const response = {
+      res.json({
         statusCode: 200,
-        body: result,
+        body: result.Attributes,
         success:
           "UPDATE for record " +
           req.query.id +
           " on requester table succeeded!",
-      };
-      res.json({
-        response,
       });
     }
   });
