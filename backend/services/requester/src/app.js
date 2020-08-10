@@ -10,6 +10,7 @@ const uuid = require("uuid");
 const express = require("express");
 const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
+const cors = require("cors");
 
 // declare a new express app
 const app = express();
