@@ -168,10 +168,8 @@ app.get("/events/:id/requests", function (req, res, next) {
     };
 
     // alters the sort of the payload
-    if (requestStatus === "accepted") {
+    if (requestStatus === "accepted")
       params.IndexName = "eventId-modifiedOn-index";
-      params.ScanIndexForward = false; // specifically for showing older modifiedOn requests show before newer requests when multiple requests have the same dollar value
-    }
   } else {
     if (debug) console.log("EventId:", eventId);
 
