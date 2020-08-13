@@ -58,3 +58,12 @@ p.performer-not-signed-up-with-stripe-prompt {
 .hidden {
   visibility: hidden;
 }
+
+.mat-tooltip {
+  // opposed to using ::ngdeep
+  background-color: mat-color($app-accent);
+  &.custom-tooltip {
+    // to modify the tooltip create a class like this
+    background-color: mat-color($app-accent);
+  }
+}

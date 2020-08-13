@@ -23,7 +23,13 @@
 
         <mat-form-field>
           <mat-label>{{ t("eventUrl") }}</mat-label>
-          <input matInput formControlName="url" />
+          <input
+            matInput
+            formControlName="url"
+            matTooltip="{{ t('eventToolTipUrl') }}"
+            matTooltipPosition="below"
+            matTooltipClass="custom-tooltip"
+          />
         </mat-form-field>
 
         <mat-form-field>
@@ -191,7 +197,13 @@
 
         <mat-form-field>
           <mat-label>{{ t("website") }}</mat-label>
-          <input matInput formControlName="url" />
+          <input
+            matInput
+            formControlName="url"
+            matTooltip="{{ t('venueWebsiteToolTip') }}"
+            matTooltipPosition="below"
+            matTooltipClass="custom-tooltip"
+          />
         </mat-form-field>
 
         <div class="stepper-nav-buttons">
