@@ -4,9 +4,9 @@ import { CognitoUser } from "@aws-amplify/auth";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "@ENV";
 import { AmplifyService } from "aws-amplify-angular";
-import { Router, ActivatedRoute, NavigationEnd } from "@angular/router";
+import { Router } from "@angular/router";
 import { PerformerService } from "@services/performer.service";
-import { concatMap, map, filter } from "rxjs/operators";
+import { concatMap, map } from "rxjs/operators";
 import { of, pipe } from "rxjs";
 
 export interface NewUser {
@@ -34,13 +34,13 @@ export class AuthService {
     private http: HttpClient,
     private amplifyService: AmplifyService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private performerService: PerformerService
   ) {
     this.amplifyService.authStateChange$
       .pipe(
         concatMap((authState) => {
           if (authState.state === "signedIn") {
+            // In here I should call Auth.currentAuthenricatedUser
             return this.login(authState);
           } else {
             // standardize the data shape for the subscribe function to handle multiple cases
@@ -49,27 +49,14 @@ export class AuthService {
         })
       )
       .subscribe((res: any) => {
-        let amplifyAuthState = res.authState.state;
-
         // This will run for all cases, so the data must be shaped accordingly (catchall) -> we do this so we don't handle all logic in the subscribe
-        if (amplifyAuthState === "signIn") {
-          this.signedIn = amplifyAuthState === "signedIn";
-        } else if (amplifyAuthState === "signedIn") {
-          // track performer signedIn state
-          this.signedIn = amplifyAuthState === "signedIn";
-
-          // save performer and setup some app flags
+        if (res.authState.state === "signIn") {
+          this.signedIn = res.authState.state === "signedIn";
+        } else if (res.authState.state === "signedIn") {
           this.performerService.storePerformerCreds(res);
 
-          let currentUrl = this.router.url;
-          if (currentUrl === "/login") {
-            if (this.performerService.isSignedUp === false) {
-              // redirect to profile page
-              this.router.navigate(["/profile"]);
-            } else {
-              this.router.navigate(["/dashboard"]);
-            }
-          }
+          // track performer signedIn state
+          this.signedIn = res.authState.state === "signedIn";
 
           Auth.currentAuthenticatedUser({
             bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
@@ -81,12 +68,20 @@ export class AuthService {
               }
             })
             .catch((err) => console.log("error: " + err));
-          
-        } else if (amplifyAuthState === "confirmSignUp") {
+
+          let currentUrl = this.router.url;
+          if (currentUrl === "/login") {
+            if (this.performerService.isSignedUp === false) {
+              // redirect to profile page
+              this.router.navigate(["/profile"]);
+            } else {
+              this.router.navigate(["/dashboard"]);
+            }
+          }
+        } else if (res.authState.state === "confirmSignUp") {
           // pass, this is needed to create beta testers
         } else {
-          // maybe check if a new token is needed to keep the performer signed in?
-          this.signedIn = amplifyAuthState === "signedIn";
+          this.signedIn = res.authState.state === "signedIn";
         }
       });
   }

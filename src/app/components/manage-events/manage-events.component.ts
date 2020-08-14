@@ -88,38 +88,9 @@ export class ManageEventsComponent implements OnInit {
     if (status === "active") {
       this.eventService.getEvents().subscribe((res: any) => {
         this.events = res.response.body.filter(
-          (el: {
-            status: string;
-            date: string;
-            startTime: string;
-            endTime: string;
-          }) => {
-            // Parse the event times
-            let startTimeHour = Number(el.startTime.split(":")[0]);
-            const isStartTimeAm = el.startTime.includes("AM");
-            let endTimeHour = Number(el.endTime.split(":")[0]);
-            const isEndTimeAm = el.endTime.includes("AM");
-
-            // handling of ;'12 AM'
-            if (isStartTimeAm && startTimeHour === 12) {
-              startTimeHour = 0;
-            }
-
-            // Add 12 for pm times except if the hour is 12 pm
-            if (!isStartTimeAm && startTimeHour !== 12) {
-              startTimeHour += 12;
-            }
-            if (!isEndTimeAm && endTimeHour !== 12) {
-              endTimeHour += 12;
-            }
-
-            const lengthOfEvent = endTimeHour - startTimeHour;
-
-            return (
-              (el.status === "active" || el.status === "paused") &&
-              moment(el.date).add(lengthOfEvent, "hours").isSameOrAfter(now)
-            );
-          }
+          (el: { status: string; date: string }) =>
+            (el.status === "active" || el.status === "paused") &&
+            moment(el.date).isSameOrAfter(now)
         );
       });
       // display upcoming events

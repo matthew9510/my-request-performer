@@ -80,7 +80,7 @@
             [class.large-screen-child]="isLargeScreen"
           >
             <app-request-detail
-              [song]="nowPlayingRequest?.song"
+              [song]="nowPlayingRequest.song"
               [artist]="nowPlayingRequest?.artist"
               [status]="nowPlayingRequest?.status"
               [amount]="nowPlayingRequest?.amount"
@@ -120,40 +120,9 @@
               [class.active]="acceptedOrder === 'modifiedOn'"
               (click)="setAcceptedOrder('modifiedOn')"
             >
-              <!-- sort by time goes here  -->
-
-              <span
-                class="center-text-and-icon-container"
-                *ngIf="acceptedOrder !== 'modifiedOn'"
-              >
-                <mat-icon
-                  class="align-self-center show-when-this-order-is-not-selected"
-                  color="accent"
-                  >access_time</mat-icon
-                >
-                <span
-                  class="show-when-this-order-is-not-selected align-self-center"
-                  >Sort by Time
-                </span>
-              </span>
-
-              <span
-                *ngIf="acceptedReverse && acceptedOrder === 'modifiedOn'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Newest First</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
-
-              <span
-                *ngIf="!acceptedReverse && acceptedOrder === 'modifiedOn'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Oldest First</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
+              Newest
+              <span [hidden]="!acceptedReverse">▼</span>
+              <span [hidden]="acceptedReverse">▲</span>
             </div>
             <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
 
@@ -172,99 +141,22 @@
               [class.active]="acceptedOrder === 'amount'"
               (click)="setAcceptedOrder('amount')"
             >
-              <span
-                class="center-text-and-icon-container"
-                *ngIf="acceptedOrder !== 'amount'"
-              >
-                <mat-icon
-                  class="align-self-center show-when-this-order-is-not-selected dollar-icon"
-                  color="accent"
-                  >attach_money</mat-icon
-                >
-                <span
-                  class="show-when-this-order-is-not-selected align-self-center"
-                  >Sort by Amount
-                </span>
-              </span>
-
-              <span
-                *ngIf="acceptedReverse && acceptedOrder === 'amount'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Price: Low to High</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
-              <span
-                *ngIf="!acceptedReverse && acceptedOrder === 'amount'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Price: High to Low</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
+              Tip Amount
+              <span [hidden]="!acceptedReverse">▼</span>
+              <span [hidden]="acceptedReverse">▲</span>
             </div>
           </div>
-          <mat-list
-            [class.large-screen-child]="isLargeScreen"
-            *ngIf="acceptedOrder === 'modifiedOn'"
-          >
+          <mat-list [class.large-screen-child]="isLargeScreen">
             <app-request-detail
               mat-list-item
               [song]="request.song"
               [artist]="request.artist"
               [amount]="request.amount"
               [status]="request.status"
-              [memo]="request?.memo"
               [amountOfTopUps]="request.topUps.length"
               *ngFor="
                 let request of sortedAcceptedRequests
-                  | orderBy: acceptedOrder:acceptedReverse:'case-insensitive';
-                index as i
-              "
-            >
-              <button
-                rejectButton
-                mat-button
-                class="request-button"
-                color="warn"
-                appDebounceClick
-                (debounceClick)="
-                  openRejectRequestDialog(request, 'acceptedRequests')
-                "
-              >
-                {{ t("reject") }}
-              </button>
-              <button
-                playNextButton
-                mat-flat-button
-                class="request-button"
-                color="primary"
-                appDebounceClick
-                (debounceClick)="playNext(request)"
-              >
-                {{ t("play next") }}
-              </button>
-            </app-request-detail>
-          </mat-list>
-          <mat-list
-            [class.large-screen-child]="isLargeScreen"
-            *ngIf="acceptedOrder === 'amount'"
-          >
-            <app-request-detail
-              mat-list-item
-              [song]="request.song"
-              [artist]="request.artist"
-              [amount]="request.amount"
-              [status]="request.status"
-              [memo]="request?.memo"
-              [amountOfTopUps]="request.topUps.length"
-              *ngFor="
-                let request of sortedAcceptedRequests
-                  | orderBy
-                    : [acceptedOrder, 'modifiedOn']
-                    : !acceptedReverse
-                    : 'case-insensitive';
+                  | orderBy: order:acceptedReverse:'case-insensitive';
                 index as i
               "
             >
@@ -326,37 +218,9 @@
               [class.active]="pendingOrder === 'modifiedOn'"
               (click)="setPendingOrder('modifiedOn')"
             >
-              <span
-                class="center-text-and-icon-container"
-                *ngIf="pendingOrder !== 'modifiedOn'"
-              >
-                <mat-icon
-                  class="align-self-center show-when-this-order-is-not-selected"
-                  color="accent"
-                  >access_time</mat-icon
-                >
-                <span
-                  class="show-when-this-order-is-not-selected align-self-center"
-                  >Sort by Time
-                </span>
-              </span>
-
-              <span
-                *ngIf="pendingReverse && pendingOrder === 'modifiedOn'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Newest First</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
-              <span
-                *ngIf="!pendingReverse && pendingOrder === 'modifiedOn'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Oldest First</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
+              Newest
+              <span [hidden]="!pendingReverse">▼</span>
+              <span [hidden]="pendingReverse">▲</span>
             </div>
             <!-- Taking out sort by artist and song until we redo the look of the request so it makes sense with these sort options -->
 
@@ -375,55 +239,23 @@
               [class.active]="pendingOrder === 'amount'"
               (click)="setPendingOrder('amount')"
             >
-              <span
-                class="center-text-and-icon-container"
-                *ngIf="pendingOrder !== 'amount'"
-              >
-                <mat-icon
-                  class="align-self-center show-when-this-order-is-not-selected dollar-icon"
-                  color="accent"
-                  >attach_money</mat-icon
-                >
-                <span
-                  class="show-when-this-order-is-not-selected align-self-center"
-                  >Sort by Amount
-                </span>
-              </span>
-
-              <span
-                *ngIf="pendingReverse && pendingOrder === 'amount'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Price: Low to High</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
-              <span
-                *ngIf="!pendingReverse && pendingOrder === 'amount'"
-                class="center-text-and-icon-container"
-                ><span class="align-self-center">Price: High to Low</span
-                ><mat-icon class="align-self-center" color="accent"
-                  >swap_vert</mat-icon
-                ></span
-              >
+              Tip Amount
+              <span [hidden]="!pendingReverse">▼</span>
+              <span [hidden]="pendingReverse">▲</span>
             </div>
           </div>
 
           <!-- Pending request items -->
-          <mat-list
-            [class.large-screen-child]="isLargeScreen"
-            *ngIf="pendingOrder === 'modifiedOn'"
-          >
+          <mat-list [class.large-screen-child]="isLargeScreen">
             <app-request-detail
               mat-list-item
               [song]="request.song"
               [artist]="request.artist"
               [amount]="request.amount"
               [status]="request.status"
-              [memo]="request?.memo"
               *ngFor="
                 let request of sortedPendingRequests
-                  | orderBy: pendingOrder:pendingReverse:'case-insensitive';
+                  | orderBy: order:pendingReverse:'case-insensitive';
                 index as i
               "
             >
@@ -448,54 +280,7 @@
                   openRejectRequestDialog(request, 'pendingRequests')
                 "
               >
-                <mat-icon color="accent" class="request-button-icon">
-                  clear
-                </mat-icon>
-              </button>
-            </app-request-detail>
-          </mat-list>
-          <mat-list
-            [class.large-screen-child]="isLargeScreen"
-            *ngIf="pendingOrder === 'amount'"
-          >
-            <app-request-detail
-              mat-list-item
-              [song]="request.song"
-              [artist]="request.artist"
-              [amount]="request.amount"
-              [status]="request.status"
-              [memo]="request?.memo"
-              *ngFor="
-                let request of sortedPendingRequests
-                  | orderBy
-                    : [pendingOrder, 'modifiedOn']
-                    : !pendingReverse
-                    : 'case-insensitive';
-                index as i
-              "
-            >
-              <button
-                acceptButton
-                mat-icon-button
-                class="request-button"
-                appDebounceClick
-                (debounceClick)="acceptRequest(request)"
-              >
-                <mat-icon color="primary" class="request-button-icon">
-                  done
-                </mat-icon>
-              </button>
-
-              <button
-                rejectButton
-                mat-icon-button
-                class="request-button"
-                appDebounceClick
-                (debounceClick)="
-                  openRejectRequestDialog(request, 'pendingRequests')
-                "
-              >
-                <mat-icon color="accent" class="request-button-icon">
+                <mat-icon color="warn" class="request-button-icon">
                   clear
                 </mat-icon>
               </button>

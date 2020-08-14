@@ -59,10 +59,8 @@
           <span class="venue-name" *ngIf="venue?.name">
             {{ venue?.name }}
           </span>
-          <br />
           <span *ngIf="venue?.url">
-            <b class="website-title">Venue Website: </b>
-            <a href="{{ venue?.url }}" target="_new">Website</a>
+            - <a href="{{ venue?.url }}" target="_new">website</a>
           </span>
           <span class="venue-address">
             <br />
@@ -116,17 +114,10 @@
         <div class="info">
           <span class="subheader">About</span>
           <br />
-          <span class="description" *ngIf="event?.genre">
-            <b id="genre">Genre: </b>{{ event?.genre }}
+          <span class="description genre" *ngIf="event?.genre">
+            <b>Genre: </b>{{ event?.genre }}
+            <br />
           </span>
-          <br />
-          <span *ngIf="event?.url"
-            ><b class="website-title">Event website: </b>
-            <a href="{{ event?.url }}" target="_new" class="event-website"
-              >Website</a
-            >
-          </span>
-          <br />
           <span class="description">{{ event?.description }}</span>
         </div>
       </div>
@@ -153,7 +144,7 @@
         </div>
       </div>
 
-      <div class="info-wrapper event-url-spacing">
+      <div class="info-wrapper">
         <div class="icon">
           <mat-icon>link</mat-icon>
         </div>
@@ -161,28 +152,12 @@
           <span class="subheader">Share Your Event</span>
           <br />
           <span class="event-url">
-            <a
-              href="{{ baseUrl }}/event-overview/{{ event?.id }}"
-              target="_blank"
-            >
-              {{ baseUrl }}/event-overview/{{ event?.id }}
-            </a>
+            {{ baseUrl }}/event-overview/{{ event?.id }}
           </span>
           <!-- <br />
           <button mat-flat-button color="primary">Copy URL</button> -->
         </div>
       </div>
-
-      <div class="info-wrapper">
-        <p
-          class="performer-not-signed-up-with-stripe-prompt"
-          *ngIf="!this.performerService.isStripeAccountLinked"
-        >
-          The performer must link their stripe account under the profile page to
-          accept paid requests.
-        </p>
-      </div>
-
       <mat-card-actions align="end">
         <button
           mat-button

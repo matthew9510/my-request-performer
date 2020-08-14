@@ -119,23 +119,3 @@ mat-list {
     }
   }
 }
-
-.show-when-this-order-is-not-selected {
-  visibility: visible !important;
-}
-
-span.center-text-and-icon-container {
-  display: flex;
-}
-
-.align-self-center {
-  align-self: center;
-}
-
-mat-icon.align-self-center {
-  margin-right: 3px;
-}
-
-.dollar-icon {
-  margin-right: -3px !important;
-}

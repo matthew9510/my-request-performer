@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { RequestsService } from "src/app/services/requests.service";
-import { StripeService } from "@services/stripe.service";
 import { EventService } from "src/app/services/event.service";
 import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
@@ -9,7 +8,7 @@ import { translate } from "@ngneat/transloco";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Requests } from "../../interfaces/requests";
-import { interval, Subscription, forkJoin } from "rxjs";
+import { interval, Subscription } from "rxjs";
 import { OrderPipe } from "ngx-order-pipe";
 import { HostListener } from "@angular/core";
 
@@ -21,7 +20,7 @@ import { HostListener } from "@angular/core";
 export class RequestsComponent implements OnInit {
   eventId: string;
   eventStatus: string;
-  acceptedRequests: any[];
+  acceptedRequests: any[]; //todo - alter Requests interfact to hold topUps property
   pendingRequests: Requests[];
   nowPlayingRequest: any = {
     song: null,
@@ -48,7 +47,6 @@ export class RequestsComponent implements OnInit {
 
   constructor(
     public requestsService: RequestsService,
-    public stripeService: StripeService,
     public eventService: EventService,
     public dialog: MatDialog,
     private breakpointObserver: BreakpointObserver,
@@ -321,9 +319,6 @@ export class RequestsComponent implements OnInit {
       this.eventMenuStatus = "Ended";
     });
 
-    // below code should go in subscribe of end event, need to still refactor the logic to use merge map.
-    let listOfAlteredRequestObservables = [];
-
     if (this.currentlyPlaying == true) {
       // if current song has top-ups alter the top-up statuses in db
       if (this.nowPlayingRequest.topUps.length > 0) {
@@ -331,9 +326,7 @@ export class RequestsComponent implements OnInit {
         for (let topUp of this.nowPlayingRequest.topUps) {
           let alteredTopUp = JSON.parse(JSON.stringify(topUp));
           alteredTopUp.status = "completed";
-          listOfAlteredRequestObservables.push(
-            this.onChangeRequestStatus(alteredTopUp, topUp.id)
-          );
+          this.onChangeRequestStatus(alteredTopUp, topUp.id);
           topUpAmount += topUp.amount;
         }
       }
@@ -351,11 +344,9 @@ export class RequestsComponent implements OnInit {
       // delete top-ups array from now playing request
       delete alteredNowPlayingRequest.topUps;
 
-      listOfAlteredRequestObservables.push(
-        this.onChangeRequestStatus(
-          alteredNowPlayingRequest,
-          this.nowPlayingRequest.id
-        )
+      this.onChangeRequestStatus(
+        alteredNowPlayingRequest,
+        this.nowPlayingRequest.id
       );
 
       this.currentlyPlaying = false;
@@ -373,9 +364,7 @@ export class RequestsComponent implements OnInit {
     if (this.pendingRequests !== null) {
       this.pendingRequests.map((req) => (req.status = "rejected"));
       for (let request of this.pendingRequests) {
-        listOfAlteredRequestObservables.push(
-          this.onChangeRequestStatus(request, request.id)
-        );
+        this.onChangeRequestStatus(request, request.id);
       }
     }
 
@@ -393,9 +382,7 @@ export class RequestsComponent implements OnInit {
           for (let topUp of acceptedRequestToReject.topUps) {
             let alteredTopUp = JSON.parse(JSON.stringify(topUp));
             alteredTopUp.status = "rejected";
-            listOfAlteredRequestObservables.push(
-              this.onChangeRequestStatus(alteredTopUp, topUp.id)
-            );
+            this.onChangeRequestStatus(alteredTopUp, topUp.id);
             topUpAmount += topUp.amount;
           }
         }
@@ -411,20 +398,13 @@ export class RequestsComponent implements OnInit {
         }
         // delete top up
         delete alteredOriginalRequest.topUps;
-        listOfAlteredRequestObservables.push(
-          this.onChangeRequestStatus(
-            alteredOriginalRequest,
-            acceptedRequestToReject.id
-          )
+        this.onChangeRequestStatus(
+          alteredOriginalRequest,
+          acceptedRequestToReject.id
         );
       }
     }
-    forkJoin(listOfAlteredRequestObservables).subscribe(
-      (res) => {
-        this.router.navigate([`/history/${this.eventId}`]);
-      },
-      (err) => console.error(err)
-    );
+    this.router.navigate([`/history/${this.eventId}`]);
   }
 
   pauseEvent() {
@@ -493,21 +473,13 @@ export class RequestsComponent implements OnInit {
     request.status = "accepted";
     const updatedReq = request;
     // this.pendingRequests.splice(index, index + 1);
-    this.onChangeRequestStatus(updatedReq, request.id).subscribe(
-      (res) => {
-        const message = translate("snackbar message accepted");
-        this.openSnackBar(message);
-        this.onGetRequestsByEventId();
-      },
-      (err) => {
-        console.error(err);
-      }
-    );
+    this.onChangeRequestStatus(updatedReq, request.id);
+    const message = translate("snackbar message accepted");
+    this.openSnackBar(message);
   }
 
   rejectRequest(request: any, requestType: string) {
     if (requestType === "acceptedRequests") {
-      let listOfAlteredRequestObservables = [];
       // This is done because of top-ups (top-up requests)
       let acceptedRequestToReject = this.acceptedRequests.filter(
         (req) => req.originalRequestId === request.originalRequestId
@@ -519,9 +491,7 @@ export class RequestsComponent implements OnInit {
         for (let topUp of acceptedRequestToReject.topUps) {
           let alteredTopUp = JSON.parse(JSON.stringify(topUp));
           alteredTopUp.status = "rejected";
-          listOfAlteredRequestObservables.push(
-            this.onChangeRequestStatus(alteredTopUp, topUp.id)
-          );
+          this.onChangeRequestStatus(alteredTopUp, topUp.id);
           topUpAmount += topUp.amount;
         }
       }
@@ -536,18 +506,9 @@ export class RequestsComponent implements OnInit {
         alteredOriginalRequest.amount -= topUpAmount;
       }
       delete alteredOriginalRequest.topUps;
-      listOfAlteredRequestObservables.push(
-        this.onChangeRequestStatus(
-          alteredOriginalRequest,
-          acceptedRequestToReject.id
-        )
-      );
-
-      forkJoin(listOfAlteredRequestObservables).subscribe(
-        (res) => {
-          this.onGetRequestsByEventId();
-        },
-        (err) => console.error(err)
+      this.onChangeRequestStatus(
+        alteredOriginalRequest,
+        acceptedRequestToReject.id
       );
     }
     if (requestType === "pendingRequests") {
@@ -555,31 +516,19 @@ export class RequestsComponent implements OnInit {
       // change original request status
       let alteredOriginalPendingRequest = JSON.parse(JSON.stringify(request));
       alteredOriginalPendingRequest.status = "rejected";
-      this.onChangeRequestStatus(
-        alteredOriginalPendingRequest,
-        request.id
-      ).subscribe(
-        (res) => {
-          this.onGetRequestsByEventId();
-        },
-        (err) => console.error(err)
-      );
+      this.onChangeRequestStatus(alteredOriginalPendingRequest, request.id);
     }
   }
 
   endCurrentSong() {
     if (this.currentlyPlaying) {
-      let listOfAlteredRequestObservables = [];
-
       // if current song has top-ups alter the top-up statuses in db
       if (this.nowPlayingRequest.topUps.length > 0) {
         var topUpAmount = 0;
         for (let topUp of this.nowPlayingRequest.topUps) {
           let alteredTopUp = JSON.parse(JSON.stringify(topUp));
           alteredTopUp.status = "completed";
-          listOfAlteredRequestObservables.push(
-            this.onChangeRequestStatus(alteredTopUp, topUp.id)
-          );
+          this.onChangeRequestStatus(alteredTopUp, topUp.id);
           topUpAmount += topUp.amount;
         }
       }
@@ -597,48 +546,26 @@ export class RequestsComponent implements OnInit {
       // delete top-ups array from now playing request
       delete alteredNowPlayingRequest.topUps;
 
-      listOfAlteredRequestObservables.push(
-        this.onChangeRequestStatus(
-          alteredNowPlayingRequest,
-          this.nowPlayingRequest.id
-        )
+      this.onChangeRequestStatus(
+        alteredNowPlayingRequest,
+        this.nowPlayingRequest.id
       );
-
-      const message = translate("snackbar song ended");
-      this.openSnackBar(message);
-
-      forkJoin(listOfAlteredRequestObservables).subscribe(
-        (res) => {
-          this.currentlyPlaying = false;
-          this.nowPlayingRequest = {
-            song: null,
-            artist: null,
-            amount: null,
-            memo: null,
-            status: null,
-            id: null,
-          };
-
-          this.onGetRequestsByEventId();
-        },
-        (err) => console.error(err)
-      );
-    } else {
-      this.currentlyPlaying = false;
-      this.nowPlayingRequest = {
-        song: null,
-        artist: null,
-        amount: null,
-        memo: null,
-        status: null,
-        id: null,
-      };
     }
+    this.currentlyPlaying = false;
+    this.nowPlayingRequest = {
+      song: null,
+      artist: null,
+      amount: null,
+      memo: null,
+      status: null,
+      id: null,
+    };
+    const message = translate("snackbar song ended");
+    this.openSnackBar(message);
   }
 
   playNext(request: any) {
     this.endCurrentSong();
-    let listOfAlteredRequestObservables = [];
 
     let requestToPlay = this.acceptedRequests.filter(
       (req) => req.originalRequestId === request.originalRequestId
@@ -650,9 +577,7 @@ export class RequestsComponent implements OnInit {
       for (let topUp of requestToPlay.topUps) {
         let alteredTopUp = JSON.parse(JSON.stringify(topUp));
         alteredTopUp.status = "now playing";
-        listOfAlteredRequestObservables.push(
-          this.onChangeRequestStatus(alteredTopUp, topUp.id)
-        );
+        this.onChangeRequestStatus(alteredTopUp, topUp.id);
         topUpAmount += topUp.amount;
       }
     }
@@ -668,45 +593,27 @@ export class RequestsComponent implements OnInit {
     // delete top-ups array from now playing request
     delete alteredRequestToPlay.topUps;
 
-    listOfAlteredRequestObservables.push(
-      this.onChangeRequestStatus(alteredRequestToPlay, requestToPlay.id)
-    );
+    this.onChangeRequestStatus(alteredRequestToPlay, requestToPlay.id);
 
-    forkJoin(listOfAlteredRequestObservables).subscribe(
-      (res) => {
-        this.nowPlayingRequest = {
-          song: request.song,
-          artist: request.artist,
-          amount: request.amount,
-          memo: request.memo,
-          status: request.status,
-          id: request.id,
-          originalRequestId: request.originalRequestId,
-        };
-        const message = translate("snackbar now playing");
-        this.openSnackBar(`${this.nowPlayingRequest.song} ${message}`);
-        this.onGetRequestsByEventId();
-      },
-      (err: any) => console.error(err)
-    );
+    this.nowPlayingRequest = {
+      song: request.song,
+      artist: request.artist,
+      amount: request.amount,
+      memo: request.memo,
+      status: request.status,
+      id: request.id,
+      originalRequestId: request.originalRequestId,
+    };
+    const message = translate("snackbar now playing");
+    this.openSnackBar(`${this.nowPlayingRequest.song} ${message}`);
   }
 
-  onChangeRequestStatus(request, requestId: string | number) {
-    if (request.amount > 0 && request.status === "now playing") {
-      return this.stripeService.capturePaymentIntent(request);
-    } else if (request.amount > 0 && request.status === "rejected") {
-      // cancel the stripe payment intent
-      const payload = {
-        status: request.status,
-        paymentIntentId: request.paymentIntentId,
-        performerStripeId: request.performerStripeId,
-      };
-
-      // prepare the payload
-      return this.stripeService.cancelPaymentIntent(payload, request.id);
-    } else {
-      // for free requests
-      return this.requestsService.changeRequestStatus(request, requestId);
-    }
+  onChangeRequestStatus(request: Requests, requestId: string | number) {
+    this.requestsService
+      .changeRequestStatus(request, requestId)
+      .subscribe((res) => {
+        this.onGetRequestsByEventId();
+      }),
+      (err: any) => err;
   }
 }

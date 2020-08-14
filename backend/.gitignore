@@ -13,4 +13,3 @@ amplifyconfiguration.json
 amplify-gradle-config.json
 amplifyxc.config
 services/*/.serverless
-services/stripe/.dynamodb

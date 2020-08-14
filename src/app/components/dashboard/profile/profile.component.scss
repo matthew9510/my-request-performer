@@ -68,13 +68,6 @@
   }
 }
 
-button.stripe-button {
-  text-align: center;
-  margin-top: 1%;
-  margin-bottom: 2%;
-  color: mat-color($app-primary);
-}
-
 .nav-buttons {
   display: flex;
   justify-content: flex-start;
@@ -92,30 +85,6 @@ button.stripe-button {
     // to modify the tooltip create a class like this
     background-color: mat-color($app-accent);
   }
-}
-
-div.StripeLinkingSpinner {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  color: mat-color($app-primary);
-}
-.spinner {
-  align-self: center;
-}
-p.stripe-font {
-  color: mat-color($app-primary);
-}
-
-p.performer-not-signed-up-with-stripe-prompt {
-  color: $accent;
-}
-#stripe-dashboard {
-  text-decoration: none;
-  color: white;
-}
-.redirect-icon {
-  margin-left: 1%;
 }
 
 @media screen and (max-width: 450px) {

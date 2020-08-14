@@ -79,18 +79,12 @@
   </mat-list>
 
   <div id="fab-button-wrapper">
-    <div
-      id="fab-button"
-      matTooltip="{{ t('not signed up message') }}"
-      [matTooltipDisabled]="performerService.isSignedUp"
-      matTooltipPosition="above"
-    >
+    <div id="fab-button">
       <button
         mat-fab
         color="primary"
         (click)="routeToCreateEvent()"
         class="extended-fab-button"
-        [disabled]="performerService.isSignedUp === false"
       >
         <!-- Button message if event is active -->
         <mat-icon>add</mat-icon>

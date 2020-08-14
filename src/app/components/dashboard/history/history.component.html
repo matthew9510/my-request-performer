@@ -58,7 +58,7 @@
         Tip
       </th>
       <td mat-cell class="amount-cell" *matCellDef="let request">
-        <span *ngIf="request.amount !== null">
+        <span *ngIf="request.amount !== null && request.amount !== 0">
           {{ request.amount | currency }}
         </span>
       </td>

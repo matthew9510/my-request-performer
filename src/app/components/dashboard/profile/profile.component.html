@@ -1,9 +1,8 @@
 <ng-container *transloco="let t; read: 'profile'">
   <div class="personal-info-container">
-    <p *ngIf="performerService.isSignedUp === false">
-      {{ t("personalInformationMessage") }}<br />
-      {{ t("not signed up message") }}
-    </p>
+    <h4 *ngIf="performerService.isSignedUp === false">
+      {{ t("personalInformationMessage") }}
+    </h4>
     <form [formGroup]="profileForm">
       <div class="centered-flex-box">
         <h2>{{ t("personalInformation") }}</h2>
@@ -78,66 +77,9 @@
         <input matInput formControlName="phone" />
       </mat-form-field>
 
-      <br />
-
-      <div *ngIf="stripeLinkComplete">
-        <p class="stripe-font">
-          Stripe Account Id: {{ performerService.performer?.stripeId }}
-        </p>
-
-        <button
-          mat-fab
-          color="accent"
-          type="submit"
-          class="extended-fab-button"
-        >
-          <span class="fab-button-text centered-flex-box"
-            ><a
-              href="https://dashboard.stripe.com/login"
-              target="_blank"
-              id="stripe-dashboard"
-              >Stripe Dashboard </a
-            ><mat-icon class="redirect-icon">open_in_new</mat-icon></span
-          >
-        </button>
-      </div>
-
-      <div
-        class="centered-flex-box"
-        *ngIf="stripeLinkInProgress && !stripeLinkComplete"
-      >
-        <div class="StripeLinkingSpinner">
-          <p class="stripe-font">
-            Linking Stripe Account to My Request...
-          </p>
-          <mat-spinner class="spinner" color="accent"></mat-spinner>
-        </div>
-      </div>
-
-      <button
-        #linkStripeButton
-        *ngIf="!stripeLinkInProgress && !stripeLinkComplete"
-        mat-button
-        class="stripe-button"
-        matTooltip="You can link an existing account by clicking the sign in button on the top right of the page you are being redirected to"
-        matTooltipPosition="below"
-        appDebounceClick
-        (debounceClick)="triggerStripeOath()"
-      >
-        Create or link existing stripe account for payments
-      </button>
-      <p
-        class="performer-not-signed-up-with-stripe-prompt"
-        *ngIf="!this.performerService.isStripeAccountLinked"
-      >
-        The performer must link their stripe account under the profile page to
-        accept paid requests
-      </p>
-      <br />
       <p *ngIf="profileForm.invalid" class="error-message">
         {{ t("requiredFormFieldsMessage") }}
       </p>
-
       <div id="fab-button-wrapper">
         <button
           *ngIf="editProfile === true"

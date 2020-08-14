@@ -1,7 +1,19 @@
 <div class="header-items">
   <div class="total-earnings">
-    <h4>Total Earnings</h4>
     <h1 id="earnings-total">{{ earnings | currency }}</h1>
+    <h4>Total Earnings</h4>
+    <button
+      class="extended-fab-button"
+      mat-raised-button
+      color="primary"
+      disabled="true"
+    >
+      <span>Payout</span>
+    </button>
+    <span class="warning">
+      <mat-icon inline="true">warning</mat-icon>
+      Payout will not be permitted while the app is running in free mode.
+    </span>
   </div>
 </div>
 
