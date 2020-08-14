@@ -59,8 +59,10 @@
           <span class="venue-name" *ngIf="venue?.name">
             {{ venue?.name }}
           </span>
+          <br />
           <span *ngIf="venue?.url">
-            - <a href="{{ venue?.url }}" target="_new">website</a>
+            <b class="website-title">Venue Website: </b>
+            <a href="{{ venue?.url }}" target="_new">Website</a>
           </span>
           <span class="venue-address">
             <br />
@@ -114,10 +116,17 @@
         <div class="info">
           <span class="subheader">About</span>
           <br />
-          <span class="description genre" *ngIf="event?.genre">
-            <b>Genre: </b>{{ event?.genre }}
-            <br />
+          <span class="description" *ngIf="event?.genre">
+            <b id="genre">Genre: </b>{{ event?.genre }}
           </span>
+          <br />
+          <span *ngIf="event?.url"
+            ><b class="website-title">Event website: </b>
+            <a href="{{ event?.url }}" target="_new" class="event-website"
+              >Website</a
+            >
+          </span>
+          <br />
           <span class="description">{{ event?.description }}</span>
         </div>
       </div>
