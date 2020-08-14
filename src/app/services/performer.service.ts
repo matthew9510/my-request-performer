@@ -81,6 +81,7 @@ export class PerformerService {
         if (this.performer.stripeId) {
           this.isStripeAccountLinked = true;
         }
+
       }
     }
   }

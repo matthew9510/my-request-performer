@@ -81,6 +81,7 @@ export class AuthService {
               }
             })
             .catch((err) => console.log("error: " + err));
+          
         } else if (amplifyAuthState === "confirmSignUp") {
           // pass, this is needed to create beta testers
         } else {
