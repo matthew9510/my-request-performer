@@ -179,10 +179,9 @@ app.post("/requests", function (req, res) {
     params.Item.originalRequestId = params.Item.id;
   }
 
-  params.Item.createdOn = new Date().toJSON();
-  params.Item.modifiedOn = new Date().toJSON();
-
-  if (debug) console.log("params b4", params);
+  const currentDate = new Date().toJSON();
+  params.Item.createdOn = currentDate;
+  params.Item.modifiedOn = currentDate;
 
   // Convert empty strings to null for dynamoDB
   params.Item.firstName =
@@ -272,8 +271,8 @@ app.put("/requests/:id", function (req, res) {
       id: req.body.id,
     },
     ExpressionAttributeNames: {
-    "#status": "status"
-  },
+      "#status": "status",
+    },
     UpdateExpression: "set #status = :s",
     ExpressionAttributeValues: {
       ":s": req.body.status,

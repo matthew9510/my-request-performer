@@ -10,7 +10,7 @@
     <span class="song-name mat-body-strong truncate">{{ song }}</span>
     <p class="artist-name mat-body truncate">{{ artist }}</p>
     <div *ngIf="memo">
-      <p class="memo-text mat-body"><b>Message:</b> {{ memo }}</p>
+      <p><b>Message:</b> {{ memo }}</p>
     </div>
     <!-- Shows number of requests if the request has top ups -->
     <span class="top-up-amount" *ngIf="amountOfTopUps > 0">
@@ -22,8 +22,11 @@
     </span> -->
   </div>
   <div id="tip-and-buttons" [class.actions-small-screen]="isSmallScreen">
-    <div id="amount-wrapper">
-      <span class="tip-amount" *ngIf="amount">{{ amount | currency }}</span>
+    <div
+      id="amount-wrapper"
+      *ngIf="this.performerService.isStripeAccountLinked"
+    >
+      <span class="tip-amount">{{ amount | currency }}</span>
     </div>
     <div id="buttons-wrapper">
       <ng-content select="[rejectButton]"></ng-content>

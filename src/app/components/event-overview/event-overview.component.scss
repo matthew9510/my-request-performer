@@ -35,6 +35,11 @@ p.event-status-message {
   padding: 10px;
 }
 
+p.performer-not-signed-up-with-stripe-prompt {
+  color: $accent;
+  text-align: center;
+}
+
 .info-wrapper {
   display: flex;
 }
@@ -43,6 +48,7 @@ p.event-status-message {
   margin: 10px;
   align-self: center;
   line-height: 1.5;
+  overflow: hidden;
 }
 
 .subheader {
@@ -68,6 +74,12 @@ p.event-status-message {
   line-height: 1.5;
 }
 
+.website-title {
+  font-weight: 500;
+  opacity: 0.7;
+  margin-top: -2px;
+}
+
 .venue-address {
   opacity: 0.7;
   margin-top: -2px;
@@ -75,6 +87,12 @@ p.event-status-message {
 
 .description {
   opacity: 0.7;
+}
+#genre {
+  font-weight: 500;
+}
+.event-website {
+  opacity: 1 !important;
 }
 
 .performer-name {
@@ -99,7 +117,11 @@ a:visited {
 }
 
 .event-url {
-  opacity: 0.6;
+  overflow-wrap: break-word;
+}
+
+.event-url-spacing {
+  max-width: 100%;
 }
 
 .spinner {

@@ -1,3 +1,4 @@
+@import "../../../styles.scss";
 form {
   display: flex;
   flex-direction: column;
@@ -19,10 +20,14 @@ form {
   }
 
   .cancel {
+    margin-top: 2%;
     display: flex;
     flex-direction: row;
     justify-content: center;
   }
+}
+p.performer-not-signed-up-with-stripe-prompt {
+  color: $accent;
 }
 
 .add-venue-option {
@@ -52,4 +57,13 @@ form {
 
 .hidden {
   visibility: hidden;
+}
+
+.mat-tooltip {
+  // opposed to using ::ngdeep
+  background-color: mat-color($app-accent);
+  &.custom-tooltip {
+    // to modify the tooltip create a class like this
+    background-color: mat-color($app-accent);
+  }
 }
