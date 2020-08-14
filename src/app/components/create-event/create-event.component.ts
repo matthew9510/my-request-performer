@@ -102,19 +102,19 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     this.eventDetailForm = this.fb.group({
       title: [null, [Validators.required]],
       description: [null],
-      coverFee: [null],
       genre: [null],
       url: [null],
       status: ["created"],
       performerId: [localStorage.getItem("performerSub")],
       venueId: [null],
+      isPaidRequestsOnly: [false],
       // image: [null],
     });
 
     this.eventTimeAndDateForm = this.fb.group({
       date: [null, [Validators.required]],
-      startTime: [null],
-      endTime: [null],
+      startTime: [null, [Validators.required]],
+      endTime: [null, [Validators.required]],
     });
 
     this.eventTimeAndDateForm.valueChanges.subscribe((x) => {
@@ -156,6 +156,15 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
         new Date(this.eventToClone.date)
       );
     }
+
+    this.performerService
+      .getPerformerInfoById(localStorage.getItem("performerSub"))
+      .subscribe((res) => {
+        // Set appropriate flags for component
+        if (this.performerService.performer.stripeId) {
+          this.performerService.isStripeAccountLinked = true;
+        }
+      });
   }
 
   /* These two methods below set autofocus on the first input of each step of the stepper */

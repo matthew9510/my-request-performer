@@ -1,6 +1,7 @@
 <ng-container *transloco="let t; read: 'createEvent'">
   <mat-horizontal-stepper
     #stepper
+    [linear]="true"
     labelPosition="bottom"
     class="stepper-div mat-app-background"
     (animationDone)="setFocus()"
@@ -16,24 +17,19 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>{{ t("coverFee") }}</mat-label>
-          <input
-            matInput
-            type="number"
-            class="example-right-align"
-            formControlName="coverFee"
-          />
-          <span matPrefix>$&nbsp;</span>
-        </mat-form-field>
-
-        <mat-form-field>
           <mat-label>{{ t("genre") }}</mat-label>
           <input matInput formControlName="genre" />
         </mat-form-field>
 
         <mat-form-field>
           <mat-label>{{ t("eventUrl") }}</mat-label>
-          <input matInput formControlName="url" />
+          <input
+            matInput
+            formControlName="url"
+            matTooltip="{{ t('eventToolTipUrl') }}"
+            matTooltipPosition="below"
+            matTooltipClass="custom-tooltip"
+          />
         </mat-form-field>
 
         <mat-form-field>
@@ -53,11 +49,33 @@
           </button>
         </div>
 
+        <mat-checkbox
+          *ngIf="this.performerService.isStripeAccountLinked"
+          color="primary"
+          formControlName="isPaidRequestsOnly"
+          [labelPosition]="after"
+          >{{ t("paidRequestsOnlyMessage") }}</mat-checkbox
+        >
+
+        <p
+          class="performer-not-signed-up-with-stripe-prompt"
+          *ngIf="!this.performerService.isStripeAccountLinked"
+        >
+          The performer must link their stripe account under the profile page to
+          accept paid requests.
+        </p>
+
         <div class="stepper-nav-buttons">
           <button mat-button class="hidden" color="primary" matStepperNext>
             {{ t("back") }}
           </button>
-          <button mat-button color="primary" type="submit" matStepperNext>
+          <button
+            mat-button
+            color="primary"
+            type="submit"
+            matStepperNext
+            [disabled]="eventDetailForm.invalid"
+          >
             {{ t("next") }}
           </button>
         </div>
@@ -105,6 +123,7 @@
                 {{ time }}
               </mat-option>
             </mat-select>
+            <mat-error>Start time is required</mat-error>
           </mat-form-field>
 
           <mat-form-field class="time-select">
@@ -114,6 +133,7 @@
                 {{ time }}
               </mat-option>
             </mat-select>
+            <mat-error>End time is required</mat-error>
           </mat-form-field>
         </p>
 
@@ -121,7 +141,13 @@
           <button mat-button color="primary" matStepperPrevious>
             {{ t("back") }}
           </button>
-          <button mat-button color="primary" type="submit" matStepperNext>
+          <button
+            mat-button
+            color="primary"
+            type="submit"
+            matStepperNext
+            [disabled]="eventTimeAndDateForm.invalid"
+          >
             {{ t("next") }}
           </button>
         </div>
@@ -171,7 +197,13 @@
 
         <mat-form-field>
           <mat-label>{{ t("website") }}</mat-label>
-          <input matInput formControlName="url" />
+          <input
+            matInput
+            formControlName="url"
+            matTooltip="{{ t('venueWebsiteToolTip') }}"
+            matTooltipPosition="below"
+            matTooltipClass="custom-tooltip"
+          />
         </mat-form-field>
 
         <div class="stepper-nav-buttons">

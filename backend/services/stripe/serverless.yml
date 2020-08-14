@@ -1,0 +1,106 @@
+service: stripe
+
+app: my-request
+org: ssfdev
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: us-west-2
+  stackName: ${self:app}-${self:service}-${self:provider.stage}
+  apiName: ${self:app}-${self:service}-${self:provider.stage}
+  profile: default
+  stage: ${opt:stage, 'dev'}
+  stackTags:
+    PROJECT: ${self:app}
+    STAGE: ${self:provider.stage}
+  environment:
+    # DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
+    DYNAMODB_REQUESTS_TABLE: my-request-requests-${self:provider.stage}
+    DYNAMODB_PERFORMERS_TABLE: my-request-performers-${self:provider.stage}
+    STAGE: ${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        [
+          "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_REQUESTS_TABLE}",
+          "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_PERFORMERS_TABLE}",
+        ]
+
+functions:
+  endpoints:
+    name: ${self:app}-${self:service}-${self:provider.stage}
+    handler: src/index.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+    layers:
+      - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
+    role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
+
+# resources:
+#   Resources:
+#     myDynamoDBTable:
+#       Type: "AWS::DynamoDB::Table"
+#       DeletionPolicy: Retain
+#       Properties:
+#         AttributeDefinitions:
+#           - AttributeName: id
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: id
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+#         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+# GlobalSecondaryIndexes:
+#   - IndexName: performerId-date-index
+#     KeySchema:
+#       - AttributeName: performerId
+#         KeyType: HASH
+#       - AttributeName: date
+#         KeyType: RANGE
+#     Projection:
+#       ProjectionType: ALL
+#     ProvisionedThroughput:
+#       ReadCapacityUnits: 1
+#       WriteCapacityUnits: 1
+
+custom:
+  apiEndpoint:
+    Fn::Join:
+      - ""
+      - - "https://"
+        - Ref: "ApiGatewayRestApi"
+        - ".execute-api."
+        - ${self:provider.region}.
+        - Ref: "AWS::URLSuffix"
+        - "/"
+        - ${self:provider.stage}
+        - "/"
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+
+outputs:
+  URL: ${self:custom.apiEndpoint}
+  # TableName: ${self:provider.environment.DYNAMODB_TABLE}

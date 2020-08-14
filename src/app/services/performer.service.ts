@@ -9,7 +9,10 @@ import { of } from "rxjs";
 })
 export class PerformerService {
   performer: any;
+  // isSignedUp lets us know if the performer has filled out their profile & exists on the performers table on the db. Creating event routes are blocked when this is false.
   isSignedUp: boolean = false;
+  // changed to true when the performer is linked with stripe and the stripe creds are saved in our db
+  isStripeAccountLinked: boolean = false;
   showEventsSnackBar: boolean = true;
   // changed to true when event is created or edited successfully
   eventCreatedSnackbar: boolean = false;
@@ -74,6 +77,11 @@ export class PerformerService {
         // Set variables for potential on-boarding process
         this.isSignedUp = true;
         this.showEventsSnackBar = false;
+
+        if (this.performer.stripeId) {
+          this.isStripeAccountLinked = true;
+        }
+
       }
     }
   }
