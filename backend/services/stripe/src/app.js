@@ -8,8 +8,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const cors = require("cors");
-const { pipe, from, throwError } = require("rxjs");
-const { concatMap, catchError, retry } = require("rxjs/operators");
+const AWS = require("aws-sdk"); // for secret key
 
 // Declare a new dynamo db client
 const dynamoDb = require("./dynamodb");
@@ -17,8 +16,35 @@ const dynamoDb = require("./dynamodb");
 // declare a new express app
 const app = express();
 
+const stage = process.env.stage;
+const stageConfigs = {
+  dev: {
+    stripeKeyName: "/stripeSecretKey/test",
+  },
+  prod: {
+    stripeKeyName: "/stripeSecretKey/live",
+  },
+};
+
+const config = stageConfigs[stage] || stageConfigs.dev;
+
+async function loadStripe(stage) {
+  // Load our secret key from SSM
+  const ssm = new AWS.SSM();
+  const stripeSecretKeyPromise = ssm
+    .getParameter({
+      Name: config.stripeKeyName,
+      WithDecryption: true,
+    })
+    .promise();
+
+  return stripeSecretKeyPromise;
+}
+// Charge via stripe
+const stripeSecretKey = await loadStripe(config);
+
 // stripe library
-const stripe = require("stripe")(process.env.STRIPE_SK, {
+const stripe = require("stripe")(stripeSecretKey, {
   apiVersion: "",
 });
 
