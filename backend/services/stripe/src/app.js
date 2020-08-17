@@ -28,25 +28,26 @@ const stageConfigs = {
 
 const config = stageConfigs[stage] || stageConfigs.dev;
 
+// declare stripe lib reference, will be loaded in below async function
+let stripe;
+
 async function loadStripe(stage) {
   // Load our secret key from SSM
   const ssm = new AWS.SSM();
-  const stripeSecretKeyPromise = ssm
+  const stripeSecretKey = await ssm
     .getParameter({
       Name: config.stripeKeyName,
       WithDecryption: true,
     })
     .promise();
 
-  return stripeSecretKeyPromise;
+  // load stripe library
+  stripe = require("stripe")(stripeSecretKey, {
+    apiVersion: "",
+  });
 }
-// Charge via stripe
-const stripeSecretKey = await loadStripe(config);
 
-// stripe library
-const stripe = require("stripe")(stripeSecretKey, {
-  apiVersion: "",
-});
+loadStripe(config);
 
 /**********************
  *   Middleware
