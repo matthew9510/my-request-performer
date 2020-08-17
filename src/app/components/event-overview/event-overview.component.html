@@ -64,7 +64,7 @@
             <b class="website-title">Venue Website: </b>
             <a href="{{ venue?.url }}" target="_new">Website</a>
           </span>
-          <span class="venue-address">
+          <span class="venue-address" *ngIf="venue?.streetAddress">
             <br />
             <span *ngIf="venue?.streetAddress">{{ venue?.streetAddress }}</span>
             <span *ngIf="venue?.city">
@@ -125,8 +125,8 @@
             <a href="{{ event?.url }}" target="_new" class="event-website"
               >Website</a
             >
+            <br />
           </span>
-          <br />
           <span class="description">{{ event?.description }}</span>
         </div>
       </div>
