@@ -324,6 +324,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       }
     });
   } catch (error) {
+    if (debug) console.log(error);
     let errorMessage =
       "Stripe couldn't create a payment intent or create a database entry";
     console.error(errorMessage, JSON.stringify(error, null, 2));
