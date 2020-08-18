@@ -42,7 +42,7 @@ async function loadStripe(stage) {
     .promise();
 
   // load stripe library
-  stripe = require("stripe")(stripeSecretKey, {
+  stripe = require("stripe")(stripeSecretKey.Parameter.Value, {
     apiVersion: "",
   });
 }
