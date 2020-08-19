@@ -12,6 +12,7 @@ import { Requests } from "../../interfaces/requests";
 import { interval, Subscription, forkJoin } from "rxjs";
 import { OrderPipe } from "ngx-order-pipe";
 import { HostListener } from "@angular/core";
+import { FormBuilder, FormGroup, AbstractControl } from "@angular/forms";
 
 @Component({
   selector: "app-requests",
@@ -45,7 +46,9 @@ export class RequestsComponent implements OnInit {
   visibilityChange: string;
   sortedAcceptedRequests: any;
   sortedPendingRequests: any;
-
+  requesterSortOrderForm: FormGroup;
+  requesterClientSortOrders: string[] = ["modifiedOn", "amount"];
+  updateRequesterClientSortOrderError: boolean = false;
   constructor(
     public requestsService: RequestsService,
     public stripeService: StripeService,
@@ -55,12 +58,34 @@ export class RequestsComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private router: Router,
     private actRoute: ActivatedRoute,
+    private fb: FormBuilder,
     private orderPipe: OrderPipe
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
   }
 
   ngOnInit() {
+    this.requesterSortOrderForm = this.fb.group({
+      requesterClientSortOrder: ["modifiedOn"],
+    });
+
+    this.requesterSortOrderForm.controls.requesterClientSortOrder.valueChanges.subscribe(
+      (newDesiredSortOrder: any) => {
+        // This value will be set on init, so make sure we only update requester
+        // client sort order if the performer changes the value from what is saved in the db
+        if (
+          this.event.requesterClientSortOrder !== newDesiredSortOrder &&
+          !this.updateRequesterClientSortOrderError
+        )
+          this.updateRequesterClientSortOrder(newDesiredSortOrder);
+        if (
+          this.event.requesterClientSortOrder !== newDesiredSortOrder &&
+          this.updateRequesterClientSortOrderError
+        )
+          this.updateRequesterClientSortOrderError = false;
+      }
+    );
+
     this.onGetEventById();
     this.onGetRequestsByEventId();
     // checks browser so when browser is hidden/minimized it will stop polling the db for requests and enable polling when app is visible to the user
@@ -153,6 +178,9 @@ export class RequestsComponent implements OnInit {
           this.eventStatus = this.event.status;
           this.eventService.currentEvent = this.event;
           this.eventService.currentEventId = this.event.id;
+          this.requesterSortOrderForm.controls.requesterClientSortOrder.setValue(
+            this.event.requesterClientSortOrder
+          );
 
           // updates status menu appearance
           switch (this.eventStatus) {
@@ -435,6 +463,52 @@ export class RequestsComponent implements OnInit {
       this.eventStatusMenuIcon = "pause_circle_filled";
       this.eventMenuStatus = "Paused";
     });
+  }
+
+  updateRequesterClientSortOrder(newDesiredSortOrder) {
+    // prepare new event values to update the database
+    this.event.requesterClientSortOrder = newDesiredSortOrder;
+
+    this.eventService.updateEvent(this.event.id, this.event).subscribe(
+      (res: any) => {
+        // update service value
+        if (res.error === undefined) {
+          // if success
+          this.event = res.response;
+          this.eventService.currentEvent = this.event;
+          this.requesterSortOrderForm.controls.requesterClientSortOrder.setValue(
+            this.event.requesterClientSortOrder
+          );
+        }
+      },
+      (err) => {
+        // show a console.error saying couldn't update the requester client sort order
+        console.error(
+          "Cannot update the requester client sort order at this moment."
+        );
+        // set an error flag for requesterSortOrderForm.controls.requesterClientSortOrder
+        // value changes function to not trigger an infinite loop
+        this.updateRequesterClientSortOrderError = true;
+
+        // reverse changes and set the requesterClientSortOrder back to its previous value
+        let oldIndex = this.requesterClientSortOrders.indexOf(
+          this.requesterSortOrderForm.controls.requesterClientSortOrder.value
+        );
+        if (oldIndex == 0) {
+          this.requesterSortOrderForm.controls.requesterClientSortOrder.setValue(
+            this.requesterClientSortOrders[1]
+          );
+          this.event.requesterClientSortOrder = this.requesterClientSortOrders[1];
+          this.eventService.currentEvent = this.event;
+        } else {
+          this.requesterSortOrderForm.controls.requesterClientSortOrder.setValue(
+            this.requesterClientSortOrders[0]
+          );
+          this.event.requesterClientSortOrder = this.requesterClientSortOrders[0];
+          this.eventService.currentEvent = this.event;
+        }
+      }
+    );
   }
 
   openSnackBar(message: string) {

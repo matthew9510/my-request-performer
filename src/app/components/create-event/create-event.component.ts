@@ -186,7 +186,7 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       Object.assign(
         newEvent,
         this.eventDetailForm.value,
-        { venueId: venueId },
+        { venueId: venueId, requesterClientSortOrder: "modifiedOn" },
         this.eventTimeAndDateForm.value
       );
       return newEvent;
