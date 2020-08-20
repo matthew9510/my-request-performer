@@ -13,7 +13,10 @@ import { interval, Subscription, forkJoin } from "rxjs";
 import { OrderPipe } from "ngx-order-pipe";
 import { HostListener } from "@angular/core";
 import { FormBuilder, FormGroup, AbstractControl } from "@angular/forms";
+
 import { PerformerService } from "@services/performer.service";
+
+
 
 @Component({
   selector: "app-requests",
@@ -60,8 +63,12 @@ export class RequestsComponent implements OnInit {
     private router: Router,
     private actRoute: ActivatedRoute,
     private fb: FormBuilder,
+
     private orderPipe: OrderPipe,
     public performerService: PerformerService
+
+   
+
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
   }
