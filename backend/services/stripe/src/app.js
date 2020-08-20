@@ -16,7 +16,7 @@ const dynamoDb = require("./dynamodb");
 // declare a new express app
 const app = express();
 
-const stage = process.env.stage;
+const stage = process.env.STAGE;
 const stageConfigs = {
   dev: {
     stripeKeyName: "/stripeSecretKey/test",
