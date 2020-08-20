@@ -14,6 +14,10 @@ import { OrderPipe } from "ngx-order-pipe";
 import { HostListener } from "@angular/core";
 import { FormBuilder, FormGroup, AbstractControl } from "@angular/forms";
 
+import { PerformerService } from "@services/performer.service";
+
+
+
 @Component({
   selector: "app-requests",
   templateUrl: "./requests.component.html",
@@ -59,7 +63,12 @@ export class RequestsComponent implements OnInit {
     private router: Router,
     private actRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private orderPipe: OrderPipe
+
+    private orderPipe: OrderPipe,
+    public performerService: PerformerService
+
+   
+
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
   }
@@ -175,6 +184,8 @@ export class RequestsComponent implements OnInit {
       (res: any) => {
         if (res.response !== undefined) {
           this.event = res.response.body.Item;
+          console.log(this.event);
+          console.log(this.performerService.performer);
           this.eventStatus = this.event.status;
           this.eventService.currentEvent = this.event;
           this.eventService.currentEventId = this.event.id;
