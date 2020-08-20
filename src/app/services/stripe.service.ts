@@ -15,8 +15,13 @@ export class StripeService {
   }
 
   linkStripeAccounts(stripeState, stripeAuthCode, performerId, performerState) {
+    console.log(
+      "does performer have a performerJWT?",
+      localStorage.getItem("performerJwt")
+    );
+
     return this.http.get(
-      `${environment.stripeUrl}/connect/linkStandardAccount?stripeState=${stripeState}&stripeAuthCode=${stripeAuthCode}&performerId=${performerId}&performerState=${performerState}`,
+      `${environment.stripeUrl}/connect/linkStandardAccount?stripeState=${stripeState}&stripeAuthCode=${stripeAuthCode}&performerId=${performerId}&performerState=${performerState}&debug=true`,
       this.createHeaders()
     );
   }
