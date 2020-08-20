@@ -8,8 +8,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 const cors = require("cors");
-const { pipe, from, throwError } = require("rxjs");
-const { concatMap, catchError, retry } = require("rxjs/operators");
+const AWS = require("aws-sdk"); // for secret key
 
 // Declare a new dynamo db client
 const dynamoDb = require("./dynamodb");
@@ -17,10 +16,38 @@ const dynamoDb = require("./dynamodb");
 // declare a new express app
 const app = express();
 
-// stripe library
-const stripe = require("stripe")(process.env.STRIPE_TEST_SK, {
-  apiVersion: "",
-});
+const stage = process.env.stage;
+const stageConfigs = {
+  dev: {
+    stripeKeyName: "/stripeSecretKey/test",
+  },
+  prod: {
+    stripeKeyName: "/stripeSecretKey/live",
+  },
+};
+
+const config = stageConfigs[stage] || stageConfigs.dev;
+
+// declare stripe lib reference, will be loaded in below async function
+let stripe;
+
+async function loadStripe(stage) {
+  // Load our secret key from SSM
+  const ssm = new AWS.SSM();
+  const stripeSecretKey = await ssm
+    .getParameter({
+      Name: config.stripeKeyName,
+      WithDecryption: true,
+    })
+    .promise();
+
+  // load stripe library
+  stripe = require("stripe")(stripeSecretKey.Parameter.Value, {
+    apiVersion: "",
+  });
+}
+
+loadStripe(config);
 
 /**********************
  *   Middleware
@@ -297,6 +324,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       }
     });
   } catch (error) {
+    if (debug) console.log("Error that comes back: ", error);
     let errorMessage =
       "Stripe couldn't create a payment intent or create a database entry";
     console.error(errorMessage, JSON.stringify(error, null, 2));

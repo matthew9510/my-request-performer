@@ -95,6 +95,80 @@ mat-list {
   opacity: 0.8;
 }
 
+.requester-client-sort-order-radio-group {
+  display: flex;
+  flex-direction: row;
+  max-width: 680px;
+  font-size: small;
+  margin-left: 10px;
+}
+
+// Start of custom checkbox styles
+/* The container */
+.container {
+  display: block;
+  position: relative;
+  margin-left: 7px;
+  padding-left: 22px;
+  cursor: pointer;
+  font-size: small;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 17px;
+  width: 17px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: mat-color($app-accent);
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 5px;
+  left: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: white;
+}
+// end of checkbox styles
+
 .sort {
   display: flex;
   justify-content: space-between;

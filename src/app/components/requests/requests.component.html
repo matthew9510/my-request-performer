@@ -113,6 +113,33 @@
           >
             {{ t("up next") }}
           </h3>
+
+          <!-- Propagate correct sort order to the requester client -->
+          <form [formGroup]="requesterSortOrderForm">
+            <div
+              class="requester-client-sort-order-radio-group"
+              [class.large-screen-child]="isLargeScreen"
+            >
+              <b>Requester queue sort order: </b>
+
+              <div *ngFor="let sortOrder of requesterClientSortOrders">
+                <label class="container">
+                  <span *ngIf="sortOrder === 'modifiedOn'">Arrival</span>
+                  <span *ngIf="sortOrder === 'amount'">Price</span>
+                  <input
+                    type="radio"
+                    checked="checked"
+                    name="requesterClientSortOrder"
+                    [value]="sortOrder"
+                    formControlName="requesterClientSortOrder"
+                  />
+                  <span class="checkmark"></span>
+                </label>
+                <br />
+              </div>
+            </div>
+          </form>
+
           <!-- Sorting for accepted requests -->
           <div class="sort" *ngIf="acceptedRequests">
             <div
