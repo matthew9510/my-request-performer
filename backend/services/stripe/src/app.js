@@ -41,6 +41,8 @@ app.use(function (req, res, next) {
 
   async function loadStripe() {
     console.log("inside loadStripe");
+    console.log("AWS", AWS);
+    console.log("new AWS.SSM", new AWS.SSM());
     // Load our secret key from SSM
     const ssm = new AWS.SSM();
     console.log("ssm is created", ssm);
