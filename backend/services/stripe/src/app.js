@@ -66,7 +66,7 @@ app.use(function (req, res, next) {
   }
 
   console.log(" inside middleware before load stripe");
-  await loadStripe();
+  loadStripe();
   console.log(" inside middleware after load stripe");
 
   next();
