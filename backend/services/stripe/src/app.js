@@ -19,6 +19,8 @@ const app = express();
 // setup for loading stripe lib
 let stage;
 let stageConfigs;
+let ssmKey;
+
 // declare stripe lib reference, will be loaded in below async function
 let stripe;
 
@@ -33,14 +35,17 @@ app.use(function (req, res, next) {
     },
   };
 
-  const config = stageConfigs[stage] || stageConfigs.dev;
+  ssmKey = stageConfigs[stage] || stageConfigs.dev;
 
-  async function loadStripe(stage) {
+  console.log("Why?", stage, stageConfigs, ssmKey);
+
+  async function loadStripe() {
+    console.log("inside loadStripe");
     // Load our secret key from SSM
     const ssm = new AWS.SSM();
     const stripeSecretKey = await ssm
       .getParameter({
-        Name: config.stripeKeyName,
+        Name: ssmKey.stripeKeyName,
         WithDecryption: true,
       })
       .promise();
@@ -56,7 +61,9 @@ app.use(function (req, res, next) {
     console.log("stripe", stripe);
   }
 
-  loadStripe(config);
+  console.log(" inside middleware before load stripe");
+  loadStripe();
+  console.log(" inside middleware after load stripe");
 
   next();
 });
