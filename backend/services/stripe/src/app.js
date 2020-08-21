@@ -31,7 +31,7 @@ const config = stageConfigs[stage] || stageConfigs.dev;
 // declare stripe lib reference, will be loaded in below async function
 let stripe;
 
-app.use("/", function (res, res, next) {
+app.use("/", function (req, res, next) {
   async function loadStripe(stage) {
     // Load our secret key from SSM
     const ssm = new AWS.SSM();
