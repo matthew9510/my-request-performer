@@ -56,7 +56,7 @@ app.use(function (req, res, next) {
     );
 
     // load stripe library
-    stripe = await require("stripe")(stripeSecretKey.Parameter.Value, {
+    stripe = require("stripe")(stripeSecretKey.Parameter.Value, {
       apiVersion: "",
     });
 
@@ -64,7 +64,7 @@ app.use(function (req, res, next) {
   }
 
   console.log(" inside middleware before load stripe");
-  loadStripe();
+  await loadStripe();
   console.log(" inside middleware after load stripe");
 
   next();
