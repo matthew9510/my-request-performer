@@ -46,12 +46,17 @@ app.use(function (req, res, next) {
     // Load our secret key from SSM
     const ssm = new AWS.SSM();
     console.log("ssm is created", ssm);
-    const stripeSecretKey = await ssm
-      .getParameter({
-        Name: ssmKey.stripeKeyName,
-        WithDecryption: true,
-      })
-      .promise();
+    try {
+      const stripeSecretKey = await ssm
+        .getParameter({
+          Name: ssmKey.stripeKeyName,
+          WithDecryption: true,
+        })
+        .promise();
+    } catch (e) {
+      console.log(e);
+    }
+
     console.log("after stripeSecretkey is loaded");
     console.log(
       "is stripeSecretkey null or undefined",
