@@ -50,14 +50,16 @@ app.use(function (req, res, next) {
       })
       .promise();
 
-    // load stripe library
-    stripe = require("stripe")(stripeSecretKey.Parameter.Value, {
-      apiVersion: "",
-    });
     console.log(
       "stripeSecretKey.Parameter.Value",
       stripeSecretKey.Parameter.Value
     );
+
+    // load stripe library
+    stripe = await require("stripe")(stripeSecretKey.Parameter.Value, {
+      apiVersion: "",
+    });
+
     console.log("stripe", stripe);
   }
 
