@@ -49,6 +49,8 @@ app.use("/", function (req, res, next) {
   }
 
   loadStripe(config);
+
+  next();
 });
 
 /**********************
