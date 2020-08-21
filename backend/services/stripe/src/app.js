@@ -43,22 +43,24 @@ app.use(function (req, res, next) {
     console.log("inside loadStripe");
     // Load our secret key from SSM
     const ssm = new AWS.SSM();
+    console.log("ssm is created", ssm);
     const stripeSecretKey = await ssm
       .getParameter({
         Name: ssmKey.stripeKeyName,
         WithDecryption: true,
       })
       .promise();
-
+    console.log("after stripeSecretkey is loaded");
     console.log(
-      "stripeSecretKey.Parameter.Value",
-      stripeSecretKey.Parameter.Value
+      "is stripeSecretkey null or undefined",
+      stripeSecretKey !== null || stripeSecretKey !== undefined
     );
-
+    console.log("b4 stripe loaded ");
     // load stripe library
     stripe = require("stripe")(stripeSecretKey.Parameter.Value, {
       apiVersion: "",
     });
+    console.log("afeter stripe loaded ");
 
     console.log("stripe", stripe);
   }
