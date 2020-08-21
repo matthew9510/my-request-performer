@@ -22,7 +22,7 @@ let stageConfigs;
 // declare stripe lib reference, will be loaded in below async function
 let stripe;
 
-app.use("/", function (req, res, next) {
+app.use(function (req, res, next) {
   stage = process.env.STAGE;
   stageConfigs = {
     dev: {
