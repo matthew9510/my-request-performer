@@ -46,16 +46,13 @@ app.use(function (req, res, next) {
     // Load our secret key from SSM
     const ssm = new AWS.SSM();
     console.log("ssm is created", ssm);
-    try {
-      const stripeSecretKey = await ssm
-        .getParameter({
-          Name: ssmKey.stripeKeyName,
-          WithDecryption: true,
-        })
-        .promise();
-    } catch (e) {
-      console.log(e);
-    }
+
+    const stripeSecretKey = await ssm
+      .getParameter({
+        Name: ssmKey.stripeKeyName,
+        WithDecryption: true,
+      })
+      .promise();
 
     console.log("after stripeSecretkey is loaded");
     console.log(
@@ -73,7 +70,11 @@ app.use(function (req, res, next) {
   }
 
   console.log(" inside middleware before load stripe");
-  loadStripe();
+  try {
+    loadStripe();
+  } catch (e) {
+    console.log(e);
+  }
   console.log(" inside middleware after load stripe");
 
   next();
