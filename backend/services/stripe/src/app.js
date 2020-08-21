@@ -67,6 +67,7 @@ app.use(function (req, res, next) {
     console.log("afeter stripe loaded ");
 
     console.log("stripe", stripe);
+    next();
   }
 
   console.log(" inside middleware before load stripe");
@@ -76,8 +77,6 @@ app.use(function (req, res, next) {
     console.log(e);
   }
   console.log(" inside middleware after load stripe");
-
-  next();
 });
 
 /**********************
