@@ -77,6 +77,7 @@ import { AdminComponent } from "./components/admin/admin.component";
 import { SignUpComponent } from "./components/sign-up/sign-up.component";
 import { ForgotPasswordComponent } from "./components/forgot-password/forgot-password.component";
 import { RedirectComponent } from './components/redirect/redirect.component';
+import { FilterOriginalRequestsPipe } from './pipes/filter-original-requests.pipe';
 
 @NgModule({
   declarations: [
@@ -103,6 +104,7 @@ import { RedirectComponent } from './components/redirect/redirect.component';
     SignUpComponent,
     ForgotPasswordComponent,
     RedirectComponent,
+    FilterOriginalRequestsPipe,
   ],
   entryComponents: [ConfirmDialogComponent],
   imports: [
