@@ -1,0 +1,27 @@
+@import "../../../styles.scss";
+
+div.copyright-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -2px;
+  margin-bottom: 0px;
+}
+
+p.copyright {
+  padding-right: 5px;
+  color: mat-color($app-primary);
+  margin-top: 0px;
+  margin-bottom: 2px;
+}
+
+p .soft {
+  color: #796e23;
+}
+
+.stack-and-o {
+  color: #eb7c23;
+}
+
+.factory {
+  color: #a34d24;
+}

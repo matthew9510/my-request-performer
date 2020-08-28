@@ -5,3 +5,18 @@ main.header-nav-spacing {
   position: fixed;
   top: 56px;
 }
+
+.copyright-adjustments {
+  // min-height: 94%;
+  min-height: calc(
+    100% - 21px
+  ); // 56 is bottom nav and the rest for accounting for the copyright paragraph height
+}
+
+@media screen and (min-width: 768px) {
+  .copyright-adjustments-not-signed-in {
+    position: fixed;
+    bottom: 0;
+    right: 5px;
+  }
+}

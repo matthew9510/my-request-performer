@@ -1,4 +1,8 @@
 @import "../../../styles.scss";
+mat-horizontal-stepper {
+  margin-bottom: 2px; // for copyright purposes
+}
+
 form {
   display: flex;
   flex-direction: column;

@@ -76,8 +76,9 @@ import { DebounceClickDirective } from "./directives/debounce-click.directive";
 import { AdminComponent } from "./components/admin/admin.component";
 import { SignUpComponent } from "./components/sign-up/sign-up.component";
 import { ForgotPasswordComponent } from "./components/forgot-password/forgot-password.component";
-import { RedirectComponent } from './components/redirect/redirect.component';
-import { FilterOriginalRequestsPipe } from './pipes/filter-original-requests.pipe';
+import { RedirectComponent } from "./components/redirect/redirect.component";
+import { CopyrightComponent } from "./components/copyright/copyright.component";
+import { FilterOriginalRequestsPipe } from "./pipes/filter-original-requests.pipe";
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import { FilterOriginalRequestsPipe } from './pipes/filter-original-requests.pip
     SignUpComponent,
     ForgotPasswordComponent,
     RedirectComponent,
+    CopyrightComponent,
     FilterOriginalRequestsPipe,
   ],
   entryComponents: [ConfirmDialogComponent],

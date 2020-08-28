@@ -1,6 +1,10 @@
 <app-header *ngIf="authService.signedIn"></app-header>
 <main [class.header-nav-spacing]="authService.signedIn">
-  <router-outlet></router-outlet>
+  <div [class.copyright-adjustments]="authService.signedIn">
+    <router-outlet> </router-outlet>
+  </div>
+  <app-copyright
+    [class.copyright-adjustments-not-signed-in]="!authService.signedIn"
+  ></app-copyright>
 </main>
-
 <app-bottom-nav class="footer" *ngIf="authService.signedIn"></app-bottom-nav>
