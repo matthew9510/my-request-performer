@@ -83,7 +83,7 @@
               [song]="nowPlayingRequest?.song"
               [artist]="nowPlayingRequest?.artist"
               [status]="nowPlayingRequest?.status"
-              [amount]="nowPlayingRequest?.amount"
+              [amount]="nowPlayingRequest?.totalAmountToDisplay"
               [memo]="nowPlayingRequest?.memo"
             >
               <button
@@ -240,12 +240,13 @@
               mat-list-item
               [song]="request.song"
               [artist]="request.artist"
-              [amount]="request.amount"
+              [amount]="request.totalAmountToDisplay"
               [status]="request.status"
               [memo]="request?.memo"
-              [amountOfTopUps]="request.topUps.length"
+              [amountOfTopUps]="request.numberOfTopUps"
               *ngFor="
                 let request of sortedAcceptedRequests
+                  | filterOriginalRequests
                   | orderBy: acceptedOrder:acceptedReverse:'case-insensitive';
                 index as i
               "
@@ -282,14 +283,15 @@
               mat-list-item
               [song]="request.song"
               [artist]="request.artist"
-              [amount]="request.amount"
+              [amount]="request.totalAmountToDisplay"
               [status]="request.status"
               [memo]="request?.memo"
-              [amountOfTopUps]="request.topUps.length"
+              [amountOfTopUps]="request.numberOfTopUps"
               *ngFor="
                 let request of sortedAcceptedRequests
+                  | filterOriginalRequests
                   | orderBy
-                    : [acceptedOrder, 'modifiedOn']
+                    : ['totalAmountToDisplay', 'modifiedOn']
                     : !acceptedReverse
                     : 'case-insensitive';
                 index as i

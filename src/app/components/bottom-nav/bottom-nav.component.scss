@@ -1,3 +1,5 @@
+@import "../../../styles.scss";
+
 mat-toolbar {
   position: fixed;
   bottom: 0;
@@ -13,7 +15,7 @@ mat-toolbar {
     font-size: 12px;
     align-items: center;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, .5);
+    color: rgba(255, 255, 255, 0.5);
 
     span {
       display: flex;
@@ -29,11 +31,11 @@ mat-toolbar {
 }
 
 @keyframes scale {
-	0% {
-		transform: none;
-	}
+  0% {
+    transform: none;
+  }
 
-	100% {
-		transform: scale(1.02,1.02)
-	}
+  100% {
+    transform: scale(1.02, 1.02);
+  }
 }

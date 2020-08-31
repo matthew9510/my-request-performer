@@ -16,8 +16,6 @@ import { FormBuilder, FormGroup, AbstractControl } from "@angular/forms";
 
 import { PerformerService } from "@services/performer.service";
 
-
-
 @Component({
   selector: "app-requests",
   templateUrl: "./requests.component.html",
@@ -35,6 +33,7 @@ export class RequestsComponent implements OnInit {
     memo: null,
     status: null,
   };
+  nowPlayingRequests: any[];
   currentlyPlaying: boolean = false;
   event: any;
   eventStatusMenuIcon: string = "fiber_manual_record";
@@ -66,9 +65,6 @@ export class RequestsComponent implements OnInit {
 
     private orderPipe: OrderPipe,
     public performerService: PerformerService
-
-   
-
   ) {
     this.eventId = this.actRoute.snapshot.params.id;
   }
@@ -150,7 +146,10 @@ export class RequestsComponent implements OnInit {
       this.pendingTabLabel = "Pending";
     }
     if (this.acceptedRequests && this.acceptedRequests.length > 0) {
-      this.acceptedTabLabel = `Accepted (${this.acceptedRequests.length})`;
+      let numberOfAcceptedRequests = this.acceptedRequests.filter(
+        (req) => req.originalRequestId === req.id
+      ).length;
+      this.acceptedTabLabel = `Accepted (${numberOfAcceptedRequests})`;
     } else {
       this.acceptedTabLabel = "Accepted";
     }
@@ -184,8 +183,6 @@ export class RequestsComponent implements OnInit {
       (res: any) => {
         if (res.response !== undefined) {
           this.event = res.response.body.Item;
-          console.log(this.event);
-          console.log(this.performerService.performer);
           this.eventStatus = this.event.status;
           this.eventService.currentEvent = this.event;
           this.eventService.currentEventId = this.event.id;
@@ -244,6 +241,56 @@ export class RequestsComponent implements OnInit {
       );
   }
 
+  // Needed for getting accepted and now playing requests
+  reshapeRequestsForDisplayPurposes(requests: any) {
+    let reshapedRequests = [];
+    let dictOfOriginalRequestIndexes = {};
+    requests.forEach((request, index) => {
+      // if original request add new property totalAmountToDisplay for
+      // display purposes. Add the original request to the
+      // reshapedRequests array, and store this element index in a
+      // dictionary for O(1) lookup for accumulating totalAmountToDisplay
+      // accurately.
+      if (request.id === request.originalRequestId) {
+        request = this.addNecessaryOriginalRequestPropertiesForDisplay(request);
+        reshapedRequests.push(request);
+        dictOfOriginalRequestIndexes[request.id] = index;
+      }
+      // if topup request locate original request index and add topup
+      // amount to the original totalAmountToDisplay property, along
+      // with adding the topup request to the reshapedRequests array
+      else {
+        let indexOfOriginal =
+          dictOfOriginalRequestIndexes[request.originalRequestId];
+        reshapedRequests[indexOfOriginal].totalAmountToDisplay +=
+          request.amount;
+        reshapedRequests[indexOfOriginal].numberOfTopUps += 1;
+        reshapedRequests[indexOfOriginal].topUpIndexes.push(index);
+        reshapedRequests.push(request);
+      }
+    });
+    return reshapedRequests;
+  }
+
+  // Needed for getting accepted and now playing requests,
+  // called when loading requests from db
+  addNecessaryOriginalRequestPropertiesForDisplay(originalRequest) {
+    // Add new properties to request for display purposes
+    originalRequest.totalAmountToDisplay = originalRequest.amount;
+    originalRequest.numberOfTopUps = 0;
+    originalRequest.topUpIndexes = [];
+    return originalRequest;
+  }
+
+  // Needed for getting accepted and now playing requests,
+  // called when updating requests in the db
+  removeNecessaryOriginalRequestPropertiesForDisplay(originalRequest) {
+    delete originalRequest.totalAmountToDisplay;
+    delete originalRequest.numberOfTopUps;
+    delete originalRequest.topUpIndexes;
+    return originalRequest;
+  }
+
   getAcceptedRequests() {
     this.requestsService
       .getRequestsByEventId(this.eventId, "accepted")
@@ -252,28 +299,8 @@ export class RequestsComponent implements OnInit {
           if (res.response.statusCode === 204) {
             this.acceptedRequests = null;
           } else {
-            // Method to remove duplicates and combine amounts of original requests and top ups
-            // Note: res.response.body will have original requests before top-ups due to sorting by createdOn date
-            this.acceptedRequests = res.response.body.reduce(
-              (acc: any[], curr: any, currIndex: any, array: any) => {
-                // if request is an original
-                if (curr.id === curr.originalRequestId) {
-                  curr.topUps = [];
-                  acc.push(curr);
-                } else {
-                  // if request is a top-up
-                  const originalRequestIndex = acc
-                    .map((request) => request.id)
-                    .indexOf(curr.originalRequestId);
-                  // Needs a condition for the case of indexOf being -1 and throwing an error
-                  if (originalRequestIndex >= 0) {
-                    acc[originalRequestIndex].amount += curr.amount;
-                    acc[originalRequestIndex].topUps.push(curr);
-                  }
-                }
-                return acc;
-              },
-              []
+            this.acceptedRequests = this.reshapeRequestsForDisplayPurposes(
+              res.response.body
             );
           }
           this.sortedAcceptedRequests = this.orderPipe.transform(
@@ -304,27 +331,11 @@ export class RequestsComponent implements OnInit {
               id: null,
             };
           } else {
-            this.nowPlayingRequest = res.response.body.reduce(
-              (acc: any[], curr: any, currIndex: any, array: any) => {
-                // if request is an original
-                if (curr.id === curr.originalRequestId) {
-                  curr.topUps = [];
-                  acc.push(curr);
-                } else {
-                  // if request is a top-up
-                  const originalRequestIndex = acc
-                    .map((request) => request.id)
-                    .indexOf(curr.originalRequestId);
-                  // Needs a condition for the case of indexOf being -1 and throwing an error
-                  if (originalRequestIndex >= 0) {
-                    acc[originalRequestIndex].amount += curr.amount;
-                    acc[originalRequestIndex].topUps.push(curr);
-                  }
-                }
-                return acc;
-              },
-              []
-            )[0];
+            this.nowPlayingRequests = this.reshapeRequestsForDisplayPurposes(
+              res.response.body
+            );
+            // original request will be the first element in the array
+            this.nowPlayingRequest = this.nowPlayingRequests[0];
             this.currentlyPlaying = true;
           }
         },
@@ -360,41 +371,11 @@ export class RequestsComponent implements OnInit {
       this.eventMenuStatus = "Ended";
     });
 
-    // below code should go in subscribe of end event, need to still refactor the logic to use merge map.
     let listOfAlteredRequestObservables = [];
 
     if (this.currentlyPlaying == true) {
-      // if current song has top-ups alter the top-up statuses in db
-      if (this.nowPlayingRequest.topUps.length > 0) {
-        var topUpAmount = 0;
-        for (let topUp of this.nowPlayingRequest.topUps) {
-          let alteredTopUp = JSON.parse(JSON.stringify(topUp));
-          alteredTopUp.status = "completed";
-          listOfAlteredRequestObservables.push(
-            this.onChangeRequestStatus(alteredTopUp, topUp.id)
-          );
-          topUpAmount += topUp.amount;
-        }
-      }
-
-      // change original request status
-      let alteredNowPlayingRequest = JSON.parse(
-        JSON.stringify(this.nowPlayingRequest)
-      );
-      alteredNowPlayingRequest.status = "completed";
-
-      // subtract top-up amount if any
-      if (topUpAmount > 0) {
-        alteredNowPlayingRequest.amount -= topUpAmount;
-      }
-      // delete top-ups array from now playing request
-      delete alteredNowPlayingRequest.topUps;
-
       listOfAlteredRequestObservables.push(
-        this.onChangeRequestStatus(
-          alteredNowPlayingRequest,
-          this.nowPlayingRequest.id
-        )
+        ...this.prepRequestsForStatusChange(this.nowPlayingRequest, "completed")
       );
 
       this.currentlyPlaying = false;
@@ -420,42 +401,14 @@ export class RequestsComponent implements OnInit {
 
     // reject all accepted Requests
     if (this.acceptedRequests !== null) {
-      // for request in accepted requests
       for (let acceptedRequest of this.acceptedRequests) {
-        let acceptedRequestToReject = this.acceptedRequests.filter(
-          (req) => req.originalRequestId === acceptedRequest.originalRequestId
-        )[0];
-
-        // change top-up requests statuses if there are top-ups for a request to be rejected
-        if (acceptedRequestToReject.topUps.length > 0) {
-          var topUpAmount = 0;
-          for (let topUp of acceptedRequestToReject.topUps) {
-            let alteredTopUp = JSON.parse(JSON.stringify(topUp));
-            alteredTopUp.status = "rejected";
-            listOfAlteredRequestObservables.push(
-              this.onChangeRequestStatus(alteredTopUp, topUp.id)
-            );
-            topUpAmount += topUp.amount;
-          }
+        // filter out the topups due to the implementation of the function
+        // this.prepRequestsForStatusChange altering topups through it's logic
+        if (acceptedRequest.id === acceptedRequest.originalRequestId) {
+          listOfAlteredRequestObservables.push(
+            ...this.prepRequestsForStatusChange(acceptedRequest, "rejected")
+          );
         }
-
-        // change original request status
-        let alteredOriginalRequest = JSON.parse(
-          JSON.stringify(acceptedRequestToReject)
-        );
-        alteredOriginalRequest.status = "rejected";
-        // subtract topup amount if any
-        if (topUpAmount > 0) {
-          alteredOriginalRequest.amount -= topUpAmount;
-        }
-        // delete top up
-        delete alteredOriginalRequest.topUps;
-        listOfAlteredRequestObservables.push(
-          this.onChangeRequestStatus(
-            alteredOriginalRequest,
-            acceptedRequestToReject.id
-          )
-        );
       }
     }
     forkJoin(listOfAlteredRequestObservables).subscribe(
@@ -544,10 +497,8 @@ export class RequestsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      const message = translate("snackbar message rejected");
       if (result) {
         this.rejectRequest(request, requestType);
-        this.openSnackBar(message);
       }
     });
   }
@@ -593,43 +544,16 @@ export class RequestsComponent implements OnInit {
   rejectRequest(request: any, requestType: string) {
     if (requestType === "acceptedRequests") {
       let listOfAlteredRequestObservables = [];
-      // This is done because of top-ups (top-up requests)
-      let acceptedRequestToReject = this.acceptedRequests.filter(
-        (req) => req.originalRequestId === request.originalRequestId
-      )[0];
 
-      // change top-up requests statuses if there are top-ups for a request to be rejected
-      if (acceptedRequestToReject.topUps.length > 0) {
-        var topUpAmount = 0;
-        for (let topUp of acceptedRequestToReject.topUps) {
-          let alteredTopUp = JSON.parse(JSON.stringify(topUp));
-          alteredTopUp.status = "rejected";
-          listOfAlteredRequestObservables.push(
-            this.onChangeRequestStatus(alteredTopUp, topUp.id)
-          );
-          topUpAmount += topUp.amount;
-        }
-      }
-
-      // change original request status
-      let alteredOriginalRequest = JSON.parse(
-        JSON.stringify(acceptedRequestToReject)
-      );
-      alteredOriginalRequest.status = "rejected";
-      // subtract topup amount if any
-      if (topUpAmount > 0) {
-        alteredOriginalRequest.amount -= topUpAmount;
-      }
-      delete alteredOriginalRequest.topUps;
-      listOfAlteredRequestObservables.push(
-        this.onChangeRequestStatus(
-          alteredOriginalRequest,
-          acceptedRequestToReject.id
-        )
+      listOfAlteredRequestObservables = this.prepRequestsForStatusChange(
+        request,
+        "rejected"
       );
 
       forkJoin(listOfAlteredRequestObservables).subscribe(
         (res) => {
+          const message = translate("snackbar message rejected");
+          this.openSnackBar(message);
           this.onGetRequestsByEventId();
         },
         (err) => console.error(err)
@@ -645,6 +569,8 @@ export class RequestsComponent implements OnInit {
         request.id
       ).subscribe(
         (res) => {
+          const message = translate("snackbar message rejected");
+          this.openSnackBar(message);
           this.onGetRequestsByEventId();
         },
         (err) => console.error(err)
@@ -656,42 +582,10 @@ export class RequestsComponent implements OnInit {
     if (this.currentlyPlaying) {
       let listOfAlteredRequestObservables = [];
 
-      // if current song has top-ups alter the top-up statuses in db
-      if (this.nowPlayingRequest.topUps.length > 0) {
-        var topUpAmount = 0;
-        for (let topUp of this.nowPlayingRequest.topUps) {
-          let alteredTopUp = JSON.parse(JSON.stringify(topUp));
-          alteredTopUp.status = "completed";
-          listOfAlteredRequestObservables.push(
-            this.onChangeRequestStatus(alteredTopUp, topUp.id)
-          );
-          topUpAmount += topUp.amount;
-        }
-      }
-
-      // change original request status
-      let alteredNowPlayingRequest = JSON.parse(
-        JSON.stringify(this.nowPlayingRequest)
+      listOfAlteredRequestObservables = this.prepRequestsForStatusChange(
+        this.nowPlayingRequest,
+        "completed"
       );
-      alteredNowPlayingRequest.status = "completed";
-
-      // subtract top-up amount if any
-      if (topUpAmount > 0) {
-        alteredNowPlayingRequest.amount -= topUpAmount;
-      }
-      // delete top-ups array from now playing request
-      delete alteredNowPlayingRequest.topUps;
-
-      listOfAlteredRequestObservables.push(
-        this.onChangeRequestStatus(
-          alteredNowPlayingRequest,
-          this.nowPlayingRequest.id
-        )
-      );
-
-      const message = translate("snackbar song ended");
-      this.openSnackBar(message);
-
       forkJoin(listOfAlteredRequestObservables).subscribe(
         (res) => {
           this.currentlyPlaying = false;
@@ -725,55 +619,52 @@ export class RequestsComponent implements OnInit {
     this.endCurrentSong();
     let listOfAlteredRequestObservables = [];
 
-    let requestToPlay = this.acceptedRequests.filter(
-      (req) => req.originalRequestId === request.originalRequestId
-    )[0];
-
-    // if request has top-ups alter the top-up statuses in db
-    if (requestToPlay.topUps.length > 0) {
-      var topUpAmount = 0;
-      for (let topUp of requestToPlay.topUps) {
-        let alteredTopUp = JSON.parse(JSON.stringify(topUp));
-        alteredTopUp.status = "now playing";
-        listOfAlteredRequestObservables.push(
-          this.onChangeRequestStatus(alteredTopUp, topUp.id)
-        );
-        topUpAmount += topUp.amount;
-      }
-    }
-
-    // change original request status
-    let alteredRequestToPlay = JSON.parse(JSON.stringify(requestToPlay));
-    alteredRequestToPlay.status = "now playing";
-
-    // subtract top-up amount if any
-    if (topUpAmount) {
-      alteredRequestToPlay.amount -= topUpAmount;
-    }
-    // delete top-ups array from now playing request
-    delete alteredRequestToPlay.topUps;
-
-    listOfAlteredRequestObservables.push(
-      this.onChangeRequestStatus(alteredRequestToPlay, requestToPlay.id)
+    listOfAlteredRequestObservables = this.prepRequestsForStatusChange(
+      request,
+      "now playing"
     );
 
     forkJoin(listOfAlteredRequestObservables).subscribe(
       (res) => {
-        this.nowPlayingRequest = {
-          song: request.song,
-          artist: request.artist,
-          amount: request.amount,
-          memo: request.memo,
-          status: request.status,
-          id: request.id,
-          originalRequestId: request.originalRequestId,
-        };
+        this.nowPlayingRequest = request;
         const message = translate("snackbar now playing");
         this.openSnackBar(`${this.nowPlayingRequest.song} ${message}`);
         this.onGetRequestsByEventId();
       },
       (err: any) => console.error(err)
     );
+  }
+
+  prepRequestsForStatusChange(originalRequest: any, desiredStatus: string) {
+    let listOfAlteredRequestObservables = [];
+
+    // change statuses of top-ups
+    for (let topUpRequestIndex of originalRequest.topUpIndexes) {
+      let topUp;
+      // get topup from correct array based on the desired future status
+      if (desiredStatus === "now playing" || desiredStatus === "rejected") {
+        topUp = this.acceptedRequests[topUpRequestIndex];
+      } else if (desiredStatus === "completed") {
+        topUp = this.nowPlayingRequests[topUpRequestIndex];
+      }
+      let deepCopyOfTopUp = JSON.parse(JSON.stringify(topUp));
+      deepCopyOfTopUp.status = desiredStatus;
+      listOfAlteredRequestObservables.push(
+        this.onChangeRequestStatus(deepCopyOfTopUp, topUp.id)
+      );
+    }
+
+    // change original request status
+    let deepCopyOfRequestToPlay = JSON.parse(JSON.stringify(originalRequest));
+    deepCopyOfRequestToPlay = this.removeNecessaryOriginalRequestPropertiesForDisplay(
+      deepCopyOfRequestToPlay
+    );
+    deepCopyOfRequestToPlay.status = desiredStatus;
+    listOfAlteredRequestObservables.push(
+      this.onChangeRequestStatus(deepCopyOfRequestToPlay, originalRequest.id)
+    );
+
+    return listOfAlteredRequestObservables;
   }
 
   onChangeRequestStatus(request, requestId: string | number) {

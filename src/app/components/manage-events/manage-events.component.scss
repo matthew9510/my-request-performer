@@ -51,7 +51,7 @@ mat-expansion-panel {
   align-self: center;
   justify-self: flex-end;
   position: fixed !important;
-  bottom: 4.5rem;
+  bottom: 5rem;
   z-index: 99;
 }
 
@@ -78,5 +78,5 @@ mat-form-field {
 }
 
 mat-list {
-  margin-bottom: 100px;
+  padding-bottom: 100px;
 }

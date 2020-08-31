@@ -16,44 +16,57 @@ const dynamoDb = require("./dynamodb");
 // declare a new express app
 const app = express();
 
-const stage = process.env.STAGE;
-const stageConfigs = {
-  dev: {
-    stripeKeyName: "/stripeSecretKey/test",
-  },
-  prod: {
-    stripeKeyName: "/stripeSecretKey/live",
-  },
-};
-
-const config = stageConfigs[stage] || stageConfigs.dev;
-
-// declare stripe lib reference, will be loaded in below async function
-let stripe;
-
-async function loadStripe(stage) {
-  // Load our secret key from SSM
-  const ssm = new AWS.SSM();
-  const stripeSecretKey = await ssm
-    .getParameter({
-      Name: config.stripeKeyName,
-      WithDecryption: true,
-    })
-    .promise();
-
-  // load stripe library
-  stripe = require("stripe")(stripeSecretKey.Parameter.Value, {
-    apiVersion: "",
-  });
-}
-
-loadStripe(config);
-
 /**********************
  *   Middleware
  **********************/
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
+
+// setup for loading stripe lib
+let stage;
+let stageConfigs;
+let ssmKey;
+
+// declare stripe lib reference, will be loaded in below async function
+let stripe;
+
+app.use(function (req, res, next) {
+  stage = process.env.STAGE;
+  stageConfigs = {
+    dev: {
+      stripeKeyName: "/stripeSecretKey/test",
+    },
+    prod: {
+      stripeKeyName: "/stripeSecretKey/live",
+    },
+  };
+
+  ssmKey = stageConfigs[stage] || stageConfigs.dev;
+
+  async function loadStripe() {
+    // Load our secret key from SSM
+    const ssm = new AWS.SSM();
+
+    const stripeSecretKey = await ssm
+      .getParameter({
+        Name: ssmKey.stripeKeyName,
+        WithDecryption: true,
+      })
+      .promise();
+
+    // load stripe library
+    stripe = require("stripe")(stripeSecretKey.Parameter.Value, {
+      apiVersion: "",
+    });
+    next();
+  }
+
+  try {
+    loadStripe();
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 /**********************
  *   CORS
