@@ -52,7 +52,6 @@ export class ProfileComponent implements OnInit {
       endEventMessage: [null],
     });
 
-    console.log("this.activatedRoute.snapshot", this.activatedRoute.snapshot);
     // Preparation of stripe redirecting
     this.stripeState = this.activatedRoute.snapshot.queryParamMap.get("state");
     this.stripeAuthCode = this.activatedRoute.snapshot.queryParamMap.get(
@@ -83,59 +82,40 @@ export class ProfileComponent implements OnInit {
 
           // set form to read only
           this.profileForm.disable();
-          console.log("performer", performer);
-          console.log(
-            "this.performerService.performer ",
-            this.performerService.performer
-          );
-          console.log("this.stripestate", this.stripeState);
-          console.log(
-            "this.performerService.performer.state",
-            this.performerService.performer.state
-          );
-          console.log(
-            "!this.performerService.isStripeAccountLinked",
-            !this.performerService.isStripeAccountLinked
-          );
-          console.log(
-            "this.stripeState === this.performerService.performer.state && !this.performerService.isStripeAccountLinked",
-            this.stripeState === this.performerService.performer.state &&
-              !this.performerService.isStripeAccountLinked
-          );
 
           // Handling of stripe redirecting if performer hasn't signed up yet
           if (
             this.stripeState === this.performerService.performer.state &&
             !this.performerService.isStripeAccountLinked
           ) {
-            console.log("inside stripe block to start stripe link");
             // show spinner stating link of stripe accounts in progress
             this.stripeLinkInProgress = true;
 
             let performerId = localStorage.getItem("performerSub");
             let performerState = this.performerService.performer.state;
-            console.log("performerId", performerId);
-            console.log("performerState", performerState);
 
-            this.stripeService
-              .linkStripeAccounts(
-                this.stripeState,
-                this.stripeAuthCode,
-                performerId,
-                performerState
-              )
-              .subscribe((res: any) => {
-                console.log("stripeLink successful Show res", res);
-                // Update performer
-                this.performerService.performer = res.performer;
+            if (this.stripeError === null) {
+              this.stripeService
+                .linkStripeAccounts(
+                  this.stripeState,
+                  this.stripeAuthCode,
+                  performerId,
+                  performerState
+                )
+                .subscribe((res: any) => {
+                  // Update performer
+                  this.performerService.performer = res.performer;
 
-                // Update app flags
-                this.performerService.isStripeAccountLinked = true;
+                  // Update app flags
+                  this.performerService.isStripeAccountLinked = true;
 
-                // Stop spinner and present a message saying stripe account setup
-                this.stripeLinkInProgress = false;
-                this.stripeLinkComplete = true;
-              });
+                  // Stop spinner and present a message saying stripe account setup
+                  this.stripeLinkInProgress = false;
+                  this.stripeLinkComplete = true;
+                });
+            } else {
+              this.stripeLinkInProgress = false;
+            }
           }
         }
       }
@@ -302,6 +282,3 @@ export class ProfileComponent implements OnInit {
       });
   }
 }
-
-// Todo:
-// only submit form once, on click make disabled
