@@ -198,16 +198,16 @@ export class ProfileComponent implements OnInit {
           // setup local scope variables
           let performer = this.performerService.performer;
 
+          let redirectUrl =
+            window.location.protocol + "//" + window.location.host + "/profile";
+
           // Prepare stripe redirect link
           let params = new HttpParams();
           params = params.append("scope", "read_write");
           params = params.append("response_type", "code");
           params = params.append("client_id", environment.stripeClient);
           params = params.append("state", performer.state);
-          params = params.append(
-            "redirect_uri",
-            environment.stripeRedirectLink
-          );
+          params = params.append("redirect_uri", redirectUrl);
           params = params.append(
             "stripe_user[first_name]",
             performer.firstName
@@ -221,13 +221,13 @@ export class ProfileComponent implements OnInit {
           params = params.append("stripe_user[country]", "US");
           params = params.append("stripe_user[business_type]", "individual");
           params = params.append(
-            "stripe_user[url]",
-            "http://www.MyRequest.com"
+            "stripe_user[business_name]",
+            "My Request Performer"
           );
           params = params.append("stripe_user[physical_product]", "false");
           params = params.append(
             "stripe_user[product_description]",
-            "My Request Performer"
+            "My Request"
           );
           params = params.append("stripe_user[currency]", "usd");
 
