@@ -58,7 +58,14 @@ export class SignUpComponent implements OnInit {
           Validators.min(8),
         ],
       ],
-      phone: ["", [Validators.pattern(/^\d{3}-\d{3}-\d{4}$/)]],
+      phone: [
+        "",
+        [
+          Validators.pattern(
+            /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/
+          ),
+        ],
+      ],
       fname: ["", Validators.min(2)],
       lname: ["", Validators.min(2)],
     });
