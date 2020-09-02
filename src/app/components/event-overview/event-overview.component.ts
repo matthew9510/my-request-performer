@@ -75,10 +75,17 @@ export class EventOverviewComponent implements OnInit {
         this.venueService.getVenue(this.event.venueId).subscribe((res: any) => {
           this.venue = res.response.body.Item;
           this.performerService
-            .getPerformerInfoById(this.event.performerId)
+            .getPerformerInfoById(localStorage.getItem("performerSub"))
             .subscribe((res: any) => {
               if (res.response !== undefined) {
                 this.performer = res.response.body.Item;
+                this.performerService.performer = this.performer;
+                if (
+                  this.performerService.performer.id !== this.event.performerId
+                ) {
+                  // redirect to events because this is not the performers event
+                  this.router.navigate(["/events"]);
+                }
               }
               this.loading = false;
             });

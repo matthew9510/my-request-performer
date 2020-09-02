@@ -190,6 +190,34 @@ export class RequestsComponent implements OnInit {
             this.event.requesterClientSortOrder
           );
 
+          // handling of if the event isn't the performers
+          if (this.performerService.performer === undefined) {
+            // load performer
+            this.performerService
+              .getPerformerInfoById(localStorage.getItem("performerSub"))
+              .subscribe((res: any) => {
+                if (res.response !== undefined) {
+                  this.performerService.performer = res.response.body.Item;
+                  if (
+                    this.performerService.performer.id !==
+                    this.event.performerId
+                  ) {
+                    // redirect to events because this is not the performers event
+                    this.router.navigate(["/events"]);
+                  }
+                }
+              });
+            // check if the event owner is theirs and redirect if not
+          } else {
+            // check if the event owner is theirs and redirect if not
+            if (this.performerService.performer.id !== this.event.performerId) {
+              console.log(this.event);
+              console.log(this.event.performerId);
+              // redirect to events because this is not the performers event
+              this.router.navigate(["/events"]);
+            }
+          }
+
           // updates status menu appearance
           switch (this.eventStatus) {
             case "active":
