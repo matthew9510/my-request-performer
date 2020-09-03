@@ -265,6 +265,8 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       }
     );
 
+    console.log("payment Intent object", paymentIntent);
+
     // setup the database entry
     let requestsDbEntry = {
       song,
