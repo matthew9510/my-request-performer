@@ -216,6 +216,74 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
     );
 });
 
+// this function deals with errors for the /stripe/createPaymentIntent and
+// /stripe/updatePaymentIntentWithNewPaymentMethod routes below
+function handlePaymentIntentMethodErrors(error, res) {
+  if (error.type === "StripeCardError") {
+    const possibleErrors = [
+      "invalid_cvc",
+      "invalid_expiry_month",
+      "invalid_expiry_year",
+      "invalid_number",
+      "incorrect_cvc",
+      "incorrect_number",
+      "incorrect_zip",
+    ];
+    if (possibleErrors.includes(error.raw.code)) {
+      // One or more of the following fields are incorrect, CC Number, CVC, or ZipCode.
+      res.status(406).json({
+        errorType: error.type,
+        errorCode: error.raw.code,
+        errorMessage:
+          "One or more of the following fields are incorrect, Card Number, CVC, or ZipCode.",
+        originalPaymentIntentId: error.raw.payment_intent.id,
+      });
+    } else if (error.raw.code === "card_declined") {
+      res.status(406).json({
+        errorType: error.type,
+        errorCode: error.raw.code,
+        errorMessage:
+          "The card was declined, please try with a different payment method.",
+        originalPaymentIntentId: error.raw.payment_intent.id,
+      });
+    } else if (error.raw.code === "expired_card") {
+      res.status(406).json({
+        errorType: error.type,
+        errorCode: error.raw.code,
+        errorMessage:
+          "The card is expired, please try with a different payment method.",
+        originalPaymentIntentId: error.raw.payment_intent.id,
+      });
+    } else if (error.raw.code === "processing_error") {
+      res.status(406).json({
+        errorType: error.type,
+        errorCode: error.raw.code,
+        errorMessage:
+          "An error occurred while processing the card. Try again later or with a different payment method.",
+        originalPaymentIntentId: error.raw.payment_intent.id,
+      });
+    } else {
+      // generic case
+      res.status(406).json({
+        errorType: error.type,
+        errorCode: error.raw.code,
+        errorMessage:
+          "Please review card info, or try with a different payment method.",
+        originalPaymentIntentId: error.raw.payment_intent.id,
+      });
+    }
+  } else {
+    console.log(error);
+    let errorMessage =
+      "Stripe couldn't create a payment intent or create a database entry";
+    console.error(errorMessage, JSON.stringify(error, null, 2));
+    res.json({
+      message: errorMessage,
+      statusCode: 400,
+    });
+  }
+}
+
 // Initialization of a payment intent
 app.post("/stripe/createPaymentIntent", async function (req, res, next) {
   const debug = req.query.debug === "true";
@@ -255,12 +323,24 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
           type: "card",
           "card[token]": req.body.token.id,
         },
-        confirmation_method: "manual",
         amount: convertedPaymentIntentAmount,
-        currency: "usd",
         // application_fee_amount: 0,
+        currency: "usd",
+        // confirmation_method set to manual states that this payment intent
+        // can't be captured without the stripe secret key
+        confirmation_method: "manual",
+        // capture_method set to manual states to place a hold on the funds
+        // when the customer authorizes the payment, but don’t capture the
+        // funds until later. This also will throw an error if there is a
+        // problem with authorizing the payment method
+        capture_method: "manual",
+        // confirm set to true will attempt to confirm this PaymentIntent
+        // immediately, this is also needed to throw an error if there is
+        // a problem with authorizing the payment method
+        confirm: true,
       },
       {
+        // this states to do this on behalf of the performer's account
         stripeAccount: performerStripeId,
       }
     );
@@ -339,14 +419,141 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       }
     });
   } catch (error) {
-    if (debug) console.log("Error that comes back: ", error);
-    let errorMessage =
-      "Stripe couldn't create a payment intent or create a database entry";
-    console.error(errorMessage, JSON.stringify(error, null, 2));
-    res.json({
-      message: errorMessage,
-      statusCode: 400,
+    if (debug) console.error("Error that comes back: ", error);
+    handlePaymentIntentMethodErrors(error, res);
+  }
+});
+
+// Initialization of a payment intent
+app.post("/stripe/updatePaymentIntentWithNewPaymentMethod", async function (
+  req,
+  res,
+  next
+) {
+  const debug = req.query.debug === "true";
+  const {
+    song,
+    artist,
+    amount,
+    memo,
+    eventId,
+    performerId,
+    performerStripeId,
+    status,
+    requesterId,
+    firstName,
+    lastName,
+    originalRequestId,
+    originalPaymentIntentId,
+  } = req.body;
+
+  try {
+    // update original payment intent
+    const updatedPaymentIntent = await stripe.paymentIntents.update(
+      originalPaymentIntentId,
+      {
+        payment_method_data: {
+          type: "card",
+          "card[token]": req.body.token.id,
+        },
+      },
+      {
+        // this states to do this on behalf of the performer's account
+        stripeAccount: performerStripeId,
+      }
+    );
+
+    if (debug) console.log("Updated payment intent", updatedPaymentIntent);
+
+    // confirm payment intent, this is done to place transaction funds on hold
+    // and to make sure the payment method is valid, if there are issues
+    // with the payment method an error will be thrown
+    const confirmedPaymentIntent = await stripe.paymentIntents.confirm(
+      updatedPaymentIntent.id,
+      {
+        // this states to do this on behalf of the performer's account
+        stripeAccount: performerStripeId,
+      }
+    );
+    if (debug) console.log("Confirmed payment intent", confirmedPaymentIntent);
+
+    // setup the database entry
+    let requestsDbEntry = {
+      song,
+      artist,
+      amount,
+      memo,
+      eventId,
+      performerId,
+      performerStripeId,
+      status,
+      requesterId,
+      firstName,
+      lastName,
+      paymentIntentId: confirmedPaymentIntent.id,
+      paymentIntentClientSecret: confirmedPaymentIntent.client_secret,
+    };
+
+    // Convert any empty strings to null for dynamoDB
+    requestsDbEntry.firstName =
+      requestsDbEntry.firstName === "" ? null : requestsDbEntry.firstName;
+    requestsDbEntry.lastName =
+      requestsDbEntry.lastName === "" ? null : requestsDbEntry.lastName;
+    requestsDbEntry.memo =
+      requestsDbEntry.memo === "" ? null : requestsDbEntry.memo;
+
+    // Generate uuid & date for the record
+    let currentDate = new Date().toJSON();
+    requestsDbEntry.id = uuid.v1();
+    requestsDbEntry.createdOn = currentDate;
+    requestsDbEntry.modifiedOn = currentDate;
+
+    // Handle linking top-ups with original requests
+    if (originalRequestId === undefined) {
+      // Needed for top-up implementation of frontend app
+      requestsDbEntry.originalRequestId = requestsDbEntry.id;
+    } else {
+      requestsDbEntry.originalRequestId = originalRequestId;
+    }
+
+    // setup the dynamoDb config
+    let params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      Item: requestsDbEntry,
+    };
+
+    // print the params if the debug flag is set
+    if (debug) console.log("Params:\n", params);
+
+    // Save this request entry to the table
+    dynamoDb.put(params, (error, result) => {
+      if (error) {
+        console.log("db error", error);
+        console.error(
+          "Unable store paid request item. Error JSON:",
+          JSON.stringify(error, null, 2)
+        );
+        throw new Error(error);
+      } else {
+        if (debug) {
+          console.log("request db entry", requestsDbEntry);
+          console.log(
+            "updated confirmed paymentIntent",
+            confirmedPaymentIntent
+          );
+        }
+
+        // send back successful response
+        return res.json({
+          message: "Successfully added item to the stripe table!",
+          result: requestsDbEntry,
+          statusCode: 200,
+        });
+      }
     });
+  } catch (error) {
+    if (debug) console.error("Error that comes back: ", error);
+    handlePaymentIntentMethodErrors(error, res);
   }
 });
 
@@ -358,7 +565,7 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   try {
     if (debug) console.log("before capture", request.paymentIntentId);
 
-    const capturedPaymentIntent = await stripe.paymentIntents.confirm(
+    const capturedPaymentIntent = await stripe.paymentIntents.capture(
       request.paymentIntentId,
       {
         stripeAccount: request.performerStripeId,
