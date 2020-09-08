@@ -30,6 +30,7 @@ form {
     justify-content: center;
   }
 }
+
 p.performer-not-signed-up-with-stripe-prompt {
   color: $accent;
 }
@@ -41,6 +42,16 @@ p.performer-not-signed-up-with-stripe-prompt {
 
 .venue-button {
   width: 100%;
+}
+
+.url-error {
+  margin-bottom: 25px !important;
+}
+
+@media (max-height: 667px) {
+  .url-error {
+    margin-bottom: 45px !important;
+  }
 }
 
 @media screen and (min-width: 700px) {

@@ -103,7 +103,10 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       title: [null, [Validators.required]],
       description: [null],
       genre: [null],
-      url: [null],
+      url: [
+        null,
+        Validators.pattern(/^([Hh][Tt][Tt][Pp]|[Hh][Tt][Tt][Pp][Ss]):\/\//),
+      ],
       status: ["created"],
       performerId: [localStorage.getItem("performerSub")],
       venueId: [null],
@@ -142,7 +145,10 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
       state: [null],
       postalCode: [null],
       country: [null],
-      url: [null],
+      url: [
+        null,
+        Validators.pattern(/^([Hh][Tt][Tt][Pp]|[Hh][Tt][Tt][Pp][Ss]):\/\//),
+      ],
       performerId: [localStorage.getItem("performerSub")],
     });
 
@@ -165,6 +171,14 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
           this.performerService.isStripeAccountLinked = true;
         }
       });
+  }
+
+  get eventUrlInput() {
+    return this.eventDetailForm.get("url");
+  }
+
+  get venueUrlInput() {
+    return this.venueForm.get("url");
   }
 
   /* These two methods below set autofocus on the first input of each step of the stepper */
