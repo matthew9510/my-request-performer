@@ -220,60 +220,80 @@ app.get("/stripe/connect/linkStandardAccount", function (req, res, next) {
 // /stripe/updatePaymentIntentWithNewPaymentMethod routes below
 function handlePaymentIntentMethodErrors(error, res) {
   if (error.type === "StripeCardError") {
-    const possibleErrors = [
-      "invalid_cvc",
-      "invalid_expiry_month",
-      "invalid_expiry_year",
-      "invalid_number",
-      "incorrect_cvc",
-      "incorrect_number",
-      "incorrect_zip",
-    ];
-    if (possibleErrors.includes(error.raw.code)) {
-      // One or more of the following fields are incorrect, CC Number, CVC, or ZipCode.
-      res.status(406).json({
-        errorType: error.type,
-        errorCode: error.raw.code,
-        errorMessage:
-          "One or more of the following fields are incorrect, Card Number, CVC, or ZipCode.",
-        originalPaymentIntentId: error.raw.payment_intent.id,
-      });
-    } else if (error.raw.code === "card_declined") {
-      res.status(406).json({
-        errorType: error.type,
-        errorCode: error.raw.code,
-        errorMessage:
-          "The card was declined, please try with a different payment method.",
-        originalPaymentIntentId: error.raw.payment_intent.id,
-      });
-    } else if (error.raw.code === "expired_card") {
-      res.status(406).json({
-        errorType: error.type,
-        errorCode: error.raw.code,
-        errorMessage:
-          "The card is expired, please try with a different payment method.",
-        originalPaymentIntentId: error.raw.payment_intent.id,
-      });
-    } else if (error.raw.code === "processing_error") {
-      res.status(406).json({
-        errorType: error.type,
-        errorCode: error.raw.code,
-        errorMessage:
-          "An error occurred while processing the card. Try again later or with a different payment method.",
-        originalPaymentIntentId: error.raw.payment_intent.id,
-      });
+    let paymentRequiredErrorStatusCode = 402;
+    let invalidCardDetailsErrorMessage =
+      "One or more of the following fields are incorrect, Card Number, CVC, or ZipCode.";
+    let cardDeclinedErrorMessage =
+      "The card was declined, please try with a different payment method.";
+    let expiredCardErrorMessage =
+      "The card is expired, please try with a different payment method.";
+    let stripeProcessingErrorMessage =
+      "An error occurred while processing the card. Try again later or with a different payment method.";
+    let genericErrorMessage =
+      "Please review card info, or try with a different payment method.";
+
+    const possibleErrors = {
+      invalid_cvc: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: invalidCardDetailsErrorMessage,
+      },
+      invalid_expiry_month: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: invalidCardDetailsErrorMessage,
+      },
+      invalid_expiry_year: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: invalidCardDetailsErrorMessage,
+      },
+      invalid_number: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: invalidCardDetailsErrorMessage,
+      },
+      incorrect_cvc: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: invalidCardDetailsErrorMessage,
+      },
+      incorrect_number: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: invalidCardDetailsErrorMessage,
+      },
+      incorrect_zip: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: invalidCardDetailsErrorMessage,
+      },
+      card_declined: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: cardDeclinedErrorMessage,
+      },
+      expired_card: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: expiredCardErrorMessage,
+      },
+      processing_error: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: stripeProcessingErrorMessage,
+      },
+      generic: {
+        statusCode: paymentRequiredErrorStatusCode,
+        errorMessage: genericErrorMessage,
+      },
+    };
+
+    let errorHandlerObject;
+    if (error.raw.code in possibleErrors) {
+      errorHandlerObject = possibleErrors[error.raw.code];
     } else {
       // generic case
-      res.status(406).json({
-        errorType: error.type,
-        errorCode: error.raw.code,
-        errorMessage:
-          "Please review card info, or try with a different payment method.",
-        originalPaymentIntentId: error.raw.payment_intent.id,
-      });
+      errorHandlerObject = possibleErrors.generic;
     }
+
+    res.status(errorHandlerObject.statusCode).json({
+      errorType: error.type,
+      errorCode: error.raw.code,
+      errorMessage: errorHandlerObject.errorMessage,
+      originalPaymentIntentId: error.raw.payment_intent.id,
+    });
   } else {
-    console.log(error);
     let errorMessage =
       "Stripe couldn't create a payment intent or create a database entry";
     console.error(errorMessage, JSON.stringify(error, null, 2));
@@ -345,7 +365,7 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
       }
     );
 
-    console.log("payment Intent object", paymentIntent);
+    if (debug) console.log("payment Intent object", paymentIntent);
 
     // setup the database entry
     let requestsDbEntry = {
