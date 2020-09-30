@@ -81,7 +81,6 @@ export class AuthService {
               }
             })
             .catch((err) => console.log("error: " + err));
-          
         } else if (amplifyAuthState === "confirmSignUp") {
           // pass, this is needed to create beta testers
         } else {
@@ -129,6 +128,7 @@ export class AuthService {
         // Reset state of app and flags
         this.signedIn = false;
         this.performerService.isSignedUp = false;
+        this.performerService.isStripeAccountLinked = false;
         this.performerService.showEventsSnackBar = true;
         this.performerCurrentCredentials = null;
         this.performerAuthState = null;
