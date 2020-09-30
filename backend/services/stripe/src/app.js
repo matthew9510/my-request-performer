@@ -444,6 +444,149 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
   }
 });
 
+// Initialization and capturing of a payment intent, for tipping performer
+app.post("/stripe/createAndCapturePaymentIntent", async function (
+  req,
+  res,
+  next
+) {
+  const debug = req.query.debug === "true";
+  const {
+    amount,
+    memo,
+    firstName,
+    lastName,
+    isTip,
+    eventId,
+    performerId,
+    performerStripeId,
+    status,
+    requesterId,
+  } = req.body;
+
+  // Validate amount
+  if (req.body.amount < 0) {
+    const response = {
+      statusCode: 400,
+      body: "Amount cannot be less than 0.",
+    };
+    console.error(response);
+    return res.json(response);
+  }
+
+  try {
+    // Get amount in stripe desired form
+    const convertedPaymentIntentAmount = Math.floor(amount * 100);
+
+    // create a payment intent for this request
+    const paymentIntent = await stripe.paymentIntents.create(
+      {
+        payment_method_data: {
+          type: "card",
+          "card[token]": req.body.token.id,
+        },
+        amount: convertedPaymentIntentAmount,
+        // application_fee_amount: 0,
+        currency: "usd",
+        // confirmation_method set to manual states that this payment intent
+        // can't be captured without the stripe secret key
+        confirmation_method: "manual",
+        // capture_method set to manual states to place a hold on the funds
+        // when the customer authorizes the payment, but don’t capture the
+        // funds until later. This also will throw an error if there is a
+        // problem with authorizing the payment method.
+        // If capture_method set to automatic Stripe will automatically capture
+        //  funds when the customer authorizes the payment, resulting in the
+        // payment intent being captured immediately.
+        capture_method: "automatic",
+        // confirm set to true will attempt to confirm this PaymentIntent
+        // immediately, this is also needed to throw an error if there is
+        // a problem with authorizing the payment method
+        confirm: true,
+      },
+      {
+        // this states to do this on behalf of the performer's account
+        stripeAccount: performerStripeId,
+      }
+    );
+
+    if (debug) console.log("payment Intent object", paymentIntent);
+
+    // setup the tip database entry
+    let requestsDbEntry = {
+      isTip,
+      amount,
+      memo,
+      eventId,
+      performerId,
+      performerStripeId,
+      status,
+      requesterId,
+      firstName,
+      lastName,
+      paymentIntentId: paymentIntent.id,
+      paymentIntentClientSecret: paymentIntent.client_secret,
+    };
+
+    if (paymentIntent.status === "succeeded") {
+      requestsDbEntry.paymentIntentStatus = paymentIntent.status;
+    }
+
+    // Convert any empty strings to null for dynamoDB
+    requestsDbEntry.firstName =
+      requestsDbEntry.firstName === "" ? null : requestsDbEntry.firstName;
+    requestsDbEntry.lastName =
+      requestsDbEntry.lastName === "" ? null : requestsDbEntry.lastName;
+    requestsDbEntry.memo =
+      requestsDbEntry.memo === "" ? null : requestsDbEntry.memo;
+
+    // Generate uuid & date for the record
+    let currentDate = new Date().toJSON();
+    requestsDbEntry.id = uuid.v1();
+    requestsDbEntry.createdOn = currentDate;
+    requestsDbEntry.modifiedOn = currentDate;
+
+    // Set tip original request id to be itself
+    requestsDbEntry.originalRequestId = requestsDbEntry.id;
+
+    // setup the dynamoDb config
+    let params = {
+      TableName: process.env.DYNAMODB_REQUESTS_TABLE,
+      Item: requestsDbEntry,
+    };
+
+    // print the params if the debug flag is set
+    if (debug) console.log("Params:\n", params);
+
+    // Save this request entry to the table
+    dynamoDb.put(params, (error, result) => {
+      if (error) {
+        console.log("db error", error);
+        console.error(
+          "Unable store paid request item. Error JSON:",
+          JSON.stringify(error, null, 2)
+        );
+        throw new Error(error);
+      } else {
+        if (debug) {
+          console.log("request db entry", requestsDbEntry);
+          console.log("paymentIntent", paymentIntent);
+        }
+
+        // send back successful response
+        return res.json({
+          message: "Successfully added item to the stripe table!",
+          result: requestsDbEntry,
+          statusCode: 200,
+        });
+      }
+    });
+  } catch (error) {
+    if (debug) console.error("Error that comes back: ", error);
+    handlePaymentIntentMethodErrors(error, res);
+  }
+});
+
 // Initialization of a payment intent
 app.post("/stripe/updatePaymentIntentWithNewPaymentMethod", async function (
   req,
