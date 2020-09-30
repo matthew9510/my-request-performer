@@ -21,7 +21,9 @@
           <input matInput formControlName="genre" />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field
+          [class.url-error]="eventUrlInput.invalid && eventUrlInput.touched"
+        >
           <mat-label>{{ t("eventUrl") }}</mat-label>
           <input
             matInput
@@ -30,6 +32,11 @@
             matTooltipPosition="below"
             matTooltipClass="custom-tooltip"
           />
+          <mat-error *ngIf="eventUrlInput.invalid && eventUrlInput.touched">
+            <strong>https://</strong> or <strong>http://</strong> needs to be
+            prepended to the the url. Make sure to match the website link
+            exactly, otherwise requesters will be sent to an invalid webpage.
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field>
@@ -74,7 +81,7 @@
             color="primary"
             type="submit"
             matStepperNext
-            [disabled]="eventDetailForm.invalid"
+            [disabled]="eventDetailForm.invalid || eventUrlInput.invalid"
           >
             {{ t("next") }}
           </button>
@@ -195,7 +202,9 @@
           <input matInput formControlName="country" />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field
+          [class.url-error]="venueUrlInput.invalid && venueUrlInput.touched"
+        >
           <mat-label>{{ t("website") }}</mat-label>
           <input
             matInput
@@ -204,6 +213,11 @@
             matTooltipPosition="below"
             matTooltipClass="custom-tooltip"
           />
+          <mat-error *ngIf="venueUrlInput.invalid && venueUrlInput.touched">
+            <strong>https://</strong> or <strong>http://</strong> needs to be
+            prepended to the the url. Make sure to match the website link
+            exactly, otherwise requesters will be sent to an invalid webpage.
+          </mat-error>
         </mat-form-field>
 
         <div class="stepper-nav-buttons">
@@ -219,7 +233,7 @@
             *ngIf="!editEvent"
             mat-flat-button
             color="accent"
-            [disabled]="venueForm.invalid"
+            [disabled]="venueForm.invalid || venueUrlInput.invalid"
             type="submit"
             appDebounceClick
             (debounceClick)="createEvent()"
@@ -230,7 +244,7 @@
             *ngIf="editEvent"
             mat-flat-button
             color="accent"
-            [disabled]="venueForm.invalid"
+            [disabled]="venueForm.invalid || venueUrlInput.invalid"
             type="submit"
             appDebounceClick
             (debounceClick)="updateEvent()"
