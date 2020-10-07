@@ -147,7 +147,7 @@ table {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 200px;
+  margin-bottom: 20px;
 }
 
 @media screen and (min-width: 800px) {
@@ -172,6 +172,20 @@ table {
 .sort-item {
   // font-size: small;
   margin-right: 20px;
+}
+
+.mat-column-firstName {
+  padding-right: 5px;
+  font-size: small;
+}
+
+.mat-column-lastName {
+  padding-right: 5px;
+  font-size: small;
+}
+.mat-column-memo {
+  width: 400px;
+  // font-size: small;
 }
 
 @media screen and (min-width: 700px) {
