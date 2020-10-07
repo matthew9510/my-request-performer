@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  frontendUrl: "https://performer.myrequest.ssflabs.net",
-  requesterUrl: "https://requester.ssflabs.com",
+  frontendUrl: "https://performer.myrequest.live",
+  requesterUrl: "https://app.myrequest.live",
   eventsUrl:
     "https://970enl1mz3.execute-api.us-west-2.amazonaws.com/prod/events",
   requestsUrl:
