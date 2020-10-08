@@ -85,7 +85,7 @@
   </table>
 </div>
 
-<div id="table-container">
+<div id="table-container" *ngIf="tips?.length > 0">
   <h2>Tips</h2>
   <table
     mat-table
@@ -143,4 +143,8 @@
 
 <div *ngIf="completedRequests?.length === 0">
   <h5>No requests were completed for this event.</h5>
+</div>
+
+<div *ngIf="tips?.length === 0">
+  <h5>No Tips were made during this event.</h5>
 </div>
