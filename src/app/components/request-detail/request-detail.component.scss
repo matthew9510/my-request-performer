@@ -72,12 +72,6 @@ mat-card {
 }
 
 .truncate {
-  width: 250px;
-  white-space: nowrap;
-  overflow: hidden;
+  width: 100%;
   text-overflow: ellipsis;
 }
-
-// .memo-text {
-
-// }
