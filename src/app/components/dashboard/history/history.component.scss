@@ -174,18 +174,31 @@ table {
   margin-right: 20px;
 }
 
-.mat-column-firstName {
+.mat-column-modifiedOn {
+  min-width: 79px;
+  padding-left: 14px !important;
   padding-right: 5px;
-  font-size: small;
 }
 
-.mat-column-lastName {
+.mat-column-song,
+.mat-column-artist,
+.mat-column-firstName,
+.mat-column-lastName,
+.mat-column-memo,
+.mat-column-amount {
   padding-right: 5px;
-  font-size: small;
 }
-.mat-column-memo {
-  width: 400px;
-  // font-size: small;
+
+@media screen and (max-width: 667px) {
+  .mat-column-modifiedOn,
+  .mat-column-song,
+  .mat-column-artist,
+  .mat-column-firstName,
+  .mat-column-lastName,
+  .mat-column-memo,
+  .mat-column-amount {
+    font-size: x-small;
+  }
 }
 
 @media screen and (min-width: 700px) {
