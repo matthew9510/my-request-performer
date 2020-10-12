@@ -8,7 +8,12 @@
     <mat-icon>arrow_back</mat-icon>
   </button>
 
-  <h3 class="header-nav" *ngIf="displayEventTitle; else showPageTitle">
+  <h3
+    class="header-nav event-title"
+    *ngIf="displayEventTitle; else showPageTitle"
+    [class.font-size-adjustment-small]="eventTitle.length > 44"
+    [class.font-size-adjustment-x-small]="eventTitle.length > 71"
+  >
     {{ eventTitle }}
   </h3>
   <ng-template #showPageTitle>
