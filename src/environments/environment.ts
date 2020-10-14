@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  frontendUrl: "https://develop.d3ff8wrh2zwja6.amplifyapp.com",
-  requesterUrl: "https://develop.d2875do098zx8f.amplifyapp.com",
+  frontendUrl: "https://dev.performer.myrequest.live",
+  requesterUrl: "https://dev.app.myrequest.live",
   eventsUrl:
     "https://e37h0xjzll.execute-api.us-west-2.amazonaws.com/dev/events",
   requestsUrl:

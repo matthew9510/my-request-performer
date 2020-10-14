@@ -51,6 +51,8 @@ export class RequestsComponent implements OnInit {
   sortedPendingRequests: any;
   requesterSortOrderForm: FormGroup;
   requesterClientSortOrders: string[] = ["modifiedOn", "amount"];
+  isSecondaryRequestSortOrderLoaded = false;
+  secondaryRequestSortOrder: string;
   updateRequesterClientSortOrderError: boolean = false;
   constructor(
     public requestsService: RequestsService,
@@ -205,16 +207,48 @@ export class RequestsComponent implements OnInit {
                     // redirect to events because this is not the performers event
                     this.router.navigate(["/events"]);
                   }
+
+                  // set appropriate sort orders and set flag to show correct sort order html elements
+                  if (!this.performerService.isStripeAccountLinked) {
+                    // render html content to sort by likes
+                    // set a flag to show correct html elements
+                    this.secondaryRequestSortOrder = "likes";
+                    this.requesterClientSortOrders = ["modifiedOn", "likes"];
+                    this.requesterSortOrderForm.controls.requesterClientSortOrder.setValue(
+                      this.event.requesterClientSortOrder
+                    );
+                    // render html now that correct secondary request order is set
+                    this.isSecondaryRequestSortOrderLoaded = true;
+                  } else {
+                    this.secondaryRequestSortOrder = "amount";
+                    // render html now that correct secondary request order is set
+                    this.isSecondaryRequestSortOrderLoaded = true;
+                  }
                 }
               });
             // check if the event owner is theirs and redirect if not
           } else {
             // check if the event owner is theirs and redirect if not
             if (this.performerService.performer.id !== this.event.performerId) {
-              console.log(this.event);
-              console.log(this.event.performerId);
               // redirect to events because this is not the performers event
               this.router.navigate(["/events"]);
+            }
+
+            // set appropriate sort orders and set flag to show correct sort order html elements
+            if (!this.performerService.isStripeAccountLinked) {
+              // render html content to sort by likes
+              // set a flag to show correct html elements
+              this.secondaryRequestSortOrder = "likes";
+              this.requesterClientSortOrders = ["modifiedOn", "likes"];
+              this.requesterSortOrderForm.controls.requesterClientSortOrder.setValue(
+                this.event.requesterClientSortOrder
+              );
+              // render html now that correct secondary request order is set
+              this.isSecondaryRequestSortOrderLoaded = true;
+            } else {
+              this.secondaryRequestSortOrder = "amount";
+              // render html now that correct secondary request order is set
+              this.isSecondaryRequestSortOrderLoaded = true;
             }
           }
 

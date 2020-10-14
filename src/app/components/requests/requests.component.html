@@ -115,27 +115,59 @@
           </h3>
 
           <!-- Propagate correct sort order to the requester client -->
-          <form [formGroup]="requesterSortOrderForm">
-            <div
-              class="requester-client-sort-order-radio-group"
-              [class.large-screen-child]="isLargeScreen"
-            >
-              <b>Requester queue sort order: </b>
+          <form
+            [formGroup]="requesterSortOrderForm"
+            *ngIf="isSecondaryRequestSortOrderLoaded"
+          >
+            <!-- Had to nest these inner divs like this to make the checked boxes work properly-->
+            <div *ngIf="secondaryRequestSortOrder === 'amount'">
+              <div
+                class="requester-client-sort-order-radio-group"
+                [class.large-screen-child]="isLargeScreen"
+              >
+                <b>Requester queue sort order: </b>
 
-              <div *ngFor="let sortOrder of requesterClientSortOrders">
-                <label class="container">
-                  <span *ngIf="sortOrder === 'modifiedOn'">Arrival</span>
-                  <span *ngIf="sortOrder === 'amount'">Price</span>
-                  <input
-                    type="radio"
-                    checked="checked"
-                    name="requesterClientSortOrder"
-                    [value]="sortOrder"
-                    formControlName="requesterClientSortOrder"
-                  />
-                  <span class="checkmark"></span>
-                </label>
-                <br />
+                <div *ngFor="let sortOrder of requesterClientSortOrders">
+                  <label class="container">
+                    <span *ngIf="sortOrder === 'modifiedOn'">Arrival</span>
+                    <span *ngIf="sortOrder === 'amount'">Price</span>
+
+                    <input
+                      type="radio"
+                      checked="checked"
+                      name="requesterClientSortOrder"
+                      [value]="sortOrder"
+                      formControlName="requesterClientSortOrder"
+                    />
+                    <span class="checkmark"></span>
+                  </label>
+                  <br />
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="secondaryRequestSortOrder === 'likes'">
+              <div
+                class="requester-client-sort-order-radio-group"
+                [class.large-screen-child]="isLargeScreen"
+              >
+                <b>Requester queue sort order: </b>
+
+                <div *ngFor="let sortOrder of requesterClientSortOrders">
+                  <label class="container">
+                    <span *ngIf="sortOrder === 'modifiedOn'">Arrival</span>
+                    <span *ngIf="sortOrder === 'likes'">Likes</span>
+                    <input
+                      type="radio"
+                      checked="checked"
+                      name="requesterClientSortOrder"
+                      [value]="sortOrder"
+                      formControlName="requesterClientSortOrder"
+                    />
+                    <span class="checkmark"></span>
+                  </label>
+                  <br />
+                </div>
               </div>
             </div>
           </form>
@@ -147,8 +179,8 @@
               [class.active]="acceptedOrder === 'modifiedOn'"
               (click)="setAcceptedOrder('modifiedOn')"
             >
-              <!-- sort by time goes here  -->
-
+              <!-- Sort by time goes here  -->
+              <!-- Default message when not sorting by time -->
               <span
                 class="center-text-and-icon-container"
                 *ngIf="acceptedOrder !== 'modifiedOn'"
@@ -194,11 +226,15 @@
               <span [hidden]="acceptedReverse">▼</span>
               <span [hidden]="!acceptedReverse">▲</span>
             </div> -->
+
+            <!-- Sorting controller for amount -->
             <div
               class="sort-item"
               [class.active]="acceptedOrder === 'amount'"
               (click)="setAcceptedOrder('amount')"
+              *ngIf="secondaryRequestSortOrder === 'amount'"
             >
+              <!-- Default message to display when sorting by time -->
               <span
                 class="center-text-and-icon-container"
                 *ngIf="acceptedOrder !== 'amount'"
@@ -231,7 +267,49 @@
                 ></span
               >
             </div>
+
+            <!-- Sorting controller for likes -->
+            <div
+              class="sort-item"
+              [class.active]="acceptedOrder === 'likes'"
+              (click)="setAcceptedOrder('likes')"
+              *ngIf="secondaryRequestSortOrder === 'likes'"
+            >
+              <!-- Default message to display when sorting by time -->
+              <span
+                class="center-text-and-icon-container"
+                *ngIf="acceptedOrder !== 'likes'"
+              >
+                <mat-icon
+                  class="align-self-center show-when-this-order-is-not-selected"
+                  color="accent"
+                  >thumb_up</mat-icon
+                >
+                <span
+                  class="show-when-this-order-is-not-selected align-self-center"
+                  >Sort by Likes
+                </span>
+              </span>
+
+              <span
+                *ngIf="acceptedReverse && acceptedOrder === 'likes'"
+                class="center-text-and-icon-container"
+                ><span class="align-self-center">Likes: Low to High</span
+                ><mat-icon class="align-self-center" color="accent"
+                  >swap_vert</mat-icon
+                ></span
+              >
+              <span
+                *ngIf="!acceptedReverse && acceptedOrder === 'likes'"
+                class="center-text-and-icon-container"
+                ><span class="align-self-center">Likes: High to Low</span
+                ><mat-icon class="align-self-center" color="accent"
+                  >swap_vert</mat-icon
+                ></span
+              >
+            </div>
           </div>
+
           <mat-list
             [class.large-screen-child]="isLargeScreen"
             *ngIf="acceptedOrder === 'modifiedOn'"
@@ -321,6 +399,52 @@
               </button>
             </app-request-detail>
           </mat-list>
+          <mat-list
+            [class.large-screen-child]="isLargeScreen"
+            *ngIf="acceptedOrder === 'likes'"
+          >
+            <app-request-detail
+              mat-list-item
+              [song]="request.song"
+              [artist]="request.artist"
+              [amount]="request.totalAmountToDisplay"
+              [status]="request.status"
+              [memo]="request?.memo"
+              [amountOfTopUps]="request.numberOfTopUps"
+              *ngFor="
+                let request of sortedAcceptedRequests
+                  | filterOriginalRequests
+                  | orderBy
+                    : ['numberOfTopUps', 'modifiedOn']
+                    : !acceptedReverse
+                    : 'case-insensitive';
+                index as i
+              "
+            >
+              <button
+                rejectButton
+                mat-button
+                class="request-button"
+                color="warn"
+                appDebounceClick
+                (debounceClick)="
+                  openRejectRequestDialog(request, 'acceptedRequests')
+                "
+              >
+                {{ t("reject") }}
+              </button>
+              <button
+                playNextButton
+                mat-flat-button
+                class="request-button"
+                color="primary"
+                appDebounceClick
+                (debounceClick)="playNext(request)"
+              >
+                {{ t("play next") }}
+              </button>
+            </app-request-detail>
+          </mat-list>
         </div>
       </ng-template>
     </mat-tab>
@@ -355,6 +479,7 @@
               [class.active]="pendingOrder === 'modifiedOn'"
               (click)="setPendingOrder('modifiedOn')"
             >
+              <!-- Default message when not sorting by time -->
               <span
                 class="center-text-and-icon-container"
                 *ngIf="pendingOrder !== 'modifiedOn'"
@@ -399,11 +524,15 @@
               <span [hidden]="pendingReverse">▼</span>
               <span [hidden]="!pendingReverse">▲</span>
             </div> -->
+
+            <!-- Sorting controller for amount -->
             <div
               class="sort-item"
               [class.active]="pendingOrder === 'amount'"
               (click)="setPendingOrder('amount')"
+              *ngIf="secondaryRequestSortOrder === 'amount'"
             >
+              <!-- Default message to display when sorting by time -->
               <span
                 class="center-text-and-icon-container"
                 *ngIf="pendingOrder !== 'amount'"

@@ -18,3 +18,49 @@ mat-toolbar {
 .hidden {
   visibility: hidden;
 }
+
+.event-title {
+  word-wrap: break-word;
+  width: 100%;
+  overflow-wrap: normal;
+  white-space: normal !important;
+  text-align: center;
+}
+
+.font-size-adjustment-small {
+  font-size: medium;
+}
+
+.font-size-adjustment-x-small {
+  font-size: medium;
+}
+
+@media only screen and (max-width: 769px) {
+  .font-size-adjustment-small {
+    font-size: medium;
+  }
+
+  .font-size-adjustment-x-small {
+    font-size: medium;
+  }
+}
+
+@media only screen and (max-width: 668px) {
+  .font-size-adjustment-small {
+    font-size: smaller;
+  }
+
+  .font-size-adjustment-x-small {
+    font-size: small;
+  }
+}
+
+@media only screen and (max-width: 376px) {
+  .font-size-adjustment-small {
+    font-size: small;
+  }
+
+  .font-size-adjustment-x-small {
+    font-size: x-small;
+  }
+}

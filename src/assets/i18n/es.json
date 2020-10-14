@@ -47,7 +47,7 @@
     "state": "State",
     "postal": "Postal Code",
     "country": "Country",
-    "website": "Website",
+    "website": "Website / Twitch Url",
     "venueWebsiteToolTip": "This should be the venue website or a link to participate virtually in the digital realm.",
     "createEvent": "Create Event",
     "editEvent": "Save Changes",

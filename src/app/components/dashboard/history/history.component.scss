@@ -147,7 +147,7 @@ table {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 200px;
+  margin-bottom: 20px;
 }
 
 @media screen and (min-width: 800px) {
@@ -172,6 +172,33 @@ table {
 .sort-item {
   // font-size: small;
   margin-right: 20px;
+}
+
+.mat-column-modifiedOn {
+  min-width: 79px;
+  padding-left: 14px !important;
+  padding-right: 5px;
+}
+
+.mat-column-song,
+.mat-column-artist,
+.mat-column-firstName,
+.mat-column-lastName,
+.mat-column-memo,
+.mat-column-amount {
+  padding-right: 5px;
+}
+
+@media screen and (max-width: 667px) {
+  .mat-column-modifiedOn,
+  .mat-column-song,
+  .mat-column-artist,
+  .mat-column-firstName,
+  .mat-column-lastName,
+  .mat-column-memo,
+  .mat-column-amount {
+    font-size: x-small;
+  }
 }
 
 @media screen and (min-width: 700px) {

@@ -13,10 +13,23 @@ import { Location } from "@angular/common";
 })
 export class HistoryComponent implements OnInit {
   completedRequests: any[];
+  tips: any[];
+
   earnings: number;
   displayedColumns: string[] = ["modifiedOn", "song", "artist", "amount"];
-  dataSource: MatTableDataSource<any>;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  displayedColumnsTips: string[] = [
+    "modifiedOn",
+    "firstName",
+    "lastName",
+    "memo",
+    "amount",
+  ];
+
+  requestsDataSource: MatTableDataSource<any>;
+  @ViewChild(MatSort, { static: false }) requestsSort: MatSort;
+
+  tipsDataSource: MatTableDataSource<any>;
+  @ViewChild("tipSort", { static: false }) tipsSort: MatSort;
   eventId: string;
   event: any;
   venue: any;
@@ -61,22 +74,33 @@ export class HistoryComponent implements OnInit {
     this.requestsService
       .getRequestsByEventId(eventId, "completed")
       .subscribe((requests: any) => {
-        this.completedRequests = requests.response.body;
-        this.completedRequests = this.completedRequests.filter(
+        this.completedRequests = requests.response.body.filter(
           (request: any) => {
             if (
-              request.amount === 0 &&
-              request.id !== request.originalRequestId
+              (request.amount === 0 &&
+                request.id !== request.originalRequestId) ||
+              request.isTip
             ) {
               return false;
             }
             return true;
           }
         );
+        this.tips = requests.response.body.filter((request: any) => {
+          if (!request.isTip) {
+            return false;
+          }
+          return true;
+        });
         this.calculateTotalEarnings(requests.response.body);
         // populates the data table and enables sort
-        this.dataSource = new MatTableDataSource(this.completedRequests);
-        this.dataSource.sort = this.sort;
+        this.requestsDataSource = new MatTableDataSource(
+          this.completedRequests
+        );
+        this.requestsDataSource.sort = this.requestsSort;
+
+        this.tipsDataSource = new MatTableDataSource(this.tips);
+        this.tipsDataSource.sort = this.tipsSort;
       });
   }
 
@@ -89,7 +113,8 @@ export class HistoryComponent implements OnInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.requestsDataSource.filter = filterValue.trim().toLowerCase();
+    this.tipsDataSource.filter = filterValue.trim().toLowerCase();
   }
 
   backClicked() {
