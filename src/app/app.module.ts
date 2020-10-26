@@ -79,6 +79,7 @@ import { ForgotPasswordComponent } from "./components/forgot-password/forgot-pas
 import { RedirectComponent } from "./components/redirect/redirect.component";
 import { CopyrightComponent } from "./components/copyright/copyright.component";
 import { FilterOriginalRequestsPipe } from "./pipes/filter-original-requests.pipe";
+import { GenericErrorModalComponent } from "./components/generic-error-modal/generic-error-modal.component";
 
 @NgModule({
   declarations: [
@@ -107,8 +108,10 @@ import { FilterOriginalRequestsPipe } from "./pipes/filter-original-requests.pip
     RedirectComponent,
     CopyrightComponent,
     FilterOriginalRequestsPipe,
+
+    GenericErrorModalComponent,
   ],
-  entryComponents: [ConfirmDialogComponent],
+  entryComponents: [ConfirmDialogComponent, GenericErrorModalComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

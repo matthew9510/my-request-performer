@@ -102,6 +102,18 @@
         </button>
       </div>
 
+      <button
+        *ngIf="stripeLinkComplete"
+        id="unlink"
+        mat-button
+        matTooltip="Clicking this button will unlink stripe from the My Request platform."
+        matTooltipPosition="below"
+        appDebounceClick
+        (debounceClick)="unlinkPerformerFromStripe()"
+      >
+        Disconnect Stripe
+      </button>
+
       <div
         class="centered-flex-box"
         *ngIf="stripeLinkInProgress && !stripeLinkComplete"
@@ -164,6 +176,18 @@
         </button>
       </div>
 
+      <div class="centered-flex-box">
+        <button
+          id="delete"
+          mat-button
+          matTooltip="Clicking this button will remove your personal data from our records, if a Stripe account is not linked."
+          matTooltipPosition="above"
+          appDebounceClick
+          (debounceClick)="deletePerformer()"
+        >
+          Delete Account
+        </button>
+      </div>
       <!-- commented out below code as these properties are not planned
 to be implemented at this time
  -->

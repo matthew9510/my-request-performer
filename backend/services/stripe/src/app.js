@@ -880,6 +880,66 @@ app.patch("/stripe/cancelPaymentIntent/:requestId", async function (
   }
 });
 
+// Capturing of a payment intent
+app.patch("/stripe/unlinkPerformer/:performerStripeId", async function (
+  req,
+  res,
+  next
+) {
+  const debug = req.query.debug === "true";
+  const performerStripeId = req.params.performerStripeId;
+  const { performerId, clientId } = req.body;
+
+  try {
+    const stripeDeauthorizeResponse = await stripe.oauth.deauthorize({
+      client_id: clientId,
+      stripe_user_id: performerStripeId,
+    });
+
+    if (debug) console.log(stripeDeauthorizeResponse); // logs previous stripeId
+
+    // If successful we should remove the stripeId property from the performer
+    const params = {
+      TableName: process.env.DYNAMODB_PERFORMERS_TABLE,
+      Key: {
+        id: performerId,
+      },
+      UpdateExpression: "remove stripeId",
+      ReturnValues: "ALL_NEW",
+    };
+    if (debug) console.log("Params for db update:\n", params);
+
+    // Note if table item is being updated then the result will be the new item
+    dynamoDb.update(params, function (err, result) {
+      if (debug) console.log(" in update subscribe Result:", result);
+      if (err) {
+        console.error(
+          "Unable to Update item. Error JSON:",
+          JSON.stringify(err, null, 2)
+        );
+      } else {
+        const response = {
+          statusCode: 200,
+          performer: result.Attributes,
+          message:
+            "Stripe Unlinked and UPDATE for record on performer table succeeded!",
+        };
+        if (debug) console.log("Response:\n", response);
+
+        res.json(response);
+      }
+    });
+  } catch (error) {
+    console.error(
+      "Could not deauthorize stripe for this performer",
+      performerId,
+      "\n",
+      error
+    );
+    res.status(400).json({ error });
+  }
+});
+
 /**********************
  *  Listen for requests
  **********************/

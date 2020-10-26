@@ -1,0 +1,28 @@
+<ng-container *transloco="let t" class="mat-app-background">
+  <h1 mat-dialog-title>Error Occurred</h1>
+  <mat-dialog-content>
+    <p>
+      {{ data.errorMessage }}
+    </p>
+    <p>
+      Click the <strong><span id="go-back">'Send Email'</span></strong> button
+      below to send an email to customer support to resolve this issue. Once you
+      have sent the email expect to receive an email within a timely manner.
+    </p>
+    <p>
+      Click the <strong>'Go Back'</strong> button after you have sent an email
+      requesting for assistance.
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeDialog()">
+      {{ t("confirm dialog cancel") }}
+    </button>
+
+    <a [href]="data.hrefValue">
+      <button mat-button color="primary">
+        Send Email
+      </button>
+    </a>
+  </mat-dialog-actions>
+</ng-container>

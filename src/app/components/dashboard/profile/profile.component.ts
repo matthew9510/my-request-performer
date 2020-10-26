@@ -9,8 +9,12 @@ import { StripeService } from "@services/stripe.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { translate } from "@ngneat/transloco";
 import { environment } from "@ENV";
-import { concatMap } from "rxjs/operators";
+import { concatMap, retry } from "rxjs/operators";
 import { HttpParams } from "@angular/common/http";
+import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
+import { GenericErrorModalComponent } from "../../generic-error-modal/generic-error-modal.component";
+import { MatDialog } from "@angular/material/dialog";
+
 @Component({
   selector: "app-profile",
   templateUrl: "./profile.component.html",
@@ -35,7 +39,8 @@ export class ProfileComponent implements OnInit {
     private stripeService: StripeService,
     private fb: FormBuilder,
     private breakpointObserver: BreakpointObserver,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -280,5 +285,248 @@ export class ProfileComponent implements OnInit {
           this.performerService.showEventsSnackBar = false;
         });
       });
+  }
+
+  unlinkPerformerFromStripe() {
+    // Prompt performer to confirm
+    const title = "Warning";
+    const message =
+      "Are you sure you want to disconnect your Stripe account from the My Request platform?";
+    const action = "Disconnect Stripe";
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: "300px",
+      autoFocus: false,
+      data: {
+        title,
+        message,
+        action,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      // If performer confirms
+      if (result) {
+        // Prepare payload to remove performer stripe link from My Request Platform
+        let performer: any = {};
+        Object.assign(performer, this.performerService.performer);
+        let payload = {
+          performerId: performer.id,
+          clientId: environment.stripeClient,
+        };
+
+        this.stripeService
+          .removePerformerStripeLink(performer.stripeId, payload)
+          .pipe(retry(1))
+          .subscribe(
+            (res: any) => {
+              if (res.statusCode === 200) {
+                // Reset component and service values to signify performer isn't
+                // linked with My Request stripe account anymore
+                this.performerService.performer = res.performer;
+                this.performerService.isStripeAccountLinked = false;
+                this.stripeLinkComplete = false;
+              }
+            },
+            (err) => {
+              // If error show modal to send email to customer support
+              console.log(err);
+
+              // Set up values of error modal component
+              let modalData: any = {
+                errorMessage:
+                  "There was a problem with disconnecting your Stripe account from the My Request platform.",
+              };
+              if (performer.firstName && performer.lastName) {
+                modalData.hrefValue =
+                  "mailto: myrequest-beta@softstackfactory.com?subject=Problem with Performer Unlinking their Stripe Account from the My Request Platform&body=Performer, " +
+                  performer.firstName +
+                  " " +
+                  performer.lastName +
+                  ", is not able to disconnect their Stripe account from the My request Platform and is requesting assistance. %0D%0A%0D%0APerformer Details:%0D%0APerformer Id: " +
+                  performer.id +
+                  "%0D%0APerformer Stripe Id: " +
+                  performer.stripeId +
+                  "%0D%0APerformer Email: " +
+                  this.authService.performerAuthState.user.attributes.email;
+              } else {
+                modalData.hrefValue =
+                  "mailto: myrequest-beta@softstackfactory.com?subject=Problem with Performer Unlinking their Stripe Account from the My Request Platform&body=A Performer is not able to disconnect their Stripe account from the My request Platform and is requesting assistance. %0D%0A%0D%0APerformer Details:%0D%0APerformer Id: " +
+                  performer.id +
+                  "%0D%0APerformer Stripe Id: " +
+                  performer.stripeId +
+                  "%0D%0APerformer Email: " +
+                  this.authService.performerAuthState.user.attributes.email;
+              }
+              // open modal to present error
+              this.dialog.open(GenericErrorModalComponent, {
+                width: "300px",
+                autoFocus: false,
+                data: modalData,
+              });
+            }
+          );
+      }
+    });
+  }
+
+  removePerformerPersonalInfoFromDb() {
+    let performer: any = {};
+    Object.assign(performer, this.performerService.performer);
+    performer.firstName = "Account deleted";
+    performer.lastName = "Account deleted";
+    performer.bio = "Account deleted";
+    performer.email = "Account deleted";
+    performer.endEventMessage = "Account deleted";
+    performer.instrumentOfChoice = "Account deleted";
+    performer.phone = "Account deleted";
+
+    this.performerService.updatePerformer(performer.id, performer).subscribe(
+      (res: any) => {
+        console.log(res);
+        // update performer
+        this.performerService.performer = res.response;
+
+        // Reset form to display view
+        this.profileForm.patchValue(this.performerService.performer);
+
+        let message = "Personal data deleted successfully";
+        let snackBarRef = this._snackBar.open(message, "Dismiss", {
+          duration: 3000,
+          verticalPosition: "top",
+        });
+
+        snackBarRef.afterDismissed().subscribe(() => {
+          // delete their cognito info
+          this.deleteCognitoAccount();
+        });
+      },
+      (err) => {
+        console.log(err);
+
+        // Refer back to original unmodified performer values
+        let performer = this.performerService.performer;
+        // Set up values of error modal component
+        let modalData: any = {
+          errorMessage:
+            "There was a problem with removing your personal data from the My Request platform.",
+          hrefValue:
+            "mailto: myrequest-beta@softstackfactory.com?subject=Problem Deleting Personal Data from the My Request Platform&body=Performer, " +
+            performer.firstName +
+            " " +
+            performer.lastName +
+            ", is not able to remove their personal data from the My request Platform and is requesting assistance. %0D%0A%0D%0APerformer Details:%0D%0APerformer Id: " +
+            performer.id +
+            "%0D%0APerformer Email: " +
+            this.authService.performerAuthState.user.attributes.email,
+        };
+
+        // open modal to present error
+        this.dialog.open(GenericErrorModalComponent, {
+          width: "300px",
+          autoFocus: false,
+          data: modalData,
+        });
+      }
+    );
+  }
+
+  deleteCognitoAccount() {
+    this.authService.deleteAccountFromCognito().subscribe(
+      (res) => {
+        let message =
+          "My Request account deleted successfully. Signing you out and redirecting you to the login page.";
+        let snackBarRef = this._snackBar.open(message, "Dismiss", {
+          duration: 5000,
+          verticalPosition: "top",
+        });
+
+        snackBarRef.afterDismissed().subscribe(() => {
+          //  Log out
+          this.authService.logout();
+        });
+      },
+      (err) => {
+        console.log(err);
+
+        // Refer back to original unmodified performer values
+        let performer = this.performerService.performer;
+        // Set up values of error modal component
+        let modalData: any = {
+          errorMessage:
+            "There was a problem with deleting your account from the My Request platform.",
+          hrefValue:
+            "mailto: myrequest-beta@softstackfactory.com?subject=Problem Deleting Performer from the My Request Platform&body=A Performer is not able to delete their account from the My request Platform and is requesting assistance. %0D%0A%0D%0APerformer Details:%0D%0APerformer Id: " +
+            localStorage.getItem("performerSub") +
+            "%0D%0APerformer Email: " +
+            this.authService.performerAuthState.user.attributes.email,
+        };
+
+        // open modal to present error
+        this.dialog.open(GenericErrorModalComponent, {
+          width: "300px",
+          autoFocus: false,
+          data: modalData,
+        });
+      }
+    );
+  }
+
+  deletePerformer() {
+    // Make sure that stripe is unlinked first
+    if (this.performerService.isStripeAccountLinked) {
+      // Show a modal to direct performer to disconnect their Stripe account
+      // with the My Request platform Stripe account first
+      const title = "Before Deleting Account";
+      const message =
+        "You must disconnect your Stripe account before you can delete your account.";
+      const action = "Disconnect Stripe";
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: "300px",
+        autoFocus: false,
+        data: {
+          title,
+          message,
+          action,
+        },
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        // If performer confirms
+        if (result) {
+          this.unlinkPerformerFromStripe();
+        }
+      });
+    } else {
+      // Prompt performer to confirm they want to delete account if they don't have a
+      // linked stripe account to the My Request Platform
+      const title = "Warning";
+      const message =
+        "Are you sure you want to delete your My Request platform account?";
+      const action = "Delete Account";
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        width: "300px",
+        autoFocus: false,
+        data: {
+          title,
+          message,
+          action,
+        },
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        // If performer confirms
+        if (result) {
+          // if the performer has saved any personal data with our db
+          if (this.performerService.isSignedUp) {
+            // remove performer personal data from db
+            // this method will also delete the cognito account
+            this.removePerformerPersonalInfoFromDb();
+          } else {
+            // delete their cognito info
+            this.deleteCognitoAccount();
+          }
+        }
+      });
+    }
   }
 }

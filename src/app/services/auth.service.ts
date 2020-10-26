@@ -140,7 +140,7 @@ export class AuthService {
         this.router.navigate(["login"]);
         return data;
       })
-      .catch((err) => err);
+      .catch((err) => console.log(err));
 
     // By doing this, you are revoking all the auth tokens(id token, access token and refresh token)
     // which means the user is signed out from all the devices
@@ -190,5 +190,15 @@ export class AuthService {
         phone_number: user.phone,
       },
     });
+  }
+
+  deleteAccountFromCognito() {
+    return this.http.delete(
+      `${
+        environment.authenticationUrl
+      }/deleteCognitoAccount/${localStorage.getItem(
+        "performerSub"
+      )}?debug=false`
+    );
   }
 }
