@@ -73,15 +73,21 @@ export class PerformerService {
     if (performer) {
       if (performer.statusCode === 200) {
         this.performer = performer.body.Item;
-
-        // Set variables for potential on-boarding process
-        this.isSignedUp = true;
-        this.showEventsSnackBar = false;
-
+        if (this.performer.signedEndUserLicenseAgreement) {
+          // Assign local storage
+          localStorage.setItem(
+            "performerSignedEndUserLicenseAgreement",
+            "true"
+          );
+        }
+        if (this.performer.firstName !== undefined) {
+          // Set variables for potential on-boarding process
+          this.isSignedUp = true;
+          this.showEventsSnackBar = false;
+        }
         if (this.performer.stripeId) {
           this.isStripeAccountLinked = true;
         }
-
       }
     }
   }

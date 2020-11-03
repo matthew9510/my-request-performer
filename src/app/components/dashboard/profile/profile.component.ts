@@ -14,6 +14,7 @@ import { HttpParams } from "@angular/common/http";
 import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
 import { GenericErrorModalComponent } from "../../generic-error-modal/generic-error-modal.component";
 import { MatDialog } from "@angular/material/dialog";
+import { EndUserLicenseAgreementComponent } from "../../end-user-license-agreement/end-user-license-agreement.component";
 
 @Component({
   selector: "app-profile",
@@ -67,63 +68,105 @@ export class ProfileComponent implements OnInit {
       "error_description"
     );
 
-    // Update form if the performer already exists in the db
+    // Note auth service will execute code along side this function on page reloads
+    // Update form values if the performer already exists in the db
     this.performerService.fetchPerformer().subscribe((res: any) => {
-      let performer = res.response;
-      if (performer) {
-        if (performer.statusCode === 200) {
-          // Update performer
-          this.performerService.performer = performer.body.Item;
+      // if performer has a db entry by signing Eula and maybe also submitting personal info
+      if (res.response) {
+        // Update performer service values for the app
+        this.performerService.performer = res.response.body.Item;
+        if (this.performerService.performer.firstName) {
+          this.performerService.isSignedUp = true;
+        }
 
-          // Set appropriate flags for component
-          if (this.performerService.performer.stripeId) {
-            this.performerService.isStripeAccountLinked = true;
+        // Assign local storage
+        localStorage.setItem("performerSignedEndUserLicenseAgreement", "true");
 
-            // setup showing appropriate html content for this component
-            this.stripeLinkComplete = true;
-          }
-          // fill in form fields
-          this.profileForm.patchValue(this.performerService.performer);
+        // Set appropriate flags for components
+        if (this.performerService.performer.stripeId) {
+          // Assign values to show appropriate html content for this component
+          this.performerService.isStripeAccountLinked = true;
+          this.stripeLinkComplete = true;
+        }
 
-          // set form to read only
+        // Fill in form fields with performer db and cognito data
+        this.profileForm.patchValue(this.performerService.performer);
+
+        // if the performer has filled in the form at least once before
+        if (this.performerService.performer.firstName) {
+          // Set form to read only
           this.profileForm.disable();
+        }
 
-          // Handling of stripe redirecting if performer hasn't signed up yet
-          if (
-            this.stripeState === this.performerService.performer.state &&
-            !this.performerService.isStripeAccountLinked
-          ) {
-            // show spinner stating link of stripe accounts in progress
-            this.stripeLinkInProgress = true;
+        // Handling of Stripe redirecting if performer hasn't signed up yet
+        if (
+          this.stripeState === this.performerService.performer.state &&
+          !this.performerService.isStripeAccountLinked
+        ) {
+          // Show spinner stating link of stripe accounts in progress
+          this.stripeLinkInProgress = true;
 
-            let performerId = localStorage.getItem("performerSub");
-            let performerState = this.performerService.performer.state;
+          // Setup local variables for http request
+          let performerId = localStorage.getItem("performerSub");
+          let performerState = this.performerService.performer.state;
 
-            if (this.stripeError === null) {
-              this.stripeService
-                .linkStripeAccounts(
-                  this.stripeState,
-                  this.stripeAuthCode,
-                  performerId,
-                  performerState
-                )
-                .subscribe((res: any) => {
-                  // Update performer
-                  this.performerService.performer = res.performer;
+          // If stripe didn't return an error
+          if (this.stripeError === null) {
+            this.stripeService
+              .linkStripeAccounts(
+                this.stripeState,
+                this.stripeAuthCode,
+                performerId,
+                performerState
+              )
+              .subscribe((res: any) => {
+                // Update performer service values
+                this.performerService.performer = res.performer;
+                this.performerService.isStripeAccountLinked = true;
 
-                  // Update app flags
-                  this.performerService.isStripeAccountLinked = true;
-
-                  // Stop spinner and present a message saying stripe account setup
-                  this.stripeLinkInProgress = false;
-                  this.stripeLinkComplete = true;
-                });
-            } else {
-              this.stripeLinkInProgress = false;
-            }
+                // Stop spinner and present a message saying stripe account setup
+                this.stripeLinkInProgress = false;
+                this.stripeLinkComplete = true;
+              });
+          }
+          // If stripe did return an error stop the spinner so that the performer can retry
+          else {
+            this.stripeLinkInProgress = false;
           }
         }
+      } else {
+        // if performer performer hasn't signed a eula yet, show EULA component
+        this.promptEndUserLicenseAgreement();
       }
+    });
+  }
+
+  promptEndUserLicenseAgreement() {
+    let dialogRef = this.dialog.open(EndUserLicenseAgreementComponent, {
+      width: "400px",
+      autoFocus: false,
+      data: {
+        dialogTitle: "End User License Agreement",
+      },
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result !== undefined) {
+        // show snack bar saying end user agreement successfully signed
+        let message = translate(
+          "profile.end-user-license-agreement-success-message"
+        );
+        let snackBarRef = this._snackBar.open(message, "Dismiss", {
+          duration: 4000,
+          verticalPosition: "top",
+        });
+
+        snackBarRef.afterDismissed().subscribe(() => {
+          snackBarRef = null;
+        });
+      }
+      dialogRef = null;
     });
   }
 
@@ -136,19 +179,21 @@ export class ProfileComponent implements OnInit {
   }
 
   prepCreationOfPerformer() {
-    // Create a performer db entry where the primary key (id) is AWS sub
-    let performer = {};
-    Object.assign(performer, this.profileForm.value, {
-      id: localStorage.getItem("performerSub"),
-    });
-    return this.performerService.createPerformer(performer);
+    // update performer db entry with new values
+    let performer: any = {};
+    Object.assign(
+      performer,
+      this.performerService.performer,
+      this.profileForm.value
+    );
+    return this.performerService.updatePerformer(performer.id, performer);
   }
 
   submit() {
     this.prepCreationOfPerformer().subscribe(
       (res: any) => {
         // save the performer
-        this.performerService.performer = res.record;
+        this.performerService.performer = res.response;
         this.performerService.isSignedUp = true;
 
         // redirect to events
@@ -166,7 +211,7 @@ export class ProfileComponent implements OnInit {
       .pipe(
         concatMap((performer: any) => {
           // save the performer in a the performer service
-          this.performerService.performer = performer.record;
+          this.performerService.performer = performer.response;
           this.performerService.isSignedUp = true;
 
           // Generate a state for stripe onboarding flow
@@ -372,17 +417,18 @@ export class ProfileComponent implements OnInit {
   removePerformerPersonalInfoFromDb() {
     let performer: any = {};
     Object.assign(performer, this.performerService.performer);
-    performer.firstName = "Account deleted";
-    performer.lastName = "Account deleted";
-    performer.bio = "Account deleted";
-    performer.email = "Account deleted";
-    performer.endEventMessage = "Account deleted";
-    performer.instrumentOfChoice = "Account deleted";
-    performer.phone = "Account deleted";
+    let defaultValue = "n/a";
+    performer.firstName = defaultValue;
+    performer.lastName = defaultValue;
+    performer.bio = defaultValue;
+    performer.email = defaultValue;
+    performer.endEventMessage = defaultValue;
+    performer.instrumentOfChoice = defaultValue;
+    performer.phone = defaultValue;
+    performer.isAccountDeleted = true;
 
     this.performerService.updatePerformer(performer.id, performer).subscribe(
       (res: any) => {
-        console.log(res);
         // update performer
         this.performerService.performer = res.response;
 
@@ -391,7 +437,7 @@ export class ProfileComponent implements OnInit {
 
         let message = "Personal data deleted successfully";
         let snackBarRef = this._snackBar.open(message, "Dismiss", {
-          duration: 3000,
+          duration: 2000,
           verticalPosition: "top",
         });
 
@@ -517,7 +563,10 @@ export class ProfileComponent implements OnInit {
         // If performer confirms
         if (result) {
           // if the performer has saved any personal data with our db
-          if (this.performerService.isSignedUp) {
+          if (
+            this.performerService.isSignedUp ||
+            this.performerService.performer.signedEndUserLicenseAgreement
+          ) {
             // remove performer personal data from db
             // this method will also delete the cognito account
             this.removePerformerPersonalInfoFromDb();
