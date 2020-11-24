@@ -6,6 +6,10 @@
   flex-direction: column;
   text-align: center;
 
+  span.warning {
+    color: mat-color($app-accent);
+  }
+
   mat-form-field {
     max-width: 500px;
     width: 90%;

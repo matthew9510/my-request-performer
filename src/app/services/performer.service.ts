@@ -80,8 +80,9 @@ export class PerformerService {
             "true"
           );
         }
-        if (this.performer.firstName !== undefined) {
-          // Set variables for potential on-boarding process
+        // Set variables for potential on-boarding process checked in auth service
+        // flow for if performer signed eula but hasn't entered personal info and app refreshes
+        if (this.performer.firstName) {
           this.isSignedUp = true;
           this.showEventsSnackBar = false;
         }

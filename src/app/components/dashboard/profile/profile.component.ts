@@ -75,8 +75,16 @@ export class ProfileComponent implements OnInit {
       if (res.response) {
         // Update performer service values for the app
         this.performerService.performer = res.response.body.Item;
+
+        // Fill in form fields with performer db and cognito data
+        this.profileForm.patchValue(this.performerService.performer);
+
+        // if the performer has filled in the form at least once before
         if (this.performerService.performer.firstName) {
+          // set performer signed up flag for app
           this.performerService.isSignedUp = true;
+          // Set form to read only
+          this.profileForm.disable();
         }
 
         // Assign local storage
@@ -87,15 +95,6 @@ export class ProfileComponent implements OnInit {
           // Assign values to show appropriate html content for this component
           this.performerService.isStripeAccountLinked = true;
           this.stripeLinkComplete = true;
-        }
-
-        // Fill in form fields with performer db and cognito data
-        this.profileForm.patchValue(this.performerService.performer);
-
-        // if the performer has filled in the form at least once before
-        if (this.performerService.performer.firstName) {
-          // Set form to read only
-          this.profileForm.disable();
         }
 
         // Handling of Stripe redirecting if performer hasn't signed up yet
@@ -212,7 +211,6 @@ export class ProfileComponent implements OnInit {
         concatMap((performer: any) => {
           // save the performer in a the performer service
           this.performerService.performer = performer.response;
-          this.performerService.isSignedUp = true;
 
           // Generate a state for stripe onboarding flow
           return this.stripeService.createState(
