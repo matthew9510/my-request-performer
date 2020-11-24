@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { AuthService } from "@services/auth.service";
 import { PerformerService } from "@services/performer.service";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "app-end-user-license-agreement",
@@ -21,6 +22,9 @@ export class EndUserLicenseAgreementComponent implements OnInit {
   loading = false;
   showSubmitErrorMessage = false;
   submitErrorMessage: string;
+  appEmail: string;
+  landingPageUrl: string;
+
   constructor(
     public dialogRef: MatDialogRef<EndUserLicenseAgreementComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -30,6 +34,8 @@ export class EndUserLicenseAgreementComponent implements OnInit {
 
   ngOnInit() {
     this.title = this.data.dialogTitle;
+    this.appEmail = environment.appEmail;
+    this.landingPageUrl = environment.landingPageUrl;
   }
 
   submitHandler() {

@@ -1,7 +1,9 @@
 export const environment = {
   production: true,
+  landingPageUrl: "https://myrequest.live",
   frontendUrl: "https://performer.myrequest.live",
   requesterUrl: "https://app.myrequest.live",
+  appEmail: "help@ssflabs.com",
   authenticationUrl:
     "https://sewfv6bkl2.execute-api.us-west-2.amazonaws.com/prod/authentication",
   eventsUrl:

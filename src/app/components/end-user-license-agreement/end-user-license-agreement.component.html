@@ -30,9 +30,9 @@
         discretion. If SSFLabs makes any material changes to the EULA terms, it
         may notify you by email or posting a notice on
         <strong
-          ><a href="https://myrequest.live" target="_blank"
-            >MyRequest.live</a
-          ></strong
+          ><a [href]="landingPageUrl" href="" target="_blank">{{
+            landingPageUrl
+          }}</a></strong
         >
         (“Website”).
       </p>
@@ -74,8 +74,8 @@
         The Product includes certain code and libraries licensed to us by third
         parties, including open source software (“OSS“) as listed at
         <strong
-          ><a href="https://myrequest.live/Dependencies/" target="_blank"
-            >MyRequest.live/Dependencies/</a
+          ><a [href]="landingPageUrl + '/Dependencies/'" target="_blank"
+            >{{ landingPageUrl }}/Dependencies/</a
           ></strong
         >
         along with the applicable OSS license. Your right to use such OSS shall
@@ -206,7 +206,7 @@
         All such data and information will be collected and used by SSFLabs in
         accordance with our
         <strong
-          ><a href="https://myrequest.live/PrivacyPolicy/" target="_blank"
+          ><a [href]="landingPageUrl + '/PrivacyPolicy/'" target="_blank"
             >Privacy Policy</a
           ></strong
         >, which you acknowledge.
@@ -391,7 +391,11 @@
         below. Should You wish to terminate the EULA, You are required to
         provide 14 days’ notice to SSFLabs by sending an email with subject line
         “EULA Termination” to
-        <strong><a href="mailto:help@SSFLabs.net">help@SSFLabs.net</a></strong>
+        <strong
+          ><a [href]="'mailto:' + appEmail + '?subject=EULA Termination'">{{
+            appEmail
+          }}</a></strong
+        >
         and specifically mention the Product you are Using.
       </p>
       <p>
@@ -415,7 +419,9 @@
       <p>
         We may identify you as a SSFLabs customer in our promotional materials.
         You may request that we stop doing so by submitting an email to
-        <strong><a href="mailto:help@SSFLabs.net">help@SSFLabs.net</a></strong>
+        <strong
+          ><a [href]="'mailto:' + appEmail">{{ appEmail }}</a></strong
+        >
         at any time.
       </p>
 
@@ -478,7 +484,8 @@
       <p>
         Please send any feedback and suggestions that You have for the Product
         to
-        <strong><a href="mailto:help@SSFLabs.net">help@SSFLabs.net</a></strong
+        <strong
+          ><a [href]="'mailto:' + appEmail">{{ appEmail }}</a></strong
         >. You agree that SSFLabs is at liberty to use and incorporate those
         feedback and suggestions in the Product without affecting its rights and
         title in the Product.

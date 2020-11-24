@@ -5,6 +5,7 @@ import { AuthService } from "@services/auth.service";
 import { CognitoUser } from "@aws-amplify/auth";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "app-login",
@@ -14,6 +15,8 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 export class LoginComponent implements OnInit {
   hide: boolean = true; // displaying password flag
   isInvalidCredentials: boolean = false; // flag to present credentials error to users
+  appEmail: string;
+
   constructor(
     public auth: AuthService,
     private router: Router,
@@ -21,6 +24,7 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.appEmail = environment.appEmail;
     if (this.auth.isResetPasswordSuccessful === true) {
       let message = "Password changed successfully";
       let snackBarRef = this._snackBar.open(message, "Dismiss", {
