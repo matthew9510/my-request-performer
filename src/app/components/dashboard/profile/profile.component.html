@@ -78,15 +78,14 @@
         <input matInput formControlName="phone" />
       </mat-form-field>
 
-      <br />
+      <!-- Form error message -->
+      <div *ngIf="profileForm.invalid">
+        <p class="error-message">
+          {{ t("requiredFormFieldsMessage") }}
+        </p>
+      </div>
 
-      <p *ngIf="profileForm.invalid" class="error-message">
-        {{ t("requiredFormFieldsMessage") }}
-      </p>
-
-      <br *ngIf="editProfile === true || !performerService.isSignedUp" />
-
-      <div id="fab-button-wrapper">
+      <div *ngIf="editProfile === true || !performerService.isSignedUp">
         <button
           *ngIf="editProfile === true"
           mat-fab
@@ -110,35 +109,11 @@
         >
           <span class="fab-button-text">{{ t("submit") }}</span>
         </button>
-
-        <!-- <p>!performerService.isSignedUp {{ !performerService.isSignedUp }}</p>
-        <p>profileForm.invalid: {{ profileForm.invalid }}</p> -->
+        <br />
       </div>
 
-      <br *ngIf="editProfile === true || !performerService.isSignedUp" />
-
-      <div *ngIf="stripeLinkComplete">
-        <p class="stripe-font">
-          Stripe Account Id: {{ performerService.performer?.stripeId }}
-        </p>
-
-        <button
-          mat-fab
-          color="accent"
-          type="submit"
-          class="extended-fab-button"
-        >
-          <span class="fab-button-text centered-flex-box"
-            ><a
-              href="https://dashboard.stripe.com/login"
-              target="_blank"
-              id="stripe-dashboard"
-              >Stripe Dashboard </a
-            ><mat-icon class="redirect-icon">open_in_new</mat-icon></span
-          >
-        </button>
-      </div>
-
+      <br />
+      <!-- If Stripe account is not linked or is in the process of linking -->
       <div
         class="centered-flex-box"
         *ngIf="stripeLinkInProgress && !stripeLinkComplete"
@@ -171,19 +146,42 @@
         accept paid requests
       </p>
 
-      <br *ngIf="stripeLinkComplete" />
+      <!-- If stripe link is connected show account info and dashboard button -->
+      <div *ngIf="stripeLinkComplete">
+        <br />
+        <p class="stripe-font">
+          Stripe Account Id: {{ performerService.performer?.stripeId }}
+        </p>
 
-      <button
-        *ngIf="stripeLinkComplete"
-        id="unlink"
-        mat-button
-        matTooltip="Clicking this button will unlink stripe from the My Request platform."
-        matTooltipPosition="below"
-        appDebounceClick
-        (debounceClick)="unlinkPerformerFromStripe()"
-      >
-        Disconnect Stripe
-      </button>
+        <button
+          mat-fab
+          color="accent"
+          type="submit"
+          class="extended-fab-button"
+        >
+          <span class="fab-button-text centered-flex-box"
+            ><a
+              href="https://dashboard.stripe.com/login"
+              target="_blank"
+              id="stripe-dashboard"
+              >Stripe Dashboard </a
+            ><mat-icon class="redirect-icon">open_in_new</mat-icon></span
+          >
+        </button>
+
+        <br />
+
+        <button
+          id="unlink"
+          mat-button
+          matTooltip="Clicking this button will unlink stripe from the My Request platform."
+          matTooltipPosition="below"
+          appDebounceClick
+          (debounceClick)="unlinkPerformerFromStripe()"
+        >
+          Disconnect Stripe
+        </button>
+      </div>
 
       <br />
       <br />

@@ -1,0 +1,12 @@
+mat-dialog-actions.button-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+mat-dialog-actions.button-container-no-justification {
+  display: flex;
+}
+
+button.smaller-font {
+  font-size: x-small;
+}

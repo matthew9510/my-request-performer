@@ -1,15 +1,29 @@
 <ng-container *transloco="let t" class="mat-app-background">
   <h1 mat-dialog-title>{{ data.title }}</h1>
   <mat-dialog-content>{{ data.message }}</mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="closeDialog()">
+  <mat-dialog-actions
+    [class.button-container]="!data.secondaryAction"
+    [class.button-container-no-justification]="data.secondaryAction"
+  >
+    <button *ngIf="!data.secondaryAction" mat-button (click)="closeDialog()">
       {{ t("confirm dialog cancel") }}
     </button>
+
+    <button
+      *ngIf="data.secondaryAction"
+      mat-button
+      (click)="closeDialog()"
+      [class.smaller-font]="data.secondaryAction"
+    >
+      {{ data.secondaryAction }}
+    </button>
+
     <button
       mat-button
       appDebounceClick
       (debounceClick)="confirmDialog()"
       color="warn"
+      [class.smaller-font]="data.secondaryAction"
     >
       {{ data.action }}
     </button>

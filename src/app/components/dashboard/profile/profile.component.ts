@@ -368,6 +368,34 @@ export class ProfileComponent implements OnInit {
                 this.performerService.performer = res.performer;
                 this.performerService.isStripeAccountLinked = false;
                 this.stripeLinkComplete = false;
+
+                // Implement modal to ask if the performer wants to delete their account after
+                // Prompt performer to confirm
+                const title = "Continue and Delete Account?";
+                const message =
+                  "We noticed you unlinked your Stripe account, while you're at it would you like to delete your My Request Performer account along with your personal information?";
+                const action = "Delete Account";
+                const secondaryAction = "Don't Delete Account";
+                const dialogDeleteUserRef = this.dialog.open(
+                  ConfirmDialogComponent,
+                  {
+                    width: "300px",
+                    autoFocus: false,
+                    data: {
+                      title,
+                      message,
+                      action,
+                      secondaryAction,
+                    },
+                  }
+                );
+
+                dialogDeleteUserRef.afterClosed().subscribe((result) => {
+                  // if performer confirms deleting account
+                  if (result) {
+                    this.deletePerformer();
+                  }
+                });
               }
             },
             (err) => {
@@ -545,7 +573,7 @@ export class ProfileComponent implements OnInit {
       // linked stripe account to the My Request Platform
       const title = "Warning";
       const message =
-        "Are you sure you want to delete your My Request platform account?";
+        "Are you sure you want to delete your My Request platform account along with your personal data?";
       const action = "Delete Account";
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: "300px",

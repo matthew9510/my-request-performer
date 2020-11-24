@@ -32,11 +32,6 @@
     font-weight: 500;
   }
 
-  #fab-button-wrapper {
-    margin-bottom: 2%;
-    margin-top: 1%;
-  }
-
   mat-form-field {
     padding-bottom: 1%;
   }
@@ -74,8 +69,6 @@
 
 button.stripe-button {
   text-align: center;
-  margin-top: 1%;
-  margin-bottom: 2%;
   color: mat-color($app-primary);
 }
 
