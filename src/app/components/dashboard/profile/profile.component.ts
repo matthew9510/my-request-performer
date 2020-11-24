@@ -581,6 +581,7 @@ export class ProfileComponent implements OnInit {
       const message =
         "Are you sure you want to delete your My Request platform account along with your personal data?";
       const action = "Delete Account";
+      const secondaryAction = "Cancel";
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: "300px",
         autoFocus: false,
@@ -588,6 +589,7 @@ export class ProfileComponent implements OnInit {
           title,
           message,
           action,
+          secondaryAction,
         },
       });
 
