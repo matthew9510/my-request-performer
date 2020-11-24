@@ -330,12 +330,13 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  unlinkPerformerFromStripe() {
+  unlinkPerformerFromStripe(fromDeleteAccountFlow: boolean) {
     // Prompt performer to confirm
     const title = "Warning";
     const message =
       "Are you sure you want to disconnect your Stripe account from the My Request platform?";
     const action = "Disconnect Stripe";
+    const secondaryAction = "Cancel";
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: "300px",
       autoFocus: false,
@@ -343,6 +344,7 @@ export class ProfileComponent implements OnInit {
         title,
         message,
         action,
+        secondaryAction,
       },
     });
 
@@ -371,31 +373,33 @@ export class ProfileComponent implements OnInit {
 
                 // Implement modal to ask if the performer wants to delete their account after
                 // Prompt performer to confirm
-                const title = "Continue and Delete Account?";
-                const message =
-                  "We noticed you unlinked your Stripe account, while you're at it would you like to delete your My Request Performer account along with your personal information?";
-                const action = "Delete Account";
-                const secondaryAction = "Don't Delete Account";
-                const dialogDeleteUserRef = this.dialog.open(
-                  ConfirmDialogComponent,
-                  {
-                    width: "300px",
-                    autoFocus: false,
-                    data: {
-                      title,
-                      message,
-                      action,
-                      secondaryAction,
-                    },
-                  }
-                );
+                if (fromDeleteAccountFlow) {
+                  const title = "Continue and Delete Account?";
+                  const message =
+                    "We noticed you unlinked your Stripe account, while you're at it would you like to delete your My Request Performer account along with your personal information?";
+                  const action = "Delete Account";
+                  const secondaryAction = "Cancel";
+                  const dialogDeleteUserRef = this.dialog.open(
+                    ConfirmDialogComponent,
+                    {
+                      width: "300px",
+                      autoFocus: false,
+                      data: {
+                        title,
+                        message,
+                        action,
+                        secondaryAction,
+                      },
+                    }
+                  );
 
-                dialogDeleteUserRef.afterClosed().subscribe((result) => {
-                  // if performer confirms deleting account
-                  if (result) {
-                    this.deletePerformer();
-                  }
-                });
+                  dialogDeleteUserRef.afterClosed().subscribe((result) => {
+                    // if performer confirms deleting account
+                    if (result) {
+                      this.deletePerformer();
+                    }
+                  });
+                }
               }
             },
             (err) => {
@@ -552,6 +556,7 @@ export class ProfileComponent implements OnInit {
       const message =
         "You must disconnect your Stripe account before you can delete your account.";
       const action = "Disconnect Stripe";
+      const secondaryAction = "Cancel";
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         width: "300px",
         autoFocus: false,
@@ -559,13 +564,14 @@ export class ProfileComponent implements OnInit {
           title,
           message,
           action,
+          secondaryAction,
         },
       });
 
       dialogRef.afterClosed().subscribe((result) => {
         // If performer confirms
         if (result) {
-          this.unlinkPerformerFromStripe();
+          this.unlinkPerformerFromStripe(true);
         }
       });
     } else {
