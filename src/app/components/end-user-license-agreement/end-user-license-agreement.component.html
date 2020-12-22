@@ -516,10 +516,19 @@
       <p class="is-error">{{ submitErrorMessage }}</p>
     </div>
 
-    <div class="dialog-button">
+    <div class="dialog-buttons">
+      <!-- cancel to logout button -->
       <button
-        class="form-submit-button"
-        id="paid"
+        mat-raised-button
+        color="accent"
+        [disabled]="loading === true"
+        appDebounceClick
+        (debounceClick)="cancelHandler()"
+      >
+        Cancel
+      </button>
+
+      <button
         mat-raised-button
         color="primary"
         type="submit"

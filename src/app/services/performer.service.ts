@@ -37,9 +37,9 @@ export class PerformerService {
     );
   }
 
-  createPerformer(performer: Object) {
+  createPerformer(performer: Object, performerIdentityId: string) {
     return this.http.post(
-      environment.performersUrl,
+      environment.performersUrl + "?performerIdentityId=" + performerIdentityId,
       performer,
       this.createHeaders()
     );

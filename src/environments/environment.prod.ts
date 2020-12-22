@@ -21,6 +21,7 @@ export const environment = {
   aws_cognito_region: "us-west-2",
   aws_user_pools_id: "us-west-2_2rPpXcag5",
   aws_user_pools_web_client_id: "koejhfmj4bqeou1eem9bl0vlo",
+  cognitoIdentityId: "us-west-2:47ab4507-103e-4704-92fc-2c012e8b4147",
   cognitoIdentityIdPrefix: "aws.cognito.identity-id.",
   stripeClient: "ca_FnxwgWToL6tUSWyD23vW7b7aBBZQiLvS",
   stripeRedirectLink: "https://performer.myrequest.ssflabs.net/profile",

@@ -1,6 +1,6 @@
 service: requests
 app: my-request
-org: ssfdev
+# org: ssfdev
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
@@ -17,6 +17,7 @@ provider:
     STAGE: ${self:provider.stage}
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
+    STAGE: ${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -38,7 +39,7 @@ functions:
           method: ANY
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
-    role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
+    role: arn:aws:iam::418615587574:role/requests-iot-pub
 
 resources:
   Resources:

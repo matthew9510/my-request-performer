@@ -9,6 +9,8 @@ import {
 import { AuthService } from "@services/auth.service";
 import { PerformerService } from "@services/performer.service";
 import { environment } from "../../../environments/environment";
+import { MatDialog } from "@angular/material/dialog";
+import { retry } from "rxjs/operators";
 
 @Component({
   selector: "app-end-user-license-agreement",
@@ -29,13 +31,21 @@ export class EndUserLicenseAgreementComponent implements OnInit {
     public dialogRef: MatDialogRef<EndUserLicenseAgreementComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public performerService: PerformerService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
     this.title = this.data.dialogTitle;
     this.appEmail = environment.appEmail;
     this.landingPageUrl = environment.landingPageUrl;
+  }
+
+  cancelHandler() {
+    // close this dialog spun up from profile component
+    this.dialogRef.close();
+    // Log user out if they can't or don't want to sign eula
+    this.authService.logout();
   }
 
   submitHandler() {
@@ -53,27 +63,39 @@ export class EndUserLicenseAgreementComponent implements OnInit {
       phone: performerAwsData.phone_number,
     };
 
-    // save that performer accepts eula in db
-    this.performerService.createPerformer(payload).subscribe(
-      (res: any) => {
-        // Assign performerService values
-        this.performerService.performer = res.record;
+    // save performer eula signature in db and attach Aws IOT permissions
+    this.performerService
+      .createPerformer(payload, this.authService.performerIdentityId)
+      .pipe(retry(1))
+      .subscribe(
+        (res: any) => {
+          // Assign performerService values
+          this.performerService.performer = res.record;
 
-        //Assign local storage
-        localStorage.setItem("performerSignedEndUserLicenseAgreement", "true");
+          //Assign local storage
+          localStorage.setItem(
+            "performerSignedEndUserLicenseAgreement",
+            "true"
+          );
 
-        // Hide spinner
-        this.loading = false;
+          // Hide spinner
+          this.loading = false;
 
-        // Close the dialog
-        this.dialogRef.close(true);
-      },
-      (err) => {
-        this.showSubmitErrorMessage = true;
-        this.submitErrorMessage = "Error submitting try again.";
-        this.loading = false;
-        console.error(err);
-      }
-    );
+          // Close the dialog
+          this.dialogRef.close(true);
+        },
+        (err: any) => {
+          // update component flags
+          this.loading = false;
+
+          // set component flags to present that an error occurred to user
+          this.showSubmitErrorMessage = true;
+          this.submitErrorMessage =
+            "Error submitting, please try again in a few minutes.";
+
+          // log error incase user is curious about opening console
+          console.log(err.error.message);
+        }
+      );
   }
 }

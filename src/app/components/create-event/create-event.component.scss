@@ -82,3 +82,7 @@ p.performer-not-signed-up-with-stripe-prompt {
     background-color: mat-color($app-accent);
   }
 }
+
+p#submission-error {
+  color: $warn;
+}

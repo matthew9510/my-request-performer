@@ -220,6 +220,10 @@
           </mat-error>
         </mat-form-field>
 
+        <p id="submission-error" *ngIf="submissionError">
+          Error occurred please try submitting in a few minutes
+        </p>
+
         <div class="stepper-nav-buttons">
           <button
             mat-button

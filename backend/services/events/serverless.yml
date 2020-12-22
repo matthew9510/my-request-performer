@@ -19,6 +19,7 @@ provider:
   environment:
     DYNAMODB_TABLE: ${self:app}-${self:service}-${self:provider.stage}
     DYNAMODB_REQUESTS_TABLE: my-request-requests-${self:provider.stage}
+    STAGE: ${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -52,7 +53,7 @@ functions:
           #     - X-Amz-User-Agent
     layers:
       - arn:aws:lambda:us-west-2:418615587574:layer:my-request-libraries:4
-    role: arn:aws:iam::418615587574:role/events-dev-us-west-2-lambdaRole
+    role: arn:aws:iam::418615587574:role/requests-iot-pub
 
 resources:
   Resources:

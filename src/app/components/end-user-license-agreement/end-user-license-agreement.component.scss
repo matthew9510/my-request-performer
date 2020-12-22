@@ -14,14 +14,11 @@ p.end-user-license-agreement-accept-prompt {
   color: $accent;
 }
 
-div.dialog-button {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 3%;
-}
-
-button.form-submit-button {
+div.dialog-buttons {
   margin-top: 2%;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 3%;
 }
 
 .hide {
