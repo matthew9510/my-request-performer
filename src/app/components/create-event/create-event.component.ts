@@ -65,6 +65,7 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
     "10:00 PM",
     "11:00 PM",
   ];
+  submissionError: boolean = false;
 
   // for setting autofocus on inputs
   private targetId = "input0";
@@ -252,11 +253,12 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
 
   // add upload image later
   createEvent() {
+    // if we are retrying to submit event after error prompt
+    this.submissionError = false;
     // Create entry in venue table
     this.venueService.addVenue(this.venueForm.value).subscribe(
       (res: any) => {
         let venueId = res.record.id;
-
         // create a event object
         let event = this.prepareEvent(venueId);
 
@@ -271,11 +273,13 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
           },
           (err) => {
             console.error("Couldn't create event", err);
+            this.submissionError = true;
           }
         );
       },
-      (err) => {
-        console.error("Couldn't create venue", err);
+      (err: any) => {
+        this.submissionError = true;
+        console.error("Couldn't create venue", err.message);
       }
     );
   }
@@ -283,8 +287,12 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
   updateEvent() {
     // need to resubmit the venue
     // only do this if edited
+
+    // if we are retrying to submit event after error prompt
+    this.submissionError = false;
+
     let venueId = this.eventToClone.venueId;
-    if (this.isEdited()) {
+    if (this.isVenueEdited()) {
       this.venueForm.value.id = venueId;
       this.venueService
         .updateVenue(this.venueForm.value)
@@ -298,10 +306,11 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
               this.performerService.eventCreatedMessage =
                 "Success! Your event was changed.";
               // redirect to event overview for the new event
-              this.router.navigate([`/event-overview/${res.response.id}`]);
+              this.router.navigate([`/event-overview/${res.record.id}`]);
             },
             (err) => {
-              console.error("Couldn't create event", err);
+              console.error("Couldn't update event", err);
+              this.submissionError = true;
             }
           );
         });
@@ -315,17 +324,18 @@ export class CreateEventComponent implements OnInit, AfterViewInit {
           this.performerService.eventCreatedMessage =
             "Success! Your event was changed.";
           // redirect to event overview for the new event
-          this.router.navigate([`/event-overview/${res.response.id}`]);
+          this.router.navigate([`/event-overview/${res.record.id}`]);
         },
         (err: any) => {
-          console.error("Couldn't create event", err);
+          console.error("Couldn't update event", err);
+          this.submissionError = true;
         }
       );
     }
   }
 
   // Helper function to see if venue is updated
-  isEdited() {
+  isVenueEdited() {
     // returns true if the form has been altered
     let isAltered = false;
     let venueFieldNames = Object.keys(this.venueForm.value);

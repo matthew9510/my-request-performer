@@ -4,8 +4,12 @@
 
 export const environment = {
   production: false,
+  landingPageUrl: "https://dev.myrequest.live",
   frontendUrl: "https://dev.performer.myrequest.live",
   requesterUrl: "https://dev.app.myrequest.live",
+  appEmail: "help@ssflabs.com",
+  authenticationUrl:
+    "https://672grsax52.execute-api.us-west-2.amazonaws.com/dev/authentication",
   eventsUrl:
     "https://e37h0xjzll.execute-api.us-west-2.amazonaws.com/dev/events",
   requestsUrl:
@@ -20,6 +24,7 @@ export const environment = {
   aws_cognito_region: "us-west-2",
   aws_user_pools_id: "us-west-2_7vXlPMZyi",
   aws_user_pools_web_client_id: "24so57n8lsf569hgkdphao17vj",
+  cognitoIdentityId: "us-west-2:97d3391d-18c4-40ec-9b8e-aede305849f9",
   cognitoIdentityIdPrefix: "aws.cognito.identity-id.",
   stripeClient: "ca_FnxwvPOnx2EiFJgVVnPWNJsneZMfJkFU",
   stripeRedirectLink: "https://develop.d3ff8wrh2zwja6.amplifyapp.com/profile",

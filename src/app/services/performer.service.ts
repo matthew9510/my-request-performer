@@ -37,9 +37,9 @@ export class PerformerService {
     );
   }
 
-  createPerformer(performer: Object) {
+  createPerformer(performer: Object, performerIdentityId: string) {
     return this.http.post(
-      environment.performersUrl,
+      environment.performersUrl + "?performerIdentityId=" + performerIdentityId,
       performer,
       this.createHeaders()
     );
@@ -73,15 +73,22 @@ export class PerformerService {
     if (performer) {
       if (performer.statusCode === 200) {
         this.performer = performer.body.Item;
-
-        // Set variables for potential on-boarding process
-        this.isSignedUp = true;
-        this.showEventsSnackBar = false;
-
+        if (this.performer.signedEndUserLicenseAgreement) {
+          // Assign local storage
+          localStorage.setItem(
+            "performerSignedEndUserLicenseAgreement",
+            "true"
+          );
+        }
+        // Set variables for potential on-boarding process checked in auth service
+        // flow for if performer signed eula but hasn't entered personal info and app refreshes
+        if (this.performer.firstName) {
+          this.isSignedUp = true;
+          this.showEventsSnackBar = false;
+        }
         if (this.performer.stripeId) {
           this.isStripeAccountLinked = true;
         }
-
       }
     }
   }

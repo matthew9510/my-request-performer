@@ -79,6 +79,9 @@ import { ForgotPasswordComponent } from "./components/forgot-password/forgot-pas
 import { RedirectComponent } from "./components/redirect/redirect.component";
 import { CopyrightComponent } from "./components/copyright/copyright.component";
 import { FilterOriginalRequestsPipe } from "./pipes/filter-original-requests.pipe";
+import { GenericErrorModalComponent } from "./components/generic-error-modal/generic-error-modal.component";
+import { EndUserLicenseAgreementComponent } from "./components/end-user-license-agreement/end-user-license-agreement.component";
+import { CustomScrollDirective } from './directives/custom-scroll.directive';
 
 @NgModule({
   declarations: [
@@ -107,8 +110,18 @@ import { FilterOriginalRequestsPipe } from "./pipes/filter-original-requests.pip
     RedirectComponent,
     CopyrightComponent,
     FilterOriginalRequestsPipe,
+
+    GenericErrorModalComponent,
+
+    EndUserLicenseAgreementComponent,
+
+    CustomScrollDirective,
   ],
-  entryComponents: [ConfirmDialogComponent],
+  entryComponents: [
+    ConfirmDialogComponent,
+    GenericErrorModalComponent,
+    EndUserLicenseAgreementComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

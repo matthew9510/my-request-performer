@@ -2,7 +2,7 @@
   <div class="personal-info-container">
     <p *ngIf="performerService.isSignedUp === false">
       {{ t("personalInformationMessage") }}<br />
-      {{ t("not signed up message") }}
+      <span class="warning">{{ t("not signed up message") }}</span>
     </p>
     <form [formGroup]="profileForm">
       <div class="centered-flex-box">
@@ -78,30 +78,42 @@
         <input matInput formControlName="phone" />
       </mat-form-field>
 
-      <br />
-
-      <div *ngIf="stripeLinkComplete">
-        <p class="stripe-font">
-          Stripe Account Id: {{ performerService.performer?.stripeId }}
+      <!-- Form error message -->
+      <div *ngIf="profileForm.invalid">
+        <p class="error-message">
+          {{ t("requiredFormFieldsMessage") }}
         </p>
+      </div>
 
+      <div *ngIf="editProfile === true || !performerService.isSignedUp">
         <button
+          *ngIf="editProfile === true"
           mat-fab
-          color="accent"
+          color="primary"
+          (click)="updatePerformer()"
+          [disabled]="profileForm.invalid || !isEdited()"
           type="submit"
           class="extended-fab-button"
         >
-          <span class="fab-button-text centered-flex-box"
-            ><a
-              href="https://dashboard.stripe.com/login"
-              target="_blank"
-              id="stripe-dashboard"
-              >Stripe Dashboard </a
-            ><mat-icon class="redirect-icon">open_in_new</mat-icon></span
-          >
+          <span class="fab-button-text">{{ t("update") }}</span>
         </button>
+
+        <button
+          *ngIf="!performerService.isSignedUp"
+          mat-fab
+          color="primary"
+          (click)="submit()"
+          [disabled]="profileForm.invalid"
+          type="submit"
+          class="extended-fab-button"
+        >
+          <span class="fab-button-text">{{ t("submit") }}</span>
+        </button>
+        <br />
       </div>
 
+      <br />
+      <!-- If Stripe account is not linked or is in the process of linking -->
       <div
         class="centered-flex-box"
         *ngIf="stripeLinkInProgress && !stripeLinkComplete"
@@ -133,37 +145,59 @@
         The performer must link their stripe account under the profile page to
         accept paid requests
       </p>
-      <br />
-      <p *ngIf="profileForm.invalid" class="error-message">
-        {{ t("requiredFormFieldsMessage") }}
-      </p>
 
-      <div id="fab-button-wrapper">
+      <!-- If stripe link is connected show account info and dashboard button -->
+      <div *ngIf="stripeLinkComplete">
+        <br />
+        <p class="stripe-font">
+          Stripe Account Id: {{ performerService.performer?.stripeId }}
+        </p>
+
         <button
-          *ngIf="editProfile === true"
           mat-fab
-          color="primary"
-          (click)="updatePerformer()"
-          [disabled]="profileForm.invalid || !isEdited()"
+          color="accent"
           type="submit"
           class="extended-fab-button"
         >
-          <span class="fab-button-text">{{ t("update") }}</span>
+          <span class="fab-button-text centered-flex-box"
+            ><a
+              href="https://dashboard.stripe.com/login"
+              target="_blank"
+              id="stripe-dashboard"
+              >Stripe Dashboard </a
+            ><mat-icon class="redirect-icon">open_in_new</mat-icon></span
+          >
         </button>
 
+        <br />
+
         <button
-          *ngIf="!performerService.isSignedUp"
-          mat-fab
-          color="primary"
-          (click)="submit()"
-          [disabled]="profileForm.invalid"
-          type="submit"
-          class="extended-fab-button"
+          id="unlink"
+          mat-button
+          matTooltip="Clicking this button will unlink stripe from the My Request platform."
+          matTooltipPosition="below"
+          appDebounceClick
+          (debounceClick)="unlinkPerformerFromStripe(false)"
         >
-          <span class="fab-button-text">{{ t("submit") }}</span>
+          Disconnect Stripe
         </button>
       </div>
 
+      <br />
+      <br />
+
+      <div class="centered-flex-box">
+        <button
+          id="delete"
+          mat-button
+          matTooltip="Clicking this button will remove your personal data from our records, if a Stripe account is not linked."
+          matTooltipPosition="above"
+          appDebounceClick
+          (debounceClick)="deletePerformer()"
+        >
+          Delete Account
+        </button>
+      </div>
       <!-- commented out below code as these properties are not planned
 to be implemented at this time
  -->

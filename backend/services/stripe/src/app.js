@@ -430,11 +430,47 @@ app.post("/stripe/createPaymentIntent", async function (req, res, next) {
           console.log("paymentIntent", paymentIntent);
         }
 
-        // send back successful response
-        return res.json({
-          message: "Successfully added item to the stripe table!",
-          result: requestsDbEntry,
-          statusCode: 200,
+        // Publish AWS IOT for frontend clients to go get these db changes
+        try {
+          var iotdata = new AWS.IotData({
+            endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+          });
+        } catch (error) {
+          console.log("Couldn't create iotData client error", error);
+          return res
+            .status(500)
+            .json({ message: "Couldn't create iotData client error" });
+        }
+
+        // Publish to necessary iot websockets to go poll these changes
+        var paramsIOT = {
+          topic: "myRequest-event-" + eventId + "-requests-performer-" + stage,
+          payload: JSON.stringify({ data: "Poll events Please" }),
+          qos: 0,
+        };
+
+        if (debug) console.log("created IOT params", paramsIOT);
+
+        // Publish to necessary iot websocket to trigger appropriate db calls
+        iotdata.publish(paramsIOT, function (err, data) {
+          if (err) {
+            console.log(err, err.stack);
+            return res.status(500).json({
+              message: "Not able to publish to IOT after saving event to table",
+            });
+          } else {
+            const response = {
+              statusCode: 200,
+              body: params.Item,
+            };
+            if (debug) console.log("Response:\n", response);
+            // send back successful response
+            return res.json({
+              message: "Successfully added item to the stripe table!",
+              result: requestsDbEntry,
+              statusCode: 200,
+            });
+          }
         });
       }
     });
@@ -706,11 +742,47 @@ app.post("/stripe/updatePaymentIntentWithNewPaymentMethod", async function (
           );
         }
 
-        // send back successful response
-        return res.json({
-          message: "Successfully added item to the stripe table!",
-          result: requestsDbEntry,
-          statusCode: 200,
+        // Publish AWS IOT for frontend clients to go get these db changes
+        try {
+          var iotdata = new AWS.IotData({
+            endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+          });
+        } catch (error) {
+          console.log("Couldn't create iotData client error", error);
+          return res
+            .status(500)
+            .json({ message: "Couldn't create iotData client error" });
+        }
+
+        // Publish to necessary iot websockets to go poll these changes
+        var paramsIOT = {
+          topic: "myRequest-event-" + eventId + "-requests-performer-" + stage,
+          payload: JSON.stringify({ data: "Poll events Please" }),
+          qos: 0,
+        };
+
+        if (debug) console.log("created IOT params", paramsIOT);
+
+        // Publish to necessary iot websocket to trigger appropriate db calls
+        iotdata.publish(paramsIOT, function (err, data) {
+          if (err) {
+            console.log(err, err.stack);
+            return res.status(500).json({
+              message: "Not able to publish to IOT after saving event to table",
+            });
+          } else {
+            const response = {
+              statusCode: 200,
+              body: params.Item,
+            };
+            if (debug) console.log("Response:\n", response);
+            // send back successful response
+            return res.json({
+              message: "Successfully added item to the stripe table!",
+              result: requestsDbEntry,
+              statusCode: 200,
+            });
+          }
         });
       }
     });
@@ -724,7 +796,7 @@ app.post("/stripe/updatePaymentIntentWithNewPaymentMethod", async function (
 app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   const debug = req.query.debug === "true";
   const request = req.body;
-
+  const eventId = request.eventId;
   try {
     if (debug) console.log("before capture", request.paymentIntentId);
 
@@ -782,12 +854,64 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
             console.log("capturedPaymentIntent", capturedPaymentIntent);
           }
 
-          // send back successful response
-          return res.json({
-            message: "Successfully added item to the stripe table!",
-            result: request,
-            statusCode: 200,
-          });
+          // Only publish if we capture a original request since top-ups hit
+          // this route first and we only want to publish only after original
+          // request has been processed
+          if (request.originalRequestId === request.id) {
+            // Publish AWS IOT for frontend clients to go get these db changes
+            try {
+              var iotdata = new AWS.IotData({
+                endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+              });
+            } catch (error) {
+              console.log("Couldn't create iotData client error", error);
+              return res
+                .status(500)
+                .json({ message: "Couldn't create iotData client error" });
+            }
+
+            // Publish to necessary iot websockets to go poll these changes
+            var paramsIOT = {
+              topic:
+                "myRequest-event-" + eventId + "-requests-requester-" + stage,
+              payload: JSON.stringify({ data: "Poll events Please" }),
+              qos: 0,
+            };
+
+            if (debug) console.log("created IOT params", paramsIOT);
+
+            // Publish to necessary iot websocket to trigger appropriate db calls
+            iotdata.publish(paramsIOT, function (err, data) {
+              if (err) {
+                console.log(err, err.stack);
+                return res.status(500).json({
+                  message:
+                    "Not able to publish to IOT after saving event to table",
+                });
+              } else {
+                const response = {
+                  statusCode: 200,
+                  body: params.Item,
+                };
+                if (debug) console.log("Response:\n", response);
+
+                // send back successful response
+                return res.json({
+                  message:
+                    "Successfully added item to the stripe table and publish to requester client!",
+                  response: request,
+                  statusCode: 200,
+                });
+              }
+            });
+          } else {
+            // send back successful response
+            return res.json({
+              message: "Successfully added item to the stripe table!",
+              response: request,
+              statusCode: 200,
+            });
+          }
         }
       });
     }
@@ -802,15 +926,23 @@ app.post("/stripe/capturePaymentIntent", async function (req, res, next) {
   }
 });
 
-// Capturing of a payment intent
+// Cancel payment intent
 app.patch("/stripe/cancelPaymentIntent/:requestId", async function (
   req,
   res,
   next
 ) {
-  const debug = req.query.debug === "true";
+  // const debug = req.query.debug === "true";
+  const debug = true;
+
   const requestId = req.params.requestId;
-  const { paymentIntentId, status, performerStripeId } = req.body;
+  const {
+    paymentIntentId,
+    status,
+    performerStripeId,
+    eventId,
+    originalRequestId,
+  } = req.body;
 
   try {
     const cancelledPaymentIntent = await stripe.paymentIntents.cancel(
@@ -860,12 +992,57 @@ app.patch("/stripe/cancelPaymentIntent/:requestId", async function (
             console.log("cancelledPaymentIntent", cancelledPaymentIntent);
           }
 
-          // send back successful response
-          return res.json({
-            message: "Successfully added item to the stripe table!",
-            result: result,
-            statusCode: 200,
-          });
+          // Publish AWS IOT for frontend clients to go get these db changes
+          if (
+            result.Attributes.status !== "pending" &&
+            requestId === originalRequestId
+          ) {
+            try {
+              var iotdata = new AWS.IotData({
+                endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+              });
+            } catch (error) {
+              console.log("Couldn't create iotData client error", error);
+              return res
+                .status(500)
+                .json({ message: "Couldn't create iotData client error" });
+            }
+
+            // Publish to necessary iot websockets to go poll these changes
+            var paramsIOT = {
+              topic:
+                "myRequest-event-" + eventId + "-requests-requester-" + stage,
+              payload: JSON.stringify({ data: "Poll events Please" }),
+              qos: 0,
+            };
+
+            if (debug) console.log("created IOT params", paramsIOT);
+
+            // Publish to necessary iot websocket to trigger appropriate db calls
+            iotdata.publish(paramsIOT, function (err, data) {
+              if (err) {
+                console.log(err, err.stack);
+                return res.status(500).json({
+                  message:
+                    "Not able to publish to IOT after saving event to table",
+                });
+              } else {
+                // send back successful response
+                return res.json({
+                  message: "Successfully added item to the stripe table!",
+                  response: result,
+                  statusCode: 200,
+                });
+              }
+            });
+          } else {
+            // send back successful response
+            return res.json({
+              message: "Successfully added item to the stripe table!",
+              response: result,
+              statusCode: 200,
+            });
+          }
         }
       });
     }
@@ -877,6 +1054,65 @@ app.patch("/stripe/cancelPaymentIntent/:requestId", async function (
       message: error,
       statusCode: 400,
     });
+  }
+});
+
+app.patch("/stripe/unlinkPerformer/:performerStripeId", async function (
+  req,
+  res,
+  next
+) {
+  const debug = req.query.debug === "true";
+  const performerStripeId = req.params.performerStripeId;
+  const { performerId, clientId } = req.body;
+
+  try {
+    const stripeDeauthorizeResponse = await stripe.oauth.deauthorize({
+      client_id: clientId,
+      stripe_user_id: performerStripeId,
+    });
+
+    if (debug) console.log(stripeDeauthorizeResponse); // logs previous stripeId
+
+    // If successful we should remove the stripeId property from the performer
+    const params = {
+      TableName: process.env.DYNAMODB_PERFORMERS_TABLE,
+      Key: {
+        id: performerId,
+      },
+      UpdateExpression: "remove stripeId",
+      ReturnValues: "ALL_NEW",
+    };
+    if (debug) console.log("Params for db update:\n", params);
+
+    // Note if table item is being updated then the result will be the new item
+    dynamoDb.update(params, function (err, result) {
+      if (debug) console.log(" in update subscribe Result:", result);
+      if (err) {
+        console.error(
+          "Unable to Update item. Error JSON:",
+          JSON.stringify(err, null, 2)
+        );
+      } else {
+        const response = {
+          statusCode: 200,
+          performer: result.Attributes,
+          message:
+            "Stripe Unlinked and UPDATE for record on performer table succeeded!",
+        };
+        if (debug) console.log("Response:\n", response);
+
+        res.json(response);
+      }
+    });
+  } catch (error) {
+    console.error(
+      "Could not deauthorize stripe for this performer",
+      performerId,
+      "\n",
+      error
+    );
+    res.status(400).json({ error });
   }
 });
 

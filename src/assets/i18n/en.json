@@ -65,6 +65,7 @@
     "not signed up message": "Completed registration is required before creating an event. Navigate to Account > Profile to complete."
   },
   "profile": {
+    "end-user-license-agreement-success-message": "End-user license agreement successfully signed, continue by filling in the form below.",
     "not signed up message": "You will not be able to create an event until registration is completed.",
     "personalInformation": "Personal Information",
     "personalInformationMessage": "Please provide the following information.",
@@ -94,5 +95,8 @@
     "submit": "Submit",
     "update": "Update Information",
     "updateSuccessful": "Information Updated!"
+  },
+  "end-user-license-agreement": {
+    "agree": "Agree to terms"
   }
 }

@@ -16,6 +16,8 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 // declare a new express app
 const app = express();
 
+const stage = process.env.STAGE;
+
 /**********************
  *   Middleware
  **********************/
@@ -136,7 +138,7 @@ app.get("/events/:id", function (req, res) {
 });
 
 /**********************
- * GET requests by event id possibly with a specific pending status
+ * GET requests by event id
  **********************/
 app.get("/events/:id/requests", function (req, res, next) {
   // If debug flag passed show console logs
@@ -275,8 +277,10 @@ app.post("/events", function (req, res) {
   if (debug) console.log("Params:\n", params);
 
   // Generate uuid & date record
+  let currentDate = new Date().toJSON();
+  params.Item.createdOn = currentDate;
+  params.Item.modifiedOn = currentDate;
   params.Item.id = uuid.v1();
-  params.Item.createdOn = new Date().toJSON();
 
   // Note if table item is being inserted for the first time, the result will be empty
   dynamoDb.put(params, function (err, result) {
@@ -285,15 +289,49 @@ app.post("/events", function (req, res) {
         "Unable to add item. Error JSON:",
         JSON.stringify(err, null, 2)
       );
+      return res.status(500).json({
+        message: "Not able to add event to events table",
+      });
     } else {
-      const response = {
-        statusCode: 200,
-        body: params.Item,
+      // Publish AWS IOT for frontend clients to go get these db changes
+      try {
+        var iotdata = new AWS.IotData({
+          endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+        });
+      } catch (error) {
+        console.log("Couldn't create iotData client error", error);
+        return res
+          .status(500)
+          .json({ message: "Couldn't create iotData client error" });
+      }
+
+      // Publish to necessary iot websockets to go poll these changes
+      var paramsIOT = {
+        topic: "myRequest-events-" + stage,
+        payload: JSON.stringify({ data: "Poll events Please" }),
+        qos: 0,
       };
-      if (debug) console.log("Response:\n", response);
-      res.json({
-        success: "Successfully added item to the events table!",
-        record: response.body,
+
+      if (debug) console.log("created IOT params", paramsIOT);
+
+      // Publish to necessary iot websocket to trigger appropriate db calls
+      iotdata.publish(paramsIOT, function (err, data) {
+        if (err) {
+          console.log(err, err.stack);
+          return res.status(500).json({
+            message: "Not able to publish to IOT after saving event to table",
+          });
+        } else {
+          const response = {
+            statusCode: 200,
+            body: params.Item,
+          };
+          if (debug) console.log("Response:\n", response);
+          res.json({
+            success: "Successfully added item to the events table!",
+            record: response.body,
+          });
+        }
       });
     }
   });
@@ -319,6 +357,7 @@ app.put("/events/:id", function (req, res) {
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: item,
+    ReturnValues: "ALL_OLD",
   };
 
   // Convert empty strings to null for dynamoDB
@@ -341,16 +380,65 @@ app.put("/events/:id", function (req, res) {
         "Unable to Update item. Error JSON:",
         JSON.stringify(err, null, 2)
       );
+      return res.status(500).json({
+        message: "Not able to update event in events table",
+      });
     } else {
-      const response = {
-        statusCode: 200,
-        body: params.Item,
-      };
-      if (debug) console.log("Response:\n", response);
+      // Publish to necessary iot websockets to trigger appropriate db calls
+      try {
+        var iotdata = new AWS.IotData({
+          endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+        });
+      } catch (error) {
+        console.log("Couldn't create iotData client error", error);
+        return res
+          .status(500)
+          .json({ message: "Couldn't create iotData client error" });
+      }
 
-      res.json({
-        success: "UPDATE for record on events table succeeded!",
-        response: response.body,
+      var eventsPubsubParams = {
+        topic: "myRequest-events-" + stage,
+        payload: JSON.stringify({ data: "Poll events Please" }),
+        qos: 0,
+      };
+
+      if (debug)
+        console.log("created myRequest-events params", eventsPubsubParams);
+
+      iotdata.publish(eventsPubsubParams, function (err, data) {
+        if (err) {
+          console.log(err, err.stack);
+          return res.status(500).json({
+            message: "Not able to publish to IOT after updating event",
+          });
+        } else {
+          let eventPubSubTopicName = "myRequest-event-" + eventId + "-" + stage;
+          var eventPubsubParams = {
+            topic: eventPubSubTopicName,
+            payload: JSON.stringify({ data: "Poll events Please" }),
+            qos: 0,
+          };
+          if (debug)
+            console.log("created myRequest-event-" + eventId + " params");
+          iotdata.publish(eventPubsubParams, function (err, data) {
+            if (err) {
+              console.log(err, err.stack);
+              return res.status(500).json({
+                message: "Not able to publish to IOT after updating event",
+              });
+            } else {
+              const response = {
+                statusCode: 200,
+                body: params.Item,
+              };
+              if (debug) console.log("Response:\n", response);
+              res.json({
+                success: "UPDATE for record on events table succeeded!",
+                record: response.body,
+              });
+            }
+          });
+        }
       });
     }
   });
@@ -383,16 +471,48 @@ app.delete("/events/:id", function (req, res) {
         "Unable to DELETE item. Error JSON:",
         JSON.stringify(err, null, 2)
       );
+      return res
+        .status(500)
+        .json({ message: "Couldn't delete event from table" });
     } else {
-      const response = {
-        statusCode: 200,
-        body: req.body,
-      };
-      if (debug) console.log("Response:\n", response);
+      // Publish AWS IOT for frontend clients to go get these db changes
+      try {
+        var iotdata = new AWS.IotData({
+          endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+        });
+      } catch (error) {
+        console.log("Couldn't create iotData client error", error);
+        return res
+          .status(500)
+          .json({ message: "Couldn't create iotData client error" });
+      }
 
-      res.json({
-        success: "Delete call for events table succeeded!",
-        response: response,
+      var paramsIOT = {
+        topic: "myRequest-events-" + stage,
+        payload: JSON.stringify({ data: "Poll events Please" }),
+        qos: 0,
+      };
+
+      if (debug) console.log("created IOT params", paramsIOT);
+
+      iotdata.publish(paramsIOT, function (err, data) {
+        if (err) {
+          console.log(err, err.stack);
+          return res.status(500).json({
+            message: "Not able to publish to IOT after updating event",
+          });
+        } else {
+          const response = {
+            statusCode: 200,
+            body: req.body,
+          };
+          if (debug) console.log("Response:\n", response);
+
+          res.json({
+            success: "Delete call for events table succeeded!",
+            response: response,
+          });
+        }
       });
     }
   });

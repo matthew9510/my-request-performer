@@ -414,42 +414,69 @@ app.get("/performers/:id", function (req, res) {
 app.post("/performers", function (req, res) {
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
+  const performerIdentityId = req.query.performerIdentityId;
+  const iotPolicyName = "Testpolicy";
 
   if (debug) console.log("POST performers request:\n", req);
 
-  let params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Item: req.body,
-  };
+  // Attach principle policy to cognito user so they can interact with iot
+  new AWS.Iot().attachPolicy(
+    { policyName: iotPolicyName, target: performerIdentityId },
+    function (err, data) {
+      if (err) {
+        // an error occurred while attaching policy
+        console.error(
+          "Error attaching policy:\n",
+          JSON.stringify(err, null, 2)
+        );
 
-  // Note that req.body has an id property already
-  if (debug) console.log("Params:\n", params);
+        return res.status(500).json({
+          error: err,
+          message: "Error with attaching IOT policy.",
+        });
+      } else {
+        // create params for dynamo db entry
+        let params = {
+          TableName: process.env.DYNAMODB_TABLE,
+          Item: req.body, // Note that req.body has an id property already of the performer cognito Sub,
+        };
 
-  // Date the record
-  let newRecordDate = new Date().toJSON();
-  params.Item.createdOn = newRecordDate;
-  params.Item.modifiedOn = newRecordDate;
+        if (debug) console.log("Params:\n", params);
 
-  // Note if table item is being inserted for the first time, the result will be empty
-  dynamoDb.put(params, function (err, result) {
-    if (err) {
-      console.error(
-        "Unable to add item. Error JSON:",
-        JSON.stringify(err, null, 2)
-      );
-    } else {
-      const response = {
-        statusCode: 200,
-        body: params.Item,
-      };
-      if (debug) console.log("Response:\n", response);
+        // Date the record
+        let newRecordDate = new Date().toJSON();
+        params.Item.createdOn = newRecordDate;
+        params.Item.modifiedOn = newRecordDate;
 
-      res.json({
-        success: "Successfully added item to the performers table!",
-        record: response.body,
-      });
+        // Note if table item is being inserted for the first time, the result will be empty
+        dynamoDb.put(params, function (err, result) {
+          if (err) {
+            console.error(
+              "Unable to add item. Error JSON:",
+              JSON.stringify(err, null, 2)
+            );
+            return res.status(400).json({
+              error: err,
+              message:
+                "Error with adding item to the performers table after attaching IOT Policy.",
+            });
+          } else {
+            const response = {
+              statusCode: 200,
+              body: params.Item,
+            };
+            if (debug) console.log("Response:\n", response);
+
+            return res.json({
+              success:
+                "Successfully added item to the performers table and attached policy!",
+              record: response.body,
+            });
+          }
+        });
+      }
     }
-  });
+  );
 });
 
 /****************************

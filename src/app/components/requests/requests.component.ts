@@ -9,12 +9,14 @@ import { translate } from "@ngneat/transloco";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Requests } from "../../interfaces/requests";
-import { interval, Subscription, forkJoin } from "rxjs";
+import { interval, Subscription, forkJoin, concat } from "rxjs";
 import { OrderPipe } from "ngx-order-pipe";
 import { HostListener } from "@angular/core";
 import { FormBuilder, FormGroup, AbstractControl } from "@angular/forms";
 
 import { PerformerService } from "@services/performer.service";
+import Amplify from "aws-amplify";
+import { environment } from "@ENV";
 
 @Component({
   selector: "app-requests",
@@ -44,7 +46,6 @@ export class RequestsComponent implements OnInit {
   acceptedReverse: boolean = false;
   acceptedTabLabel: string = "Accepted";
   pendingTabLabel: string = "Pending";
-  pollingSubscription: Subscription;
   hidden: string;
   visibilityChange: string;
   sortedAcceptedRequests: any;
@@ -54,6 +55,8 @@ export class RequestsComponent implements OnInit {
   isSecondaryRequestSortOrderLoaded = false;
   secondaryRequestSortOrder: string;
   updateRequesterClientSortOrderError: boolean = false;
+  requestsPubSub: any;
+
   constructor(
     public requestsService: RequestsService,
     public stripeService: StripeService,
@@ -111,7 +114,9 @@ export class RequestsComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.pollingSubscription.unsubscribe();
+    if (this.requestsPubSub) {
+      this.requestsPubSub.unsubscribe();
+    }
   }
 
   // checks for changes in visibility
@@ -123,17 +128,35 @@ export class RequestsComponent implements OnInit {
   // if document is hidden, polling will stop. when document is visible, polling will start again
   checkHiddenDocument() {
     if (document[this.hidden]) {
-      if (this.pollingSubscription) {
-        this.pollingSubscription.unsubscribe();
+      if (this.requestsPubSub) {
+        this.requestsPubSub.unsubscribe();
       }
     } else {
       this.onGetRequestsByEventId();
       this.setTabLabels();
-      this.pollingSubscription = interval(10000).subscribe((x) => {
+      this.requestsPubSub = this.initRequestsPubSub();
+    }
+  }
+
+  initRequestsPubSub() {
+    let topicName = environment.production
+      ? "myRequest-event-" + this.eventId + "-requests-performer-prod"
+      : "myRequest-event-" + this.eventId + "-requests-performer-dev";
+
+    return Amplify.PubSub.subscribe(topicName).subscribe({
+      next: (data) => {
+        // go poll requests db for new changes
         this.onGetRequestsByEventId();
         this.setTabLabels();
-      });
-    }
+      },
+      error: (error) => console.error(error),
+      close: () =>
+        console.log(
+          "myRequest-event-" +
+            this.eventId +
+            "requests-performer done listening for changes"
+        ),
+    });
   }
 
   navigateToErrorPage() {
@@ -500,7 +523,7 @@ export class RequestsComponent implements OnInit {
         // update service value
         if (res.error === undefined) {
           // if success
-          this.event = res.response;
+          this.event = res.record;
           this.eventService.currentEvent = this.event;
           this.requesterSortOrderForm.controls.requesterClientSortOrder.setValue(
             this.event.requesterClientSortOrder
@@ -612,11 +635,24 @@ export class RequestsComponent implements OnInit {
         "rejected"
       );
 
-      forkJoin(listOfAlteredRequestObservables).subscribe(
-        (res) => {
-          const message = translate("snackbar message rejected");
-          this.openSnackBar(message);
-          this.onGetRequestsByEventId();
+      // Wrap these observables in a concat operator to make them work in order
+      // of placement in array, since an original request will be processed
+      // after any topups and likes that might be attached, because updating
+      // original requests will publish to the requester client pubsub topic
+      let concatedListOfObservables = concat(
+        ...listOfAlteredRequestObservables
+      );
+
+      // Update the requests in database
+      concatedListOfObservables.subscribe(
+        (res: any) => {
+          // The original will be the last to emit this callback
+          // Once an original is updated go refresh the lists
+          if (res.response.originalRequestId === res.response.id) {
+            const message = translate("snackbar message rejected");
+            this.openSnackBar(message);
+            this.onGetRequestsByEventId();
+          }
         },
         (err) => console.error(err)
       );
@@ -642,25 +678,39 @@ export class RequestsComponent implements OnInit {
 
   endCurrentSong() {
     if (this.currentlyPlaying) {
+      // Make needed updates to the db
       let listOfAlteredRequestObservables = [];
 
       listOfAlteredRequestObservables = this.prepRequestsForStatusChange(
         this.nowPlayingRequest,
         "completed"
       );
-      forkJoin(listOfAlteredRequestObservables).subscribe(
-        (res) => {
-          this.currentlyPlaying = false;
-          this.nowPlayingRequest = {
-            song: null,
-            artist: null,
-            amount: null,
-            memo: null,
-            status: null,
-            id: null,
-          };
 
-          this.onGetRequestsByEventId();
+      this.currentlyPlaying = false;
+      this.nowPlayingRequest = {
+        song: null,
+        artist: null,
+        amount: null,
+        memo: null,
+        status: null,
+        id: null,
+      };
+
+      // Wrap these observables in a concat operator to make them work in order
+      // of placement in array, since an original request will be processed
+      // after any topups and likes that might be attached, because updating
+      // original requests will publish to the requester client pubsub topic
+      let concatedListOfObservables = concat(
+        ...listOfAlteredRequestObservables
+      );
+
+      // Update the requests in database
+      concatedListOfObservables.subscribe(
+        (res: any) => {
+          // // The original will be the last to emit this callback
+          // if (res.response.originalRequestId === res.response.id) {
+          //   // pass
+          // }
         },
         (err) => console.error(err)
       );
@@ -678,23 +728,107 @@ export class RequestsComponent implements OnInit {
   }
 
   playNext(request: any) {
+    // clear the current song from being played if one is being played
     this.endCurrentSong();
-    let listOfAlteredRequestObservables = [];
 
+    // Prepare Requests for status change
+    let listOfAlteredRequestObservables = [];
     listOfAlteredRequestObservables = this.prepRequestsForStatusChange(
       request,
       "now playing"
     );
 
-    forkJoin(listOfAlteredRequestObservables).subscribe(
-      (res) => {
-        this.nowPlayingRequest = request;
-        const message = translate("snackbar now playing");
-        this.openSnackBar(`${this.nowPlayingRequest.song} ${message}`);
-        this.onGetRequestsByEventId();
+    // Wrap these observables in a concat operator to make them work in order
+    // of placement in array, since an original request will be processed
+    // after any topups and likes that might be attached, because updating
+    // original requests will publish to the requester client pubsub topic
+    let concatedListOfObservables = concat(...listOfAlteredRequestObservables);
+
+    // Update the requests in database
+    concatedListOfObservables.subscribe(
+      (res: any) => {
+        // The original will be the last to emit this callback
+        // Once an original is updated go refresh the lists
+        if (res.response.originalRequestId === res.response.id) {
+          this.onGetRequestsByEventId();
+        }
       },
-      (err: any) => console.error(err)
+      (err: any) => console.error(err),
+      () => {}
     );
+
+    // Update now playing on local device incase we run into errors with async calls above ^
+    let totalPriceOfRequestToPlayIncludingTopUps = this.calculateTotalRequestPrice(
+      request
+    );
+    this.nowPlayingRequest = request;
+    this.nowPlayingRequest.amount = totalPriceOfRequestToPlayIncludingTopUps;
+    this.currentlyPlaying = true;
+    const message = translate("snackbar now playing");
+    this.openSnackBar(`${this.nowPlayingRequest.song} ${message}`);
+    // Remove those accepted requests to hide from necessary lists
+    this.removeNowPlayingRequestsFromAcceptedRequests(request);
+  }
+
+  removeNowPlayingRequestsFromAcceptedRequests(request) {
+    // Todo: Need to ensure that all invocations pass a request with a topUpIndexes property
+    if (request.topUpIndexes.length > 0) {
+      for (let topUpRequestIndex of request.topUpIndexes) {
+        // Remove top-up from sortedAcceptedRequests list
+        let topup = this.acceptedRequests[topUpRequestIndex];
+        let indexOfTopUpInSortedAcceptedRequestsList = this.sortedAcceptedRequests.indexOf(
+          topup
+        );
+        this.sortedAcceptedRequests.splice(
+          indexOfTopUpInSortedAcceptedRequestsList,
+          1
+        );
+
+        // Remove top-up from acceptedRequests list
+        this.acceptedRequests.splice(topUpRequestIndex, 1);
+      }
+    }
+
+    // Remove original from sortedAcceptedRequests list
+    let indexOfOriginalRequestInSortedAcceptedRequestsList = this.sortedAcceptedRequests.indexOf(
+      request
+    );
+    this.sortedAcceptedRequests.splice(
+      indexOfOriginalRequestInSortedAcceptedRequestsList,
+      1
+    );
+
+    // Remove original request from accepted requests
+    let indexOfOriginalRequestInAcceptedRequestsList = this.acceptedRequests.indexOf(
+      request
+    );
+    this.acceptedRequests.splice(
+      indexOfOriginalRequestInAcceptedRequestsList,
+      1
+    );
+
+    // Updated SortedAcceptedRequests sort order
+    if (this.acceptedRequests.length === 0) {
+      this.acceptedRequests = null;
+    } else {
+      this.sortedAcceptedRequests = this.orderPipe.transform(
+        this.acceptedRequests,
+        this.acceptedOrder
+      );
+    }
+
+    this.setTabLabels();
+  }
+
+  calculateTotalRequestPrice(request) {
+    let amountAccumulator = 0;
+    for (let topUpRequestIndex of request.topUpIndexes) {
+      amountAccumulator += this.acceptedRequests[topUpRequestIndex].amount;
+    }
+
+    amountAccumulator += request.amount;
+
+    return amountAccumulator;
   }
 
   prepRequestsForStatusChange(originalRequest: any, desiredStatus: string) {
@@ -738,6 +872,8 @@ export class RequestsComponent implements OnInit {
         status: request.status,
         paymentIntentId: request.paymentIntentId,
         performerStripeId: request.performerStripeId,
+        eventId: request.eventId,
+        originalRequestId: request.originalRequestId,
       };
 
       // prepare the payload

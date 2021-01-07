@@ -6,6 +6,10 @@
   flex-direction: column;
   text-align: center;
 
+  span.warning {
+    color: mat-color($app-accent);
+  }
+
   mat-form-field {
     max-width: 500px;
     width: 90%;
@@ -26,11 +30,6 @@
     font-size: 14px;
     letter-spacing: 1.5px;
     font-weight: 500;
-  }
-
-  #fab-button-wrapper {
-    margin-bottom: 2%;
-    margin-top: 1%;
   }
 
   mat-form-field {
@@ -70,8 +69,6 @@
 
 button.stripe-button {
   text-align: center;
-  margin-top: 1%;
-  margin-bottom: 2%;
   color: mat-color($app-primary);
 }
 
@@ -116,6 +113,14 @@ p.performer-not-signed-up-with-stripe-prompt {
 }
 .redirect-icon {
   margin-left: 1%;
+}
+
+button#delete {
+  margin-bottom: 5px;
+}
+
+button#unlink {
+  margin-top: 10px;
 }
 
 @media screen and (max-width: 450px) {

@@ -1,0 +1,543 @@
+<ng-container *transloco="let t; read: 'end-user-license-agreement'">
+  <h1 mat-dialog-title>{{ title }}</h1>
+  <mat-dialog-content>
+    <div
+      [class.hide]="loading"
+      appCustomScroll
+      #appScrollElement="appCustomScroll"
+      #scroll
+      class="eula-agreement"
+    >
+      <p>Effective starting August 1, 2020</p>
+
+      <h2>1. Introduction</h2>
+      <p>
+        This End-User License Agreement (“EULA”) is between you (“You” or “you”)
+        and SoftStack Factory (“SSFLabs” or “we”) and governs your use of all
+        versions of the MyRequest SSFLabs software and services (collectively
+        “Product”).
+      </p>
+
+      <h2>2. Binding Agreement</h2>
+      <p>
+        By downloading, installing, or using the Product on any computer system,
+        or by accepting this EULA (either by clicking a box indicating that you
+        accept this EULA, or by executing an Order referencing this EULA), you
+        indicate your assent to be bound by this EULA.
+      </p>
+      <p>
+        SSFLabs reserves the right to modify terms of this EULA at its
+        discretion. If SSFLabs makes any material changes to the EULA terms, it
+        may notify you by email or posting a notice on
+        <strong
+          ><a [href]="landingPageUrl" href="" target="_blank">{{
+            landingPageUrl
+          }}</a></strong
+        >
+        (“Website”).
+      </p>
+      <p>
+        If You are agreeing to this EULA not as an individual but on behalf of
+        your company, government, or other entity for which you are acting (for
+        example, as an employee or government official) then “you” means your
+        entity and You are binding your entity to this EULA. If you do not have
+        such authority or if you do not agree with the terms of this EULA, do
+        not accept this EULA and do not use the Product. The Product is not
+        intended for and should not be used by anyone under the age of 16. You
+        must ensure that all Users are at least 16 years old.
+      </p>
+
+      <h2>3. Use of the Product</h2>
+      <p>
+        Subject to the terms and conditions of this EULA and Your paying the
+        applicable fees, SSFLabs grants You a revocable, non-exclusive,
+        non-transferable, non-sublicensable, license to Use* the Product in
+        executable code form in accordance with the terms of this EULA. Except
+        for the limited license set out in this EULA, SSFLabs grants you no
+        other license or right in the Product. Your license will end when this
+        EULA is terminated even if there are terms to the contrary set out
+        elsewhere in this Agreement or in other documentation entered into
+        between SSFLabs and you.
+      </p>
+      <p>
+        *Use, Using or Used means to directly or indirectly activate the
+        processing capabilities of the Product, load, execute, access, utilize,
+        store, employ the Product, or display information resulting from such
+        capabilities including uploading any Content** or generating any Content
+        by utilizing its capabilities. User means the specific individuals whom
+        you designate to Use the Product and for whom you have paid the
+        applicable fees. **Content means any data, code, content, images or
+        other materials of any type that you upload, process, submit or
+        otherwise transmit through the Product.
+      </p>
+      <p>
+        The Product includes certain code and libraries licensed to us by third
+        parties, including open source software (“OSS“) as listed at
+        <strong
+          ><a [href]="landingPageUrl + '/Dependencies/'" target="_blank"
+            >{{ landingPageUrl }}/Dependencies/</a
+          ></strong
+        >
+        along with the applicable OSS license. Your right to use such OSS shall
+        be governed by the applicable OSS license agreement instead of the terms
+        of this EULA.
+      </p>
+
+      <h2>4. Proprietary Rights and Non-exclusivity</h2>
+
+      <p>
+        You acknowledge and agree that SSFLabs and its licensors have and retain
+        all legal right, title and interest in the Product including but not
+        limited to any ideas, concepts, inventions, systems, platforms,
+        interfaces, tools, utilities, user interface, algorithms, logic,
+        formula, scripts, work flows, processes, software, methodologies,
+        databases, know-how, trade secrets and other technology and information
+        including any and all intellectual property rights that exist therein,
+        whether registered or not, and wherever in the world they may exist.
+      </p>
+      <p>
+        This EULA is a non-exclusive arrangement. There is no prohibition or
+        restriction on SSFLabs to provide same or similar rights as set out in
+        this EULA to any other person.
+      </p>
+
+      <h2>5. Software Terms</h2>
+      <h4>5.1 SSFLabs MyRequest Account</h4>
+      <p>
+        The Product allows You to create an individual account (“Account”). The
+        information you provide to us when you create an Account must be
+        accurate, complete and current. You also have the obligation to keep
+        your Account information accurate, complete and current at all times. If
+        any of the information you submit to us at the time of Account creation
+        changes, you must promptly update the same.
+      </p>
+      <p>
+        At any given point in time a specific Account may only be logged in on a
+        maximum of three (3) computer systems.
+      </p>
+      <p>
+        You must keep your Account access credentials safe and secure. You are
+        responsible for all actions taken through your Accounts. You are
+        required to promptly inform SSFLabs and modify your Account login
+        credentials or those of a permitted User if such login credentials are
+        compromised and/or misused/likely to be misused by a third party to
+        improperly access the Product through your Account.
+      </p>
+
+      <h4>5.2 SSFLabs Teams</h4>
+      <p>
+        All versions of the SSFLabs product may support working collaboratively
+        in teams.
+      </p>
+      <p>
+        The individual who will be responsible for the establishment and
+        management of your team is referred to as an Admin User. Once your Admin
+        User has created your Account, they can invite other individuals to Use
+        the Product through the “invite” feature in the Account (each, a
+        “User”). The Admin User will be required to provide the name, email
+        address, and any other information required by SSFLabs for each User.
+      </p>
+      <p>
+        An Admin User shall be entitled to designate more than one Admin User.
+        Upon such designation, each new Admin User will be able to do everything
+        that any other Admin User is permitted to do by the Product and this
+        EULA.
+      </p>
+      <p>
+        SSFLabs charges you a fee for each User to whom you want to provide the
+        ability to Use the Product on your behalf. You must not exceed the
+        number of licensed Users, allow any form of time sharing use, permit
+        more than one individual to use the same SSFLabs login credentials, or
+        any other arrangement which bypasses or defeats SSFLabs’s system
+        controls designed to enforce team size limits. Subject to the terms
+        herein, your Admin Users may add or remove Users from your Account by
+        following relevant instructions set out in SSFLabs’s standard published
+        documentation for the Product.
+      </p>
+
+      <h2>6. Ownership and Sharing of Content</h2>
+      <p>
+        You own all right and title in the Content that you upload into, or
+        generate by Using, the Product. Therefore, You are solely responsible
+        for any Content uploaded into or generated by Using the Product through
+        your Account. Your Content must not violate any applicable law or any
+        right (including intellectual property right) of any person or entity.
+      </p>
+      <p>
+        SSFLabs provides you the ability to store all or part of Your Content on
+        the Server*. This storage functionality is provided to you on an “as-is
+        where-is basis” and SSFLabs does not take any responsibility for the
+        security of such Content. If you use the storage functionality to store
+        Your Content, You will be deemed to have accepted all the conditions in
+        this EULA relating to such functionality.
+      </p>
+      <p>
+        *Server means the storage server and such other hardware and software
+        resources of SSFLabs that are used to store amongst other things, the
+        Content. Content is shared and made available for editing, modifying or
+        downloading entirely at the risk of your Users and you. The sharing and
+        enabling of editing/modification rights to Content is entirely within
+        the control of your Users and SSFLabs will not have any liability
+        whatsoever to anyone associated with your Account (including your
+        employer) if Content suffers loss or damage or retardation of
+        functionality or is misappropriated pursuant to such sharing.
+      </p>
+      <p>
+        Your Use of the Product does not require any personally identifiable
+        information to be uploaded into or included in the Product except to the
+        extent set forth in this paragraph. You hereby permit SSFLabs to
+        collect, use, store and process email address(es), IP addresses from
+        which you access the Product and other login or authentication
+        credentials from both your Users and you in order to ensure that your
+        Users and you have proper access to the Product and to resolve any
+        issues you may encounter while Using the Product. This information may
+        be considered personally identifiable information under the laws of the
+        jurisdiction from which you access and Use the Product. SSFLabs shall
+        collect, use, store and/or process this information only for the
+        purposes listed out above or to contact you with information about
+        SSFLabs and its offerings. Upon termination of this EULA, any
+        information provided by You for creation of your Account will be deleted
+        by us from our records within a reasonable period of time following such
+        termination.
+      </p>
+      <p>
+        SSFLabs may collect certain data and information from you in connection
+        with your use of the Product and otherwise in connection with this EULA.
+        All such data and information will be collected and used by SSFLabs in
+        accordance with our
+        <strong
+          ><a [href]="landingPageUrl + '/PrivacyPolicy/'" target="_blank"
+            >Privacy Policy</a
+          ></strong
+        >, which you acknowledge.
+      </p>
+
+      <h2>7. Restrictions</h2>
+      <p>
+        SSFLabs has only licensed the Product to You and SSFLabs does not sell
+        the Product. As between SSFLabs and you, SSFLabs owns all right, title
+        and interest in and to the Product, and any intellectual property rights
+        associated with it and with SSFLabs. SSFLabs reserves all rights in and
+        to the Product that it does not expressly grant You in this EULA.
+      </p>
+      <p>You agree not to:</p>
+
+      <ul>
+        <li>
+          Use the Product for any illegal purpose or in a manner that it
+          violates any law or rights of any other person;
+        </li>
+        <li>
+          Permit Use of the same Product in a manner not authorized by this
+          EULA;
+        </li>
+        <li>
+          Disassemble, decompile, unlock, reverse engineer, or decode the
+          Product in any manner or create any derivative works based on the
+          Product;
+        </li>
+        <li>
+          Re-sell, grant any rights under this EULA to any third party or lease,
+          time-share, lend or rent Products;
+        </li>
+        <li>
+          Copy any features, functions or user interfaces of the Products;
+        </li>
+        <li>
+          Introduce any malicious code, virus, malware, or any other material
+          that disrupts, slows down or causes the Product to malfunction;
+        </li>
+        <li>
+          Upload or generate any Content that is unlawful, harassing,
+          threatening, harmful, tortious, defamatory, libelous, abusive,
+          violent, obscene, vulgar, invasive of another’s privacy, hateful,
+          racially or ethnically offensive, or otherwise objectionable;
+        </li>
+        <li>Use the Product if you are under 16 years of age.</li>
+      </ul>
+
+      <h2>8. Additional Features</h2>
+      <p>
+        SSFLabs shall from time to time release additional features of the
+        Product. Use of these features may be subject to payment of fees and
+        other terms as prescribed by SSFLabs. To use such additional features in
+        the Product, You are required to abide by such additional terms and pay
+        fees, as applicable.
+      </p>
+
+      <h2>9. Disclaimers</h2>
+      <p>
+        YOU EXPRESSLY UNDERSTAND AND AGREE THAT YOUR USE OF THE PRODUCT IS AT
+        YOUR SOLE RISK AND THAT THE PRODUCT IS PROVIDED “AS IS” AND “AS
+        AVAILABLE” WITHOUT WARRANTY OF ANY KIND, INCLUDING BUT NOT LIMITED TO
+        ANY WARRANTY OF NON INFRINGEMENT, TITLE, FUNCTIONALITY, MERCHANTABILITY
+        OR FITNESS FOR PURPOSE. YOU MAY HAVE OTHER STATUTORY RIGHTS, BUT THE
+        DURATION OF STATUTORILY REQUIRED WARRANTIES, IF ANY, SHALL BE LIMITED TO
+        THE SHORTEST PERIOD PERMITTED BY LAW. SSFLabs DOES NOT WARRANT THAT THE
+        PRODUCT WILL MEET YOUR REQUIREMENTS OR THAT ITS OPERATION WILL BE
+        SECURE, ERROR FREE, VIRUS FREE OR UNINTERRUPTED, THAT ANY STORED DATA
+        WILL BE ACCURATE OR RELIABLE, OR THAT ANY STORED DATA WILL NOT BE LOST
+        OR CORRUPTED, OR THAT IT WILL BE ABLE TO RECTIFY/REMEDY ANY ERRORS OR
+        DEFECT.
+      </p>
+      <p>
+        YOU HAVE CHOSEN TO USE THE PRODUCT ON YOUR OWN VOLITION AND SSFLabs
+        BEARS NO RESPONSIBILITY AS TO THE QUALITY AND PERFORMANCE OF THE
+        PRODUCT. SSFLabs WILL NOT UNDER ANY CIRCUMSTANCE BE RESPONSIBLE FOR LOSS
+        OF ANY DATA WHETHER FROM YOUR COMPUTER OR THE SERVER, DUE TO USE OF THE
+        PRODUCT.
+      </p>
+      <p>
+        SSFLabs HAS NO CONTROL OVER THE CONTENT UPLOADED OR GENERATED BY YOU IN
+        YOUR USE OF THE PRODUCT. SSFLabs UNDERTAKES NO RESPONSIBILITY FOR ANY
+        LOSS THAT YOU OR ANY OTHER PERSON MAY SUFFER DUE TO ANY CONTENT UPLOADED
+        OR GENERATED BY YOUR USE OF THE PRODUCT. SSFLabs HAS NO CONTROL OVER THE
+        USE THAT ANY THIRD PARTY MAY PUT TO ANY CONTENT THAT IS SHARED BY YOU ON
+        THE PRODUCT. SSFLabs ASSUMES NO RESPONSIBILITY FOR ANY LOSS THAT YOU OR
+        ANY THIRD PARTY MAY SUFFER DUE TO ANY CONTENT SHARED BY YOU USING THE
+        PRODUCT.
+      </p>
+      <p>
+        SSFLabs SHALL NOT BE LIABLE FOR DELAYS, INTERRUPTIONS, SERVICE FAILURES
+        OR OTHER PROBLEMS INHERENT IN THE USE OF THE INTERNET AND ELECTRONIC
+        COMMUNICATIONS OR OTHER SYSTEMS OUTSIDE SSFLabs’S REASONABLE CONTROL.
+      </p>
+
+      <h2>10. Indemnity And Liability</h2>
+      <p>
+        SSFLabs will defend you from any claim made by a third party that the
+        your Use of the Product infringes a United States or European Union
+        patent or a registered copyright (a “Claim”), and we will indemnify you
+        and hold you harmless against any damages and costs finally awarded by a
+        court of competent jurisdiction or agreed to in a settlement by SSFLabs
+        (including reasonable attorneys’ fees) arising out of a Claim, provided
+        that we have received from you: (a) prompt written notice of the claim
+        (but in any event notice in sufficient time for us to respond without
+        prejudice); (b) reasonable assistance in the defense and investigation
+        of the claim, including providing us a copy of the claim and all
+        relevant evidence in your possession, custody or control; and (c) the
+        exclusive right to control and direct the investigation, defense, and
+        settlement (if applicable) of the claim. If your use of a Product is (or
+        in our opinion is likely to be) enjoined, if required by settlement, or
+        if we determine such actions are reasonably necessary to avoid material
+        liability, we may, at our option and in our discretion: (i) procure a
+        license for your continued use of the Product in accordance with this
+        EULA; (ii) substitute a substantially functionally similar Product; or
+        (iii) terminate your right to continue using the Product and refund the
+        applicable fee paid by you prorated using a straight line depreciation
+        formula to reflect your use of the Product from the payment date.
+        SSFLabs’s indemnification obligations above do not apply: (1) if the
+        Product is modified by any party other than SSFLabs, but solely to the
+        extent the alleged infringement is caused by such modification; (2) if
+        the Product is used in combination with any non-SSFLabs product,
+        software or equipment, but solely to the extent the alleged infringement
+        is caused by such combination; (3) to unauthorized use of Products; (4)
+        to any Claim arising as a result of Your Content or (5) if you settle or
+        make any admissions with respect to a Claim without SSFLabs’s prior
+        written consent. THIS SECTION 11 FIRST PARAGRAPH (IP INDEMNIFICATION BY
+        SSFLabs) STATES OUR SOLE LIABILITY AND YOUR EXCLUSIVE REMEDY FOR ANY
+        INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS IN CONNECTION WITH ANY
+        PRODUCT OR OTHER ITEMS PROVIDED BY SSFLabs UNDER THIS EULA.
+      </p>
+      <p>
+        YOU EXPRESSLY UNDERSTAND AND AGREE THAT SSFLabs, ITS REPRESENTATIVES,
+        AND LICENSORS SHALL NOT BE LIABLE TO YOU UNDER ANY THEORY OF LIABILITY
+        FOR ANY LOSS OF DATA, LOSS OF USE, FAILURE OF SECURITY MECHANISMS,
+        BUSINESS INTERRUPTION, LOSS OF INCOME OR PROFIT OR ANY INDIRECT,
+        INCIDENTAL, SPECIAL CONSEQUENTIAL OR EXEMPLARY LOSS OR DAMAGES THAT MAY
+        BE INCURRED BY YOU BY USE OF THE PRODUCT, WHETHER OR NOT SSFLabs OR ITS
+        REPRESENTATIVES HAVE BEEN ADVISED OF OR SHOULD HAVE BEEN AWARE OF THE
+        POSSIBILITY OF ANY SUCH LOSSES ARISING. NEITHER PARTY’S LIABILITY TO THE
+        OTHER SHALL EXCEED THE FEES PAID BY YOU TO SSFLabs IN THE 12 MONTHS
+        IMMEDIATELY PRECEDING THE EVENT GIVING RISE TO THE CLAIM.
+        NOTWITHSTANDING ANYTHING TO THE CONTRARY IN THIS EULA, SSFLabs’S
+        LIABILITY TO YOU FOR PRODUCTS THAT ARE FREE OF CHARGE SHALL NOT EXCEED
+        USD 50.
+      </p>
+
+      <h2>11. Confidentiality</h2>
+      <p>
+        Each Party may, during the term of this EULA, exchange and/or provide
+        the other Party with access to their Confidential Information*.
+        Confidential Information may be disclosed to the receiving party either
+        orally, visually, in writing or in any other form. The receiving party
+        shall not disclose Confidential Information to any other person, firm,
+        corporation, association or entity, for any purpose whatsoever without
+        the prior written consent of the disclosing party. The receiving party
+        shall take all reasonable security precautions, including precautions at
+        least as great as it takes to protect its own confidential information,
+        to protect the secrecy of the Confidential Information and shall
+        disclose Confidential Information only to its employees or consultants
+        on a need-to-know basis. The receiving party acknowledges that
+        disclosure of Confidential Information would cause substantial harm for
+        which damages alone would not be a sufficient remedy, and therefore, the
+        disclosing party shall be entitled to seek appropriate equitable relief
+        in addition to its other remedies under law for any unauthorized
+        disclosure of Confidential Information by the receiving party.
+      </p>
+      <p>
+        *Confidential Information includes but is not limited to the business
+        plans, business forecasts, financial information, customer lists,
+        development, design details, specifications, patents, copyrights, trade
+        secrets, proprietary information, methodologies, techniques, sketches,
+        drawings, models, inventions, know-how, processes, algorithms, software
+        programs, software source documents, documentation and third party
+        materials.
+      </p>
+
+      <h2>12. Termination And Take-Down</h2>
+      <p>
+        SSFLabs will not terminate the EULA except as set out in this section
+        below. Should You wish to terminate the EULA, You are required to
+        provide 14 days’ notice to SSFLabs by sending an email with subject line
+        “EULA Termination” to
+        <strong
+          ><a [href]="'mailto:' + appEmail + '?subject=EULA Termination'">{{
+            appEmail
+          }}</a></strong
+        >
+        and specifically mention the Product you are Using.
+      </p>
+      <p>
+        SSFLabs has the right to terminate the EULA, if (i) You have breached
+        any term in the EULA, (ii) it is required to do so under law, or (iii)
+        SSFLabs decides to discontinue the Product.
+      </p>
+      <p>
+        If SSFLabs receives a take-down notice for any Content shared by You, it
+        shall take reasonable steps to determine the basis for such notice. If
+        SSFLabs concludes that it is legally obligated to comply with such
+        request or that it is appropriate for SSFLabs to comply with such
+        request, it may, in its sole and absolute discretion, remove such
+        Content and provide written intimation to you of it. You will not be
+        entitled to challenge SSFLabs’s determination in this regard and SSFLabs
+        will not have any liability to You as result of taking down Content in
+        accordance with this Section 13.
+      </p>
+
+      <h2>13. Publicity Rights</h2>
+      <p>
+        We may identify you as a SSFLabs customer in our promotional materials.
+        You may request that we stop doing so by submitting an email to
+        <strong
+          ><a [href]="'mailto:' + appEmail">{{ appEmail }}</a></strong
+        >
+        at any time.
+      </p>
+
+      <h2>14. General Terms</h2>
+      <p>
+        This EULA constitutes the entire agreement between You and SSFLabs
+        regarding your Use of the Product, and supersedes all prior agreements
+        (written or oral) between You and SSFLabs in relation to the Product. No
+        amendment, modification, or waiver of any provision of this EULA will be
+        effective unless in writing and signed by both parties. You agree that
+        any term or condition stated in Your purchase order or in any other
+        order documentation (excluding SSFLabs forms) is void. In the event of
+        any conflict or inconsistency among the following documents, the order
+        of precedence shall be: (1) the applicable Order, and (2) this EULA.
+      </p>
+      <p>
+        You must keep all information received by You from SSFLabs in relation
+        to the Product or otherwise, strictly confidential. You are not
+        permitted to share those information with any third party without prior
+        written permission of SSFLabs.
+      </p>
+      <p>
+        You agree that if SSFLabs does not exercise or enforce any legal right
+        or remedy which is contained in this EULA (or which SSFLabs has the
+        benefit of under any applicable law), this will not be taken to be a
+        formal waiver of SSFLabs’s rights and that those rights or remedies will
+        still be available to SSFLabs.
+      </p>
+      <p>
+        If any court of law, having the jurisdiction to decide on this matter,
+        rules that any provision of this EULA is invalid, then that provision
+        shall be deemed removed from this EULA without affecting the rest of
+        this EULA. The remaining provisions of this EULA will continue to be
+        valid and enforceable.
+      </p>
+      <p>
+        The rights granted in this EULA may not be assigned or transferred by
+        You without the prior written approval of SSFLabs. You are not permitted
+        to delegate Your responsibilities or obligations under this EULA without
+        the prior written approval of SSFLabs. SSFLabs is entitled to assign,
+        transfer or delegate any right, responsibility, duty or obligation under
+        this EULA.
+      </p>
+      <p>
+        This EULA applies whether you purchase our Products directly from
+        SSFLabs or through a reseller (“Reseller”). Resellers are not authorized
+        to make any promises or commitments on SSFLabs’s behalf, and we are not
+        bound by any obligations to you other than what we specify in this EULA.
+      </p>
+      <p>
+        Any information provided by You for creation of an Account shall not be
+        used by SSFLabs for any purpose other than (i) to enable Your Use of the
+        Product, or (ii) to render any service to You through Your Use of the
+        Product, or (iii) to improve the product as mentioned in Section (6), or
+        (iv) in any manner as permitted by You. Upon termination of this EULA,
+        any information provided by You for creation of an Account will be
+        deleted by us from our records, normally within six months after such
+        termination.
+      </p>
+      <p>
+        Please send any feedback and suggestions that You have for the Product
+        to
+        <strong
+          ><a [href]="'mailto:' + appEmail">{{ appEmail }}</a></strong
+        >. You agree that SSFLabs is at liberty to use and incorporate those
+        feedback and suggestions in the Product without affecting its rights and
+        title in the Product.
+      </p>
+      <p>
+        This EULA shall be governed by the laws of the state of Delaware and the
+        United States, without regard to any conflict of law provisions. You and
+        SSFLabs agree to submit to the exclusive jurisdiction of the courts in
+        the state of Delaware to resolve any dispute arising out of this EULA.
+      </p>
+      <p>
+        The obligations in Sections 4, 7, 9, 10, 11, 12 and 14 will survive any
+        expiration or termination of this EULA.
+      </p>
+
+      <p class="end-user-license-agreement-accept-prompt">
+        By clicking accept you agree to these terms of conditions
+      </p>
+    </div>
+
+    <!-- Show processing of request -->
+    <div class="spinner" *ngIf="loading">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
+
+    <!-- Error message on submission failure -->
+    <div *ngIf="submitErrorMessage && showSubmitErrorMessage">
+      <p class="is-error">{{ submitErrorMessage }}</p>
+    </div>
+
+    <div class="dialog-buttons">
+      <!-- cancel to logout button -->
+      <button
+        mat-raised-button
+        color="accent"
+        [disabled]="loading === true"
+        appDebounceClick
+        (debounceClick)="cancelHandler()"
+      >
+        Cancel
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loading === true || appScrollElement.disableBtn"
+        appDebounceClick
+        (debounceClick)="submitHandler()"
+      >
+        {{ t("agree") }}
+      </button>
+    </div>
+  </mat-dialog-content>
+</ng-container>

@@ -22,6 +22,9 @@ const cors = require("cors");
 
 // declare a new express app
 const app = express();
+
+const stage = process.env.STAGE;
+
 app.use(bodyParser.json());
 app.use(awsServerlessExpressMiddleware.eventContext());
 
@@ -155,6 +158,7 @@ app.get("/requests/:id", function (req, res) {
 app.post("/requests", function (req, res) {
   // If debug flag passed show console logs
   const debug = Boolean(req.query.debug == "true");
+  const eventId = req.body.eventId;
 
   if (req.body.amount < 0) {
     const response = {
@@ -199,13 +203,47 @@ app.post("/requests", function (req, res) {
         JSON.stringify(err, null, 2)
       );
     } else {
-      const response = {
-        statusCode: 200,
-        body: params.Item,
+      // Publish AWS IOT for frontend clients to go get these db changes
+      try {
+        var iotdata = new AWS.IotData({
+          endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+        });
+      } catch (error) {
+        console.log("Couldn't create iotData client error", error);
+        return res
+          .status(500)
+          .json({ message: "Couldn't create iotData client error" });
+      }
+
+      let topicName =
+        "myRequest-event-" + eventId + "-requests-performer-" + stage;
+
+      var paramsIOT = {
+        topic: topicName,
+        payload: JSON.stringify({ data: "Poll requests Please" }),
+        qos: 0,
       };
-      res.json({
-        success: "Successfully added item to the requests table!",
-        record: response.body,
+
+      if (debug) console.log("created IOT params", paramsIOT);
+
+      // Publish to necessary iot websocket to trigger appropriate db calls
+      iotdata.publish(paramsIOT, function (err, data) {
+        if (err) {
+          console.log(err, err.stack);
+          return res.status(500).json({
+            message: "Not able to publish to IOT after saving request to table",
+          });
+        } else {
+          const response = {
+            statusCode: 200,
+            body: params.Item,
+          };
+          if (debug) console.log("Response:\n", response);
+          res.json({
+            success: "Successfully added item to the requests table!",
+            record: response.body,
+          });
+        }
       });
     }
   });
@@ -259,6 +297,7 @@ app.put("/requests/:id", function (req, res) {
   if (debug) console.log("UPDATE event request...", req);
 
   const requestId = req.params.id;
+  const eventId = req.body.eventId;
 
   // update item with modified date
   let item = req.body;
@@ -290,16 +329,72 @@ app.put("/requests/:id", function (req, res) {
         JSON.stringify(err, null, 2)
       );
     } else {
-      const response = {
-        statusCode: 200,
-        body: params.Item,
-      };
-      if (debug) console.log("Response:\n", response);
+      // If request status was changed to 'accepted', 'now playing', or 'completed'
+      // and is an original request only, then propagate this to the requester client iot topics
+      if (
+        !(
+          (result.Attributes.status === "pending" &&
+            item.status === "rejected") ||
+          ((item.status === "now playing" || item.status === "completed") &&
+            item.originalRequestId !== item.id)
+        )
+      ) {
+        // Publish AWS IOT for frontend clients to go get these db changes
+        try {
+          var iotdata = new AWS.IotData({
+            endpoint: "a2983euzfbsfbz-ats.iot.us-west-2.amazonaws.com",
+          });
+        } catch (error) {
+          console.log("Couldn't create iotData client error", error);
+          return res
+            .status(500)
+            .json({ message: "Couldn't create iotData client error" });
+        }
+        let topicName =
+          "myRequest-event-" + eventId + "-requests-requester-" + stage;
 
-      res.json({
-        success: "UPDATE for record on requests table succeeded!",
-        response: response.body,
-      });
+        // Publish to necessary iot websockets to go poll these changes
+        var paramsIOT = {
+          topic: topicName,
+          payload: JSON.stringify({ data: "Poll requests Please" }),
+          qos: 0,
+        };
+
+        if (debug) console.log("created IOT params", paramsIOT);
+
+        // Publish to necessary iot websocket to trigger appropriate db calls
+        iotdata.publish(paramsIOT, function (err, data) {
+          if (err) {
+            console.log(err, err.stack);
+            return res.status(500).json({
+              message:
+                "Not able to publish to IOT after saving request to table",
+            });
+          } else {
+            const response = {
+              statusCode: 200,
+              body: item,
+            };
+            if (debug) console.log("Response:\n", response);
+
+            res.json({
+              success: "UPDATE for record on requests table succeeded!",
+              response: response.body,
+            });
+          }
+        });
+      } else {
+        const response = {
+          statusCode: 200,
+          body: item,
+        };
+        if (debug) console.log("Response:\n", response);
+
+        res.json({
+          success: "UPDATE for record on requests table succeeded!",
+          response: response.body,
+        });
+      }
     }
   });
 });
